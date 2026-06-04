@@ -1,6 +1,7 @@
 export class Gameboard {
     constructor(size = 10) {
         this.size = size;
+        this.ships = [];
         this.board = Array.from({ length: size }, () => {
             return Array.from({ length: size }, () => ({
                 ship: null,
@@ -47,6 +48,8 @@ export class Gameboard {
                 isHit: false,
             };
         });
+
+        this.ships.push(ship);
     }
 
     isValidCoordindates(y, x) {
@@ -79,8 +82,6 @@ export class Gameboard {
     }
 
     isAllSunk() {
-        return this.board.every((row) =>
-            row.every((cell) => cell.ship === null || cell.ship.isSunk()),
-        );
+        return this.ships.length > 0 && this.ships.every((ship) => ship.isSunk());
     }
 }

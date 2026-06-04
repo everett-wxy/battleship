@@ -29,6 +29,10 @@ describe("Gameboard", () => {
             });
         });
     });
+
+    it("starts with an empty ships array", () => {
+        expect(gameboard.ships).toEqual([]);
+    });
 });
 
 describe("ship placement on gameboard logic", () => {
@@ -112,6 +116,16 @@ describe("ship placement on gameboard logic", () => {
             gameboard.placeShip(ship2, 9, 0, "horizontal");
         }).toThrow("Cell already contains a ship");
     });
+
+    it("each ship placed should be pushed into Gameboard.ships", () => {
+        const ships = [new Ship(1), new Ship(2), new Ship(3)];
+
+        gameboard.placeShip(ships[0], 0, 0);
+        gameboard.placeShip(ships[1], 1, 0, "horizontal");
+        gameboard.placeShip(ships[2], 2, 0, "horizontal");
+
+        expect(gameboard.ships).toEqual(ships);
+    });
 });
 
 describe("receive attack logic", () => {
@@ -179,7 +193,7 @@ describe("receive attack logic", () => {
 
         expect(gameboard.isAllSunk()).toBe(true);
     });
-    
+
     it("return false if not every ship is sunk", () => {
         const ship2 = new Ship(2);
         gameboard.placeShip(ship2, 5, 5, "horizontal");
