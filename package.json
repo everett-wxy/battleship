@@ -6,7 +6,8 @@
     "scripts": {
         "test": "jest",
         "start": "webpack serve --open",
-        "build": "webpack"
+        "build": "webpack",
+        "lint": "eslint src"
     },
     "keywords": [],
     "author": "",
@@ -14,7 +15,10 @@
     "type": "module",
     "devDependencies": {
         "@babel/preset-env": "^7.29.7",
+        "@eslint/js": "^10.0.1",
         "css-loader": "^7.1.4",
+        "eslint": "^10.4.1",
+        "globals": "^17.6.0",
         "html-loader": "^5.1.0",
         "html-webpack-plugin": "^5.6.7",
         "jest": "^30.4.2",
