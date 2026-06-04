@@ -1,9 +1,12 @@
 export class Gameboard {
     constructor(size = 10) {
         this.size = size;
-        this.board = Array(size)
-            .fill(null)
-            .map(() => Array(size).fill(null));
+        this.board = Array.from({ length: size }, () => {
+            return Array.from({ length: size }, () => ({
+                ship: null,
+                isHit: false,
+            }));
+        });
     }
 
     placeShip(ship, yAxis, xAxis, orientation = "vertical") {
@@ -31,7 +34,7 @@ export class Gameboard {
         }
 
         const hasOccupiedCell = coordinates.some(([y, x]) => {
-            return this.board[y][x] !== null;
+            return this.board[y][x].ship !== null;
         });
 
         if (hasOccupiedCell) {
@@ -39,7 +42,36 @@ export class Gameboard {
         }
 
         coordinates.forEach(([y, x]) => {
-            this.board[y][x] = ship;
+            this.board[y][x] = {
+                ship,
+                isHit: false,
+            };
         });
+    }
+
+    isValidCoordindate(y, x) {
+        return (
+            Number.isInteger(y) &&
+            Number.isInteger(x) &&
+            y >= 0 &&
+            y < this.size &&
+            x >= 0 &&
+            x < this.size
+        );
+    }
+
+    receiveAttack(y, x) {
+        if (!this.isValidCoordindate(y, x)) {
+            throw new Error("Invalid attack coordinates");
+        }
+
+        // if miss
+        if (this.board[y][x].ship === null) {
+            this.board[y][x].isHit = true;
+            // if hit
+        } else {
+            this.board[y][x].ship.hit();
+            this.board[y][x].isHit = true;
+        }
     }
 }
