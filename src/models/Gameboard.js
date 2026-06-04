@@ -77,4 +77,10 @@ export class Gameboard {
             cell.ship.hit();
         }
     }
+
+    isAllSunk() {
+        return this.board.every((row) =>
+            row.every((cell) => cell.ship === null || cell.ship.isSunk()),
+        );
+    }
 }

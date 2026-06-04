@@ -167,4 +167,27 @@ describe("receive attack logic", () => {
             gameboard.receiveAttack(0, 0);
         }).toThrow("Cell has already been hit");
     });
+
+    it("return true if every ship is sunk", () => {
+        const ship2 = new Ship(2);
+        gameboard.placeShip(ship2, 5, 5, "horizontal");
+        gameboard.receiveAttack(0, 0);
+        gameboard.receiveAttack(1, 0);
+        gameboard.receiveAttack(2, 0);
+        gameboard.receiveAttack(5, 5);
+        gameboard.receiveAttack(5, 6);
+
+        expect(gameboard.isAllSunk()).toBe(true);
+    });
+    
+    it("return false if not every ship is sunk", () => {
+        const ship2 = new Ship(2);
+        gameboard.placeShip(ship2, 5, 5, "horizontal");
+        gameboard.receiveAttack(0, 0);
+        gameboard.receiveAttack(1, 0);
+        gameboard.receiveAttack(2, 0);
+        gameboard.receiveAttack(5, 5);
+
+        expect(gameboard.isAllSunk()).toBe(false);
+    });
 });
