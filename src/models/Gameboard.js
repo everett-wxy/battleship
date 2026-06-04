@@ -49,7 +49,7 @@ export class Gameboard {
         });
     }
 
-    isValidCoordindate(y, x) {
+    isValidCoordindates(y, x) {
         return (
             Number.isInteger(y) &&
             Number.isInteger(x) &&
@@ -61,7 +61,7 @@ export class Gameboard {
     }
 
     receiveAttack(y, x) {
-        if (!this.isValidCoordindate(y, x)) {
+        if (!this.isValidCoordindates(y, x)) {
             throw new Error("Invalid attack coordinates");
         }
 
