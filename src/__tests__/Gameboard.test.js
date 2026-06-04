@@ -124,9 +124,18 @@ describe("receive attack logic", () => {
         gameboard.placeShip(ship, 0, 0, "vertical");
     });
 
-    it("throw error when receieveAttack is called without valid coordinates", () => {
+    it.each([
+        [undefined, undefined],
+        [10, 0],
+        [0, 10],
+        [-1, 0],
+        [0, -1],
+        [1.5, 0],
+        [0, 1.5],
+        ["0", 0],
+    ])("throws error for invalid attack coordinates: (%s, %s)", (y, x) => {
         expect(() => {
-            gameboard.receiveAttack();
+            gameboard.receiveAttack(y, x);
         }).toThrow("Invalid attack coordinates");
     });
 
@@ -150,5 +159,12 @@ describe("receive attack logic", () => {
         gameboard.receiveAttack(1, 0);
         gameboard.receiveAttack(2, 0);
         expect(gameboard.board[0][0].ship.isSunk()).toBe(true);
+    });
+
+    it("throw error when hitting same cell twice", () => {
+        gameboard.receiveAttack(0, 0);
+        expect(() => {
+            gameboard.receiveAttack(0, 0);
+        }).toThrow("Cell has already been hit");
     });
 });

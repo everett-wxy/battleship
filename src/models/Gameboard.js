@@ -65,13 +65,16 @@ export class Gameboard {
             throw new Error("Invalid attack coordinates");
         }
 
-        // if miss
-        if (this.board[y][x].ship === null) {
-            this.board[y][x].isHit = true;
-            // if hit
-        } else {
-            this.board[y][x].ship.hit();
-            this.board[y][x].isHit = true;
+        const cell = this.board[y][x];
+
+        if (cell.isHit) {
+            throw new Error("Cell has already been hit");
+        }
+
+        cell.isHit = true;
+
+        if (cell.ship !== null) {
+            cell.ship.hit();
         }
     }
 }
