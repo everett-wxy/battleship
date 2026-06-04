@@ -1,19 +1,5 @@
 import { Ship } from "../models/Ship.js";
 
-// it("instantiating ship with invalid length throws an errow", () => {
-//     expect(() => {
-//         const ship = new Ship();
-//     }).toThrow("Invalid ship size");
-
-//     expect(() => {
-//         const ship = new Ship(0);
-//     }).toThrow("Invalid ship size");
-
-//     expect(() => {
-//         const ship = new Ship(11);
-//     }).toThrow("Invalid ship size");
-// });
-
 it.each([undefined, 0, 11, -1, "hello", 2.5])(
     "throws an error when ship length is %s",
     (invalidLength) => {
@@ -44,5 +30,5 @@ it("ship with length = 3 should sunk after 3 hits", () => {
     ship.hit();
     ship.hit();
     ship.hit();
-    expect(ship.checkIfSunk()).toBe(true);
+    expect(ship.isSunk()).toBe(true);
 });
