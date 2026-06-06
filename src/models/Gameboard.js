@@ -54,7 +54,7 @@ export class Gameboard {
         });
 
         this.ships.push(ship);
-        return ship
+        return ship;
     }
 
     isValidCoordindates(y, x) {
