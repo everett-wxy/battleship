@@ -31,7 +31,7 @@ describe("Player fire", () => {
         humanPlayer = new HumanPlayer("Everett");
         computerPlayer = new ComputerPlayer("Computer");
 
-        computerShip = computerPlayer.gameboard.placeShip(1, 0, 0);
+        computerShip = computerPlayer.gameboard.placeShip(undefined, 1, 0, 0);
     });
 
     it("fires at the enemy gameboard", () => {

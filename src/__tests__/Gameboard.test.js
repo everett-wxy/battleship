@@ -42,34 +42,34 @@ describe("ship placement on gameboard logic", () => {
 
     it("place ship of size 1", () => {
         // const ship = new Ship(1);
-        const ship = gameboard.placeShip(1, 1, 1);
+        const ship = gameboard.placeShip(undefined, 1, 1, 1);
         expect(gameboard.board[1][1].ship).toBe(ship);
         expect(gameboard.board[1][1].ship.length).toBe(1);
     });
 
     it("place ship of size 2 vertically", () => {
-        const ship = gameboard.placeShip(2, 1, 1);
+        const ship = gameboard.placeShip(undefined, 2, 1, 1);
         for (let i = 0; i < ship.length; i++) {
             expect(gameboard.board[1 + i][1].ship).toBe(ship);
         }
     });
 
     it("place ship of size 2 horizontally", () => {
-        const ship = gameboard.placeShip(2, 1, 1, "horizontal");
+        const ship = gameboard.placeShip(undefined, 2, 1, 1, "horizontal");
         for (let i = 0; i < ship.length; i++) {
             expect(gameboard.board[1][1 + i].ship).toBe(ship);
         }
     });
 
     it("allows vertical ship to fit exactly at the board edge", () => {
-        const ship = gameboard.placeShip(2, 8, 0, "vertical");
+        const ship = gameboard.placeShip(undefined, 2, 8, 0, "vertical");
 
         expect(gameboard.board[8][0].ship).toBe(ship);
         expect(gameboard.board[9][0].ship).toBe(ship);
     });
 
     it("allows horizontal ship to fit exactly at the board edge", () => {
-        const ship = gameboard.placeShip(2, 0, 8, "horizontal");
+        const ship = gameboard.placeShip(undefined, 2, 0, 8, "horizontal");
 
         expect(gameboard.board[0][8].ship).toBe(ship);
         expect(gameboard.board[0][9].ship).toBe(ship);
@@ -77,37 +77,37 @@ describe("ship placement on gameboard logic", () => {
 
     it("Throw error when vertical ship exceed gameboard boundary", () => {
         expect(() => {
-            gameboard.placeShip(3, 8, 0, "vertical");
+            gameboard.placeShip(undefined, 3, 8, 0, "vertical");
         }).toThrow("Ship cannot be placed outside board");
     });
 
     it("Throw error when horizontal ship exceed gameboard boundary", () => {
         expect(() => {
-            gameboard.placeShip(3, 0, 8, "horizontal");
+            gameboard.placeShip(undefined, 3, 0, 8, "horizontal");
         }).toThrow("Ship cannot be placed outside board");
     });
 
     it("Throw error when ship is placed at an occupied cell", () => {
-        gameboard.placeShip(3, 0, 0);
+        gameboard.placeShip(undefined, 3, 0, 0);
 
         expect(() => {
-            gameboard.placeShip(3, 0, 0);
+            gameboard.placeShip(undefined, 3, 0, 0);
         }).toThrow("Cell already contains a ship");
     });
 
     it("throws error when any part of the ship overlaps another ship", () => {
-        gameboard.placeShip(3, 7, 2, "vertical");
+        gameboard.placeShip(undefined, 3, 7, 2, "vertical");
 
         expect(() => {
-            gameboard.placeShip(3, 9, 0, "horizontal");
+            gameboard.placeShip(undefined, 3, 9, 0, "horizontal");
         }).toThrow("Cell already contains a ship");
     });
 
     it("each ship placed should be pushed into Gameboard.ships", () => {
         const ships = [
-            gameboard.placeShip(1, 0, 0),
-            gameboard.placeShip(2, 1, 0, "horizontal"),
-            gameboard.placeShip(3, 2, 0, "horizontal"),
+            gameboard.placeShip(undefined, 1, 0, 0),
+            gameboard.placeShip(undefined, 2, 1, 0, "horizontal"),
+            gameboard.placeShip(undefined, 3, 2, 0, "horizontal"),
         ];
 
         expect(gameboard.ships).toEqual(ships);
@@ -119,7 +119,7 @@ describe("receive attack logic", () => {
 
     beforeEach(() => {
         gameboard = new Gameboard();
-        gameboard.placeShip(3, 0, 0, "vertical");
+        gameboard.placeShip(undefined, 3, 0, 0, "vertical");
     });
 
     it.each([
@@ -167,7 +167,7 @@ describe("receive attack logic", () => {
     });
 
     it("return true if every ship is sunk", () => {
-        gameboard.placeShip(2, 5, 5, "horizontal");
+        gameboard.placeShip(undefined, 2, 5, 5, "horizontal");
         gameboard.receiveAttack(0, 0);
         gameboard.receiveAttack(1, 0);
         gameboard.receiveAttack(2, 0);
@@ -178,7 +178,7 @@ describe("receive attack logic", () => {
     });
 
     it("return false if not every ship is sunk", () => {
-        gameboard.placeShip(2, 5, 5, "horizontal");
+        gameboard.placeShip(undefined, 2, 5, 5, "horizontal");
         gameboard.receiveAttack(0, 0);
         gameboard.receiveAttack(1, 0);
         gameboard.receiveAttack(2, 0);

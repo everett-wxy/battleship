@@ -12,8 +12,8 @@ export class Gameboard {
         });
     }
 
-    placeShip(length, yAxis, xAxis, orientation = "vertical") {
-        const ship = new Ship(length);
+    placeShip(name, length, yAxis, xAxis, orientation = "vertical") {
+        const ship = new Ship(name, length);
 
         if (!["vertical", "horizontal"].includes(orientation)) {
             throw new Error("Invalid orientation");

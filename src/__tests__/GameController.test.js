@@ -30,6 +30,37 @@ describe("Game start state", () => {
     });
 });
 
+describe("Ship placement phase", () => {
+    let game;
+
+    beforeEach(() => {
+        game = new Game("Everett", "Computer");
+    });
+
+    it("human player place 5 ships at the start of the game", () => {
+        const placeShipSpy = jest.spyOn(
+            game.humanPlayer.gameboard,
+            "placeShip",
+        );
+
+        game.setUpFleet(game.humanPlayer, [
+            { y: 0, x: 0, orientation: "horizontal" },
+            { y: 1, x: 0, orientation: "horizontal" },
+            { y: 2, x: 0, orientation: "horizontal" },
+            { y: 3, x: 0, orientation: "horizontal" },
+            { y: 4, x: 0, orientation: "horizontal" },
+        ]);
+        expect(placeShipSpy).toHaveBeenCalledTimes(5);
+        expect(game.humanPlayer.gameboard.ships.length).toBe(5);
+        
+        // count that gameboard.board should contains a total of 17 filled cells
+        const occupiedCells = game.humanPlayer.gameboard.board
+            .flat()
+            .filter((cell) => cell.ship !== null);
+        expect(occupiedCells.length).toBe(17)
+    });
+});
+
 describe("Game turn", () => {
     let game;
 
@@ -59,7 +90,7 @@ describe("Game turn", () => {
     });
 
     it("ends the game and sets human player as winner when computer ship is sunk", () => {
-        game.computerPlayer.gameboard.placeShip(1, 0, 0, "vertical");
+        game.computerPlayer.gameboard.placeShip(undefined, 1, 0, 0, "vertical");
 
         game.runTurn(0, 0);
 
@@ -68,7 +99,7 @@ describe("Game turn", () => {
     });
 
     it("ends the game and sets computer player as winner when human ship is sunk", () => {
-        game.humanPlayer.gameboard.placeShip(1, 0, 0, "vertical");
+        game.humanPlayer.gameboard.placeShip(undefined, 1, 0, 0, "vertical");
         game.switchPlayer();
         game.runTurn(0, 0);
         expect(game.winner).toBe(game.computerPlayer);
@@ -77,13 +108,13 @@ describe("Game turn", () => {
 
     it("does not switch player after a winning shot", () => {
         const switchSpy = jest.spyOn(game, "switchPlayer");
-        game.computerPlayer.gameboard.placeShip(1, 0, 0, "vertical");
+        game.computerPlayer.gameboard.placeShip(undefined, 1, 0, 0, "vertical");
         game.runTurn(0, 0);
         expect(switchSpy).not.toHaveBeenCalled();
     });
 
     it("throws an error when running a turn after game is over", () => {
-        game.computerPlayer.gameboard.placeShip(1, 0, 0, "vertical");
+        game.computerPlayer.gameboard.placeShip(undefined, 1, 0, 0, "vertical");
 
         game.runTurn(0, 0);
 

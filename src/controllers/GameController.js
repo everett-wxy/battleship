@@ -1,6 +1,14 @@
 import { ComputerPlayer, HumanPlayer } from "../models/Player.js";
 
 export class Game {
+    static fleet = [
+        { name: "Carrier", length: 5 },
+        { name: "Battleship", length: 4 },
+        { name: "Destroyer", length: 3 },
+        { name: "Submarine", length: 3 },
+        { name: "Patrol boat", length: 2 },
+    ];
+
     constructor(humanPlayerName, computerPlayerName) {
         this.humanPlayer = new HumanPlayer(humanPlayerName);
         this.computerPlayer = new ComputerPlayer(computerPlayerName);
@@ -10,6 +18,20 @@ export class Game {
         this.isGameOver = false;
     }
 
+    setUpFleet(player, placements) {
+        Game.fleet.forEach((shipType, index) => {
+            const placement = placements[index];
+            // placement = array containing 5 objects { y:_, x:_, orientation:_ }
+
+            player.gameboard.placeShip(
+                shipType.name,
+                shipType.length,
+                placement.y,
+                placement.x,
+                placement.orientation,
+            );
+        });
+    }
 
     runTurn(yAxis, xAxis) {
         if (this.isGameOver) {
