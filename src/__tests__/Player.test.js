@@ -22,38 +22,6 @@ describe("Player", () => {
     });
 });
 
-describe("Player ship placement", () => {
-    it("places a ship on player's gameboard vertically", () => {
-        const player = new HumanPlayer("Everett");
-
-        const ship = player.placeShip(3, 0, 0);
-
-        expect(player.gameboard.ships[0]).toBe(ship);
-
-        expect(player.gameboard.board[0][0].ship).toBe(ship);
-        expect(player.gameboard.board[1][0].ship).toBe(ship);
-        expect(player.gameboard.board[2][0].ship).toBe(ship);
-    });
-
-    it("places a ship horizontally on player's gameboard", () => {
-        const player = new HumanPlayer("Everett");
-        // const ship = player.buildShip(3);
-        const ship = player.placeShip(3, 0, 0, "horizontal");
-
-        expect(player.gameboard.board[0][0].ship).toBe(ship);
-        expect(player.gameboard.board[0][1].ship).toBe(ship);
-        expect(player.gameboard.board[0][2].ship).toBe(ship);
-    });
-
-    it("throws an error when placing a ship outside the player's gameboard", () => {
-        const player = new HumanPlayer("Everett");
-
-        expect(() => {
-            player.placeShip(3, 8, 0, "vertical");
-        }).toThrow("Ship cannot be placed outside board");
-    });
-});
-
 describe("Player fire", () => {
     let humanPlayer;
     let computerPlayer;
@@ -63,7 +31,7 @@ describe("Player fire", () => {
         humanPlayer = new HumanPlayer("Everett");
         computerPlayer = new ComputerPlayer("Computer");
 
-        computerShip = computerPlayer.placeShip(1, 0, 0);
+        computerShip = computerPlayer.gameboard.placeShip(1, 0, 0);
     });
 
     it("fires at the enemy gameboard", () => {

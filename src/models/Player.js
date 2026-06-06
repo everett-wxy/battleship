@@ -1,16 +1,9 @@
 import { Gameboard } from "./Gameboard.js";
-import { Ship } from "./Ship.js";
 
 export class Player {
     constructor(name) {
         this.name = name;
         this.gameboard = new Gameboard();
-    }
-
-    placeShip(length, yAxis, xAxis, orientation = "vertical") {
-        const ship = new Ship(length);
-        this.gameboard.placeShip(ship, yAxis, xAxis, orientation);
-        return ship;
     }
 
     fire(enemy, yAxis, xAxis) {

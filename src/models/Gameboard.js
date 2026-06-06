@@ -1,3 +1,5 @@
+import { Ship } from "./Ship.js";
+
 export class Gameboard {
     constructor(size = 10) {
         this.size = size;
@@ -10,7 +12,9 @@ export class Gameboard {
         });
     }
 
-    placeShip(ship, yAxis, xAxis, orientation = "vertical") {
+    placeShip(length, yAxis, xAxis, orientation = "vertical") {
+        const ship = new Ship(length);
+
         if (!["vertical", "horizontal"].includes(orientation)) {
             throw new Error("Invalid orientation");
         }
@@ -50,6 +54,7 @@ export class Gameboard {
         });
 
         this.ships.push(ship);
+        return ship
     }
 
     isValidCoordindates(y, x) {
