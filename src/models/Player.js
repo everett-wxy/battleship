@@ -34,7 +34,7 @@ export class ComputerPlayer extends Player {
     }
 
     fire(enemy) {
-        const target = this.getTarget();
+        const target = this.struck.find((target) => !target.isSunk);
 
         const coord = target
             ? this.smartTarget(enemy, target)
@@ -45,10 +45,6 @@ export class ComputerPlayer extends Player {
         this.updateTargets(atkResult);
 
         return atkResult;
-    }
-
-    getTarget() {
-        return this.struck.find((target) => !target.isSunk);
     }
 
     randomTarget(enemy) {
@@ -106,48 +102,44 @@ export class ComputerPlayer extends Player {
     }
 
     verticalTargets(coord, shipLen) {
-        const x = coord[0].x;
-        const yValues = coord.map((coord) => coord.y);
-
-        const minY = Math.min(...yValues);
-        const maxY = Math.max(...yValues);
-        const currentSpan = maxY - minY + 1;
-
-        const targets = [];
-
-        // Fill gaps between successful hits
-        for (let y = minY + 1; y < maxY; y++) {
-            targets.push({ y, x });
-        }
-
-        // Extend outward if the known span is shorter than the ship length
-        if (currentSpan < shipLen) {
-            targets.push({ y: minY - 1, x });
-            targets.push({ y: maxY + 1, x });
-        }
-
-        return targets;
+        return this.lineTargetsByAxis(coord, shipLen, "y");
     }
 
     horizontalTargets(coord, shipLen) {
-        const y = coord[0].y;
-        const xValues = coord.map((coord) => coord.x);
+        return this.lineTargetsByAxis(coord, shipLen, "x");
+    }
 
-        const minX = Math.min(...xValues);
-        const maxX = Math.max(...xValues);
-        const currentSpan = maxX - minX + 1;
+    lineTargetsByAxis(coord, shipLen, changingAxis) {
+        const fixedAxis = changingAxis === "y" ? "x" : "y";
+
+        const fixedValue = coord[0][fixedAxis];
+        const values = coord.map((c) => c[changingAxis]);
+
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+        const currentSpan = max - min + 1;
 
         const targets = [];
 
         // Fill gaps between successful hits
-        for (let x = minX + 1; x < maxX; x++) {
-            targets.push({ y, x });
+        for (let value = min + 1; value < max; value++) {
+            targets.push({
+                [changingAxis]: value,
+                [fixedAxis]: fixedValue,
+            });
         }
 
-        // Extend outward if the known span is shorter than the ship length
+        // Extend outward if known span is shorter than ship length
         if (currentSpan < shipLen) {
-            targets.push({ y, x: minX - 1 });
-            targets.push({ y, x: maxX + 1 });
+            targets.push({
+                [changingAxis]: min - 1,
+                [fixedAxis]: fixedValue,
+            });
+
+            targets.push({
+                [changingAxis]: max + 1,
+                [fixedAxis]: fixedValue,
+            });
         }
 
         return targets;
