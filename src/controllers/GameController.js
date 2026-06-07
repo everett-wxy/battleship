@@ -48,7 +48,7 @@ export class Game {
             const maxAttempts = 100;
             while (!placed && attempts < maxAttempts) {
                 attempts++;
-                const placement = this.computerPlayer.generateRandomPlacement();
+                const placement = this.computerPlayer.randomPlacement();
 
                 try {
                     this.placeFleetShip(
@@ -79,13 +79,15 @@ export class Game {
             throw new Error("Game is already over");
         }
         // computerPlayer.fire will ignore yAxis, xAxis argument
-        this.currentPlayer.fire(this.opponent, yAxis, xAxis); 
+        const atkResult = this.currentPlayer.fire(this.opponent, yAxis, xAxis);
 
         this.updateWinner();
 
         if (!this.isGameOver) {
             this.switchPlayer();
         }
+
+        return atkResult;
     }
 
     updateWinner() {

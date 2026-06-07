@@ -60,7 +60,7 @@ export class Gameboard {
         return ship;
     }
 
-    isValidCoordindates(y, x) {
+    isValidCoordinates(y, x) {
         return (
             Number.isInteger(y) &&
             Number.isInteger(x) &&
@@ -72,7 +72,7 @@ export class Gameboard {
     }
 
     receiveAttack(y, x) {
-        if (!this.isValidCoordindates(y, x)) {
+        if (!this.isValidCoordinates(y, x)) {
             throw new Error("Invalid attack coordinates");
         }
 
@@ -86,7 +86,19 @@ export class Gameboard {
 
         if (cell.ship !== null) {
             cell.ship.hit();
+            return {
+                isHit: true,
+                ship: cell.ship,
+                isSunk: cell.ship.isSunk(),
+                coord: { y, x },
+            };
         }
+        return {
+            isHit: false,
+            ship: null,
+            isSunk: false,
+            coord: { y, x },
+        };
     }
 
     isAllSunk() {

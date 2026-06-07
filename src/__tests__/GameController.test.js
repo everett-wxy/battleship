@@ -153,9 +153,8 @@ describe("Game turn", () => {
         game.runTurn();
 
         expect(game.humanPlayer.gameboard.board[0][0].isHit).toBe(true);
-
-        // expect(game.winner).toBe(game.computerPlayer);
-        // expect(game.isGameOver).toBe(true);
+        expect(game.winner).toBe(game.computerPlayer);
+        expect(game.isGameOver).toBe(true);
     });
 
     it("does not switch player after a winning shot", () => {
@@ -174,27 +173,5 @@ describe("Game turn", () => {
         expect(() => {
             game.runTurn(1, 1);
         }).toThrow("Game is already over");
-    });
-});
-
-describe("Computer fire logic", () => {
-    let game;
-    beforeEach(() => {
-        game = new Game("Everett", "Computer");
-    });
-    it("ends the game and sets computer player as winner when human ship is sunk", () => {
-        game.humanPlayer.gameboard.placeShip(undefined, 1, 0, 0, "vertical");
-        game.switchPlayer();
-
-        jest.spyOn(
-            game.computerPlayer,
-            "generateRandomFireCoordinates",
-        ).mockReturnValue({ y: 0, x: 0 });
-
-        game.runTurn();
-
-        expect(game.humanPlayer.gameboard.board[0][0].isHit).toBe(true);
-        expect(game.winner).toBe(game.computerPlayer);
-        expect(game.isGameOver).toBe(true);
     });
 });
