@@ -15,6 +15,7 @@ export class Gameboard {
     placeShip(name, length, yAxis, xAxis, orientation = "vertical") {
         const ship = new Ship(name, length);
 
+        // validate orientation
         if (!["vertical", "horizontal"].includes(orientation)) {
             throw new Error("Invalid orientation");
         }
@@ -30,6 +31,7 @@ export class Gameboard {
             return [yAxis + yDirection * i, xAxis + xDirection * i];
         });
 
+        // validate coordinates
         const isOutOfBounds = coordinates.some(([y, x]) => {
             return y < 0 || y >= this.size || x < 0 || x >= this.size;
         });
@@ -38,6 +40,7 @@ export class Gameboard {
             throw new Error("Ship cannot be placed outside board");
         }
 
+        // validate cell is empty
         const hasOccupiedCell = coordinates.some(([y, x]) => {
             return this.board[y][x].ship !== null;
         });

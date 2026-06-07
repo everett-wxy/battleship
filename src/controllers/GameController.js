@@ -16,29 +16,71 @@ export class Game {
         this.opponent = this.computerPlayer;
         this.winner = null;
         this.isGameOver = false;
+        this.humanPlayerShipIdx = 0;
     }
 
-    setUpFleet(player, placements) {
-        Game.fleet.forEach((shipType, index) => {
-            const placement = placements[index];
-            // placement = array containing 5 objects { y:_, x:_, orientation:_ }
-
-            player.gameboard.placeShip(
-                shipType.name,
-                shipType.length,
-                placement.y,
-                placement.x,
-                placement.orientation,
-            );
+    // function to set up human player fleet one ship at a time
+    placeNextHumanPlayerShip(y, x, orientation) {
+        const shipType = Game.fleet[this.humanPlayerShipIdx];
+        if (!shipType) {
+            throw new Error("No more ship to place");
+        }
+        const placedShip = this.placeFleetShip(this.humanPlayer, shipType, {
+            y,
+            x,
+            orientation,
         });
+
+        this.humanPlayerShipIdx++;
+
+        return placedShip;
+    }
+
+    isHumanFleetPlaced() {
+        return this.humanPlayerShipIdx === Game.fleet.length;
+    }
+
+    // function to set up computer player feet
+    placeComputerFleet() {
+        Game.fleet.forEach((shipType) => {
+            let placed = false;
+            let attempts = 0;
+            const maxAttempts = 100;
+            while (!placed && attempts < maxAttempts) {
+                attempts++;
+                const placement = this.computerPlayer.generateRandomPlacement();
+
+                try {
+                    this.placeFleetShip(
+                        this.computerPlayer,
+                        shipType,
+                        placement,
+                    );
+                    placed = true;
+                } catch {
+                    // Invalid placement, try again
+                }
+            }
+        });
+    }
+
+    placeFleetShip(player, shipType, placement) {
+        return player.gameboard.placeShip(
+            shipType.name,
+            shipType.length,
+            placement.y,
+            placement.x,
+            placement.orientation,
+        );
     }
 
     runTurn(yAxis, xAxis) {
         if (this.isGameOver) {
             throw new Error("Game is already over");
         }
+        // computerPlayer.fire will ignore yAxis, xAxis argument
+        this.currentPlayer.fire(this.opponent, yAxis, xAxis); 
 
-        this.currentPlayer.fire(this.opponent, yAxis, xAxis);
         this.updateWinner();
 
         if (!this.isGameOver) {

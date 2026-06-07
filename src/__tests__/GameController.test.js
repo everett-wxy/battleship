@@ -30,34 +30,78 @@ describe("Game start state", () => {
     });
 });
 
-describe("Ship placement phase", () => {
+describe("Human player ship placement phase", () => {
     let game;
 
     beforeEach(() => {
         game = new Game("Everett", "Computer");
     });
 
-    it("human player place 5 ships at the start of the game", () => {
+    it("places first human ship", () => {
+        const placedShip = game.placeNextHumanPlayerShip(0, 0, "vertical");
+
+        expect(placedShip.name).toBe("Carrier");
+
+        for (let i = 0; i < placedShip.length; i++) {
+            expect(game.humanPlayer.gameboard.board[i][0].ship).toBe(
+                placedShip,
+            );
+        }
+    });
+
+    it("move to the next human ship after a successful placement", () => {
+        game.placeNextHumanPlayerShip(0, 0, "vertical");
+        expect(game.humanPlayerShipIdx).toBe(1);
+    });
+
+    it("does not increment human ship index after a failed placement", () => {
+        expect(() => {
+            game.placeNextHumanPlayerShip(9, 0, "vertical");
+        }).toThrow("Ship cannot be placed outside board");
+
+        expect(game.humanPlayerShipIdx).toBe(0);
+    });
+
+    it("throws an error when placing another ship after the human fleet is complete", () => {
+        Game.fleet.forEach((_, i) => {
+            game.placeNextHumanPlayerShip(i, 0, "horizontal");
+        });
+
+        expect(() => {
+            game.placeNextHumanPlayerShip(5, 0, "horizontal");
+        }).toThrow("No more ship to place");
+    });
+
+    it("returns true when the entire human fleet is placed", () => {
+        Game.fleet.forEach((_, i) => {
+            game.placeNextHumanPlayerShip(i, 0, "horizontal");
+        });
+
+        expect(game.isHumanFleetPlaced()).toBe(true);
+    });
+});
+
+describe("Computer player fleet placement", () => {
+    let game;
+
+    beforeEach(() => {
+        game = new Game("Everett", "Computer");
+    });
+
+    it("set up entire fleet of computer", () => {
         const placeShipSpy = jest.spyOn(
-            game.humanPlayer.gameboard,
+            game.computerPlayer.gameboard,
             "placeShip",
         );
 
-        game.setUpFleet(game.humanPlayer, [
-            { y: 0, x: 0, orientation: "horizontal" },
-            { y: 1, x: 0, orientation: "horizontal" },
-            { y: 2, x: 0, orientation: "horizontal" },
-            { y: 3, x: 0, orientation: "horizontal" },
-            { y: 4, x: 0, orientation: "horizontal" },
-        ]);
-        expect(placeShipSpy).toHaveBeenCalledTimes(5);
-        expect(game.humanPlayer.gameboard.ships.length).toBe(5);
-        
-        // count that gameboard.board should contains a total of 17 filled cells
-        const occupiedCells = game.humanPlayer.gameboard.board
+        game.placeComputerFleet();
+        expect(placeShipSpy.mock.calls.length).toBeGreaterThanOrEqual(5);
+        expect(game.computerPlayer.gameboard.ships.length).toBe(5);
+
+        const occupiedCells = game.computerPlayer.gameboard.board
             .flat()
             .filter((cell) => cell.ship !== null);
-        expect(occupiedCells.length).toBe(17)
+        expect(occupiedCells.length).toBe(17);
     });
 });
 
@@ -101,14 +145,23 @@ describe("Game turn", () => {
     it("ends the game and sets computer player as winner when human ship is sunk", () => {
         game.humanPlayer.gameboard.placeShip(undefined, 1, 0, 0, "vertical");
         game.switchPlayer();
-        game.runTurn(0, 0);
-        expect(game.winner).toBe(game.computerPlayer);
-        expect(game.isGameOver).toBe(true);
+        jest.spyOn(
+            game.computerPlayer,
+            "generateRandomFireCoordinates",
+        ).mockReturnValue({ y: 0, x: 0 });
+
+        game.runTurn();
+
+        expect(game.humanPlayer.gameboard.board[0][0].isHit).toBe(true);
+
+        // expect(game.winner).toBe(game.computerPlayer);
+        // expect(game.isGameOver).toBe(true);
     });
 
     it("does not switch player after a winning shot", () => {
         const switchSpy = jest.spyOn(game, "switchPlayer");
         game.computerPlayer.gameboard.placeShip(undefined, 1, 0, 0, "vertical");
+
         game.runTurn(0, 0);
         expect(switchSpy).not.toHaveBeenCalled();
     });
@@ -121,5 +174,27 @@ describe("Game turn", () => {
         expect(() => {
             game.runTurn(1, 1);
         }).toThrow("Game is already over");
+    });
+});
+
+describe("Computer fire logic", () => {
+    let game;
+    beforeEach(() => {
+        game = new Game("Everett", "Computer");
+    });
+    it("ends the game and sets computer player as winner when human ship is sunk", () => {
+        game.humanPlayer.gameboard.placeShip(undefined, 1, 0, 0, "vertical");
+        game.switchPlayer();
+
+        jest.spyOn(
+            game.computerPlayer,
+            "generateRandomFireCoordinates",
+        ).mockReturnValue({ y: 0, x: 0 });
+
+        game.runTurn();
+
+        expect(game.humanPlayer.gameboard.board[0][0].isHit).toBe(true);
+        expect(game.winner).toBe(game.computerPlayer);
+        expect(game.isGameOver).toBe(true);
     });
 });
