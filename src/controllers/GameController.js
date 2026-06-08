@@ -1,4 +1,4 @@
-import { ComputerPlayer, HumanPlayer } from "../models/Player.js";
+import { ComputerPlayer, HumanPlayer, Player } from "../models/Player.js";
 
 export class Game {
     static fleet = [
@@ -102,5 +102,15 @@ export class Game {
             this.opponent,
             this.currentPlayer,
         ];
+    }
+
+    reset(humanPlayerName, computerPlayerName) {
+        this.humanPlayer = new Player(humanPlayerName);
+        this.computerPlayer = new ComputerPlayer(computerPlayerName);
+        this.currentPlayer = this.humanPlayer;
+        this.opponent = this.computerPlayer;
+        this.winner = null;
+        this.isGameOver = false;
+        this.humanPlayerShipIdx = 0;
     }
 }

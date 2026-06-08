@@ -1,10 +1,8 @@
-// store state?
-
 import { Game } from "../controllers/GameController.js";
 import { ComputerPlayer, HumanPlayer } from "../models/Player.js";
 
 afterEach(() => {
-  jest.restoreAllMocks();
+    jest.restoreAllMocks();
 });
 
 // start game
@@ -149,10 +147,10 @@ describe("Game turn", () => {
     it("ends the game and sets computer player as winner when human ship is sunk", () => {
         game.humanPlayer.gameboard.placeShip(undefined, 1, 0, 0, "vertical");
         game.switchPlayer();
-        jest.spyOn(
-            game.computerPlayer,
-            "randomTarget",
-        ).mockReturnValue({ y: 0, x: 0 });
+        jest.spyOn(game.computerPlayer, "randomTarget").mockReturnValue({
+            y: 0,
+            x: 0,
+        });
 
         game.runTurn();
 
@@ -177,5 +175,35 @@ describe("Game turn", () => {
         expect(() => {
             game.runTurn(1, 1);
         }).toThrow("Game is already over");
+    });
+});
+
+describe("Reset Game", () => {
+    let game;
+
+    beforeEach(() => {
+        game = new Game("Everett", "Computer");
+        game.humanPlayer.gameboard.placeShip(undefined, 1, 0, 0, "vertical");
+        game.computerPlayer.gameboard.placeShip(undefined, 1, 0, 0, "vertical");
+        game.humanPlayer.fire(game.opponent, 0, 0);
+    });
+
+    it("reverts game state to starting state after reset is called", () => {
+        game.reset("Tom", "AI");
+
+        expect(game.humanPlayer.name).toBe("Tom");
+        expect(game.computerPlayer.name).toBe("AI");
+
+        expect(game.currentPlayer).toBe(game.humanPlayer);
+        expect(game.opponent).toBe(game.computerPlayer);
+        expect(game.winner).toBe(null);
+        expect(game.isGameOver).toBe(false);
+        expect(game.humanPlayerShipIdx).toBe(0);
+
+        expect(game.humanPlayer.gameboard.board[0][0].isHit).toBe(false);
+        expect(game.computerPlayer.gameboard.board[0][0].isHit).toBe(false);
+
+        expect(game.humanPlayer.gameboard.board[0][0].ship).toBe(null);
+        expect(game.computerPlayer.gameboard.board[0][0].ship).toBe(null);
     });
 });
