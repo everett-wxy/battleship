@@ -3,6 +3,10 @@
 import { Game } from "../controllers/GameController.js";
 import { ComputerPlayer, HumanPlayer } from "../models/Player.js";
 
+afterEach(() => {
+  jest.restoreAllMocks();
+});
+
 // start game
 describe("Game start state", () => {
     let game;
@@ -147,7 +151,7 @@ describe("Game turn", () => {
         game.switchPlayer();
         jest.spyOn(
             game.computerPlayer,
-            "generateRandomFireCoordinates",
+            "randomTarget",
         ).mockReturnValue({ y: 0, x: 0 });
 
         game.runTurn();

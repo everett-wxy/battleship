@@ -66,7 +66,7 @@ export class ComputerPlayer extends Player {
                 ? this.adjTargets(target.coord[0])
                 : this.lineTargets(target);
 
-        const validCoord = this.validTargets(enemy, candidateCoord);
+        const validCoord = this.validateTargets(enemy, candidateCoord);
 
         if (validCoord.length === 0) {
             return this.randomTarget(enemy);
@@ -163,7 +163,7 @@ export class ComputerPlayer extends Player {
         );
     }
 
-    validTargets(enemy, coord) {
+    validateTargets(enemy, coord) {
         return coord.filter(({ y, x }) => {
             return (
                 enemy.gameboard.isValidCoordinates(y, x) &&

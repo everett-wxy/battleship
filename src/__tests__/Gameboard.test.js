@@ -1,5 +1,9 @@
 import { Gameboard } from "../models/Gameboard.js";
 
+afterEach(() => {
+  jest.restoreAllMocks();
+});
+
 describe("Gameboard", () => {
     let gameboard;
     beforeEach(() => {
