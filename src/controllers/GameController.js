@@ -9,9 +9,9 @@ export class Game {
         { name: "Patrol boat", length: 2 },
     ];
 
-    constructor(humanPlayerName, computerPlayerName) {
+    constructor(humanPlayerName) {
         this.humanPlayer = new HumanPlayer(humanPlayerName);
-        this.computerPlayer = new ComputerPlayer(computerPlayerName);
+        this.computerPlayer = new ComputerPlayer("Captain Vicious");
         this.currentPlayer = this.humanPlayer;
         this.opponent = this.computerPlayer;
         this.winner = null;
