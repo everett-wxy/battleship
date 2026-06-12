@@ -1,7 +1,7 @@
 import bgMusic from "../assets/music_for_videos-pirates-163389.mp3";
 
 const normalVolume = 0.3;
-const fadeDuration = 7000; // 2 seconds
+const fadeDuration = 7000;
 
 const bgAudioA = new Audio(bgMusic);
 const bgAudioB = new Audio(bgMusic);
@@ -15,27 +15,64 @@ bgAudioB.loop = false;
 let currentAudio = bgAudioA;
 let nextAudio = bgAudioB;
 let isCrossfading = false;
+let isMuted = false;
+let hasStarted = false;
+let crossfadeIntervalId = null;
 
-function fadeAudio(audio, targetVolume, duration = 1000) {
-    const startVolume = audio.volume;
-    const volumeDifference = targetVolume - startVolume;
-    const steps = 30;
-    let currentStep = 0;
+export function enableBackgroundMusic() {
+    document.addEventListener(
+        "click",
+        async () => {
+            try {
+                await currentAudio.play();
+                hasStarted = true;
+                setupCrossfadeLoop();
+            } catch (err) {
+                console.log("Audio could not play: ", err);
+            }
+        },
+        { once: true },
+    );
+}
 
-    const interval = setInterval(() => {
-        currentStep++;
+export async function toggleBackgroundMusic() {
+    isMuted = !isMuted;
 
-        audio.volume =
-            startVolume + volumeDifference * (currentStep / steps);
-
-        if (currentStep >= steps) {
-            audio.volume = targetVolume;
-            clearInterval(interval);
+    if (isMuted) {
+        bgAudioA.pause();
+        bgAudioB.pause();
+    } else {
+        if (!hasStarted) {
+            await currentAudio.play();
+            hasStarted = true;
+            setupCrossfadeLoop();
+        } else {
+            await currentAudio.play();
         }
-    }, duration / steps);
+    }
+
+    return isMuted;
+}
+
+function setupCrossfadeLoop() {
+    if (crossfadeIntervalId) return;
+
+    crossfadeIntervalId = setInterval(() => {
+        if (isMuted) return; // stops interval user muted audio
+        if (!currentAudio.duration || isCrossfading) return; // do nothing if audio is not ready or already crossfading
+
+        const timeLeft = currentAudio.duration - currentAudio.currentTime; // compute remaining audio duration
+
+        if (timeLeft <= fadeDuration / 1000) {
+            // start cross fade is time remaining is less than fadeDuration
+            startCrossfade();
+        }
+    }, 500); // run every .5 second
 }
 
 function startCrossfade() {
+    if (isMuted) return;
+
     isCrossfading = true;
 
     nextAudio.currentTime = 0;
@@ -58,29 +95,20 @@ function startCrossfade() {
     }, fadeDuration);
 }
 
-function setupCrossfadeLoop() {
-    setInterval(() => {
-        if (!currentAudio.duration || isCrossfading) return;
+function fadeAudio(audio, targetVolume, duration = 1000) {
+    const startVolume = audio.volume;
+    const volumeDifference = targetVolume - startVolume;
+    const steps = 30;
+    let currentStep = 0;
 
-        const timeLeft = currentAudio.duration - currentAudio.currentTime;
+    const interval = setInterval(() => {
+        currentStep++;
 
-        if (timeLeft <= fadeDuration / 1000) {
-            startCrossfade();
+        audio.volume = startVolume + volumeDifference * (currentStep / steps);
+
+        if (currentStep >= steps) {
+            audio.volume = targetVolume;
+            clearInterval(interval);
         }
-    }, 500);
-}
-
-export function enableBackgroundMusic() {
-    document.addEventListener(
-        "click",
-        async () => {
-            try {
-                await currentAudio.play();
-                setupCrossfadeLoop();
-            } catch (err) {
-                console.log("Audio could not play: ", err);
-            }
-        },
-        { once: true },
-    );
+    }, duration / steps);
 }
