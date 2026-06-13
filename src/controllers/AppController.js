@@ -27,12 +27,13 @@ function showRules() {
 }
 
 function showFleetSetup() {
-    renderPlaceFleet(game);
+    renderPlaceFleet(game, startBattle);
 }
 
-// function startBattle() {
-//     renderBattleScreen(game, showResultPage);
-// }
+function startBattle() {
+    console.log("Start Battle!")
+}
+
 
 // function showResultPage(result) {
 //     renderResultPage(game, result);

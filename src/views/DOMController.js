@@ -10,6 +10,7 @@ import {
     createAxisLabels,
     createGridMap,
     createFleetContainer,
+    createFleetPlacementBtns,
 } from "./fleetSetup.js";
 import { createRulesDialog, createRulesBtn } from "./rulesDialog.js";
 
@@ -52,7 +53,7 @@ export function renderRulesDialog(game, showFleetSetup) {
     renderLucideIcons();
 }
 
-export function renderPlaceFleet(game) {
+export function renderPlaceFleet(game, startBattle) {
     app.replaceChildren();
 
     // fleetPlacement main container
@@ -90,7 +91,14 @@ export function renderPlaceFleet(game) {
 
     gridFleetContainer.append(gridMapContainer, fleetContainer);
 
-    fleetSetupMainContainer.append(messageHeader, gridFleetContainer);
+    const buttonPanel = document.createElement("div");
+    buttonPanel.classList.add("button-panel")
+
+    const { changeOrientationBtn, resetBtn, confirmBtn } = createFleetPlacementBtns(game, shipOverlay, startBattle);
+
+    buttonPanel.append(changeOrientationBtn, resetBtn, confirmBtn)
+    
+    fleetSetupMainContainer.append(messageHeader, gridFleetContainer, buttonPanel);
 
     app.append(fleetSetupMainContainer);
 }

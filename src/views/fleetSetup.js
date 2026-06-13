@@ -5,6 +5,7 @@ import battleshipIcon from "../assets/battleship.svg";
 import destroyerIcon from "../assets/destroyer.svg";
 import submarineIcon from "../assets/submarine.svg";
 import patrolBoatIcon from "../assets/patrol-boat.svg";
+import { TruckElectric } from "lucide";
 
 let draggedShip = null;
 let shipOrientation = "horizontal";
@@ -172,6 +173,49 @@ export function createFleetContainer(game, gridMap, shipOverlay) {
     return fleetSetUp;
 }
 
+export function createFleetPlacementBtns(game, shipOverlay, startBattle) {
+    // set vertical btn
+    const changeOrientationBtn = document.createElement("button");
+    changeOrientationBtn.type = "button";
+    changeOrientationBtn.classList.add("change-orientation-btn");
+    changeOrientationBtn.innerText = "Change Orientation";
+
+    changeOrientationBtn.addEventListener("click", () => {
+        shipOrientation =
+            shipOrientation === "horizontal" ? "vertical" : "horizontal";
+    });
+
+    const resetBtn = document.createElement("button");
+    resetBtn.type = "button";
+    resetBtn.classList.add("reset-btn");
+    resetBtn.innerText = "Reset";
+
+    resetBtn.addEventListener("click", () => {
+        shipOverlay.replaceChildren();
+
+        const fleetContainer = document.querySelector(".fleet-container");
+        const shipIcons = fleetContainer.querySelectorAll(".ship-icon");
+        shipIcons.forEach((shipIcon) => {
+            shipIcon.draggable = true;
+            shipIcon.classList.remove("placed-ship");
+        });
+
+        // reset gameboard
+        game.humanPlayer.gameboard.reset();
+    });
+
+    const confirmBtn = document.createElement("button");
+    confirmBtn.type = "button";
+    confirmBtn.classList.add("confrim-btn");
+    confirmBtn.innerText = "Confirm Placement"; 
+
+    confirmBtn.addEventListener("click", ()=>{
+        startBattle();
+    })
+
+    return { changeOrientationBtn, resetBtn, confirmBtn };
+}
+
 function getCellsForShip(gridMap, startRow, startCol, shipLength, orientation) {
     const cells = [];
 
@@ -246,7 +290,7 @@ function renderPlacedShip(
     gridShip.alt = shipName;
     gridShip.draggable = false;
 
-    // gridShipContainer.append(gridShip);
+    gridShipContainer.append(gridShip);
 
     shipOverlay.append(gridShipContainer);
 }

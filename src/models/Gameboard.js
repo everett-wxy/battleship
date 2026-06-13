@@ -4,8 +4,8 @@ export class Gameboard {
     constructor(size = 10) {
         this.size = size;
         this.ships = [];
-        this.board = Array.from({ length: size }, () => {
-            return Array.from({ length: size }, () => ({
+        this.board = Array.from({ length: this.size }, () => {
+            return Array.from({ length: this.size }, () => ({
                 ship: null,
                 isHit: false,
             }));
@@ -105,5 +105,15 @@ export class Gameboard {
         return (
             this.ships.length > 0 && this.ships.every((ship) => ship.isSunk())
         );
+    }
+
+    reset() {
+        this.ships = [];
+        this.board = Array.from({ length: this.size }, () => {
+            return Array.from({ length: this.size }, () => ({
+                ship: null,
+                isHit: false,
+            }));
+        });
     }
 }
