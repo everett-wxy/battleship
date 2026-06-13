@@ -5,7 +5,12 @@ import {
 } from "./appShell.js";
 
 import { createTitle, createPregameCard } from "./startScreen.js";
-import { createGameboard, createFleetSetUp } from "./fleetSetup.js";
+import {
+    createMessageHeader,
+    createAxisLabels,
+    createGridMap,
+    createFleetContainer,
+} from "./fleetSetup.js";
 import { createRulesDialog, createRulesBtn } from "./rulesDialog.js";
 
 const root = document.querySelector("#root");
@@ -42,7 +47,7 @@ export function renderRulesDialog(game, showFleetSetup) {
     rulesDialog.showModal();
 
     const ruleBtn = createRulesBtn(rulesDialog);
-    ruleBtn.classList.add("modal-button")
+    ruleBtn.classList.add("modal-button");
     iconPanel.append(ruleBtn);
     renderLucideIcons();
 }
@@ -50,8 +55,42 @@ export function renderRulesDialog(game, showFleetSetup) {
 export function renderPlaceFleet(game) {
     app.replaceChildren();
 
-    const gameboard = createGameboard(game);
-    const fleetSetUp = createFleetSetUp(gameboard);
+    // fleetPlacement main container
+    const fleetSetupMainContainer = document.createElement("div");
+    fleetSetupMainContainer.id = "fleet-setup-main-container";
 
-    app.append(gameboard, fleetSetUp);
+    // message container
+    const messageHeader = createMessageHeader();
+
+    // gridFleetContainer
+    const gridFleetContainer = document.createElement("div");
+    gridFleetContainer.id = "grid-fleet-container";
+
+    // gridMapContainer
+    const gridMapContainer = document.createElement("div");
+    gridMapContainer.id = "grid-map-container";
+
+    const { numAxis, letterAxis } = createAxisLabels();
+
+        // board wrapper 
+    const boardWrapper = document.createElement("div");
+    boardWrapper.classList.add("board-wrapper");
+
+    const gridMap = createGridMap(game);
+
+    const shipOverlay = document.createElement("div");
+    shipOverlay.classList.add("ship-overlay");
+
+    boardWrapper.append(gridMap, shipOverlay);
+
+    gridMapContainer.append(numAxis, letterAxis, boardWrapper);
+
+    // fleetContainer
+    const fleetContainer = createFleetContainer(game, gridMap, shipOverlay);
+
+    gridFleetContainer.append(gridMapContainer, fleetContainer);
+
+    fleetSetupMainContainer.append(messageHeader, gridFleetContainer);
+
+    app.append(fleetSetupMainContainer);
 }

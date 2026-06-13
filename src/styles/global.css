@@ -157,16 +157,4 @@ button.modal-button:hover {
     box-shadow: 0 6px 12px #0004;
 }
 
-.gameboard {
-    display: grid;
-    height: calc(var(--cell-size) * var(--board-size)); /* 400 px */
-    width: calc(var(--cell-size) * var(--board-size)); /* 400 px */
-    grid-template-columns: repeat(var(--board-size), 1fr);
-    grid-template-rows: repeat(var(--board-size), 1fr);
-}
 
-.grid-cell {
-    /* height: 5px;
-    width: 5px; */
-    border: black 1px solid;
-}

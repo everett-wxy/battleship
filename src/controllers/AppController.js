@@ -12,8 +12,9 @@ let game;
 export function initialise() {
     createAppShell();
     // renderStartScreen(handleGameStart);
-    game = new Game("Everett")
-    renderRulesDialog(game, showFleetSetup)
+    game = new Game("Everett");
+    // renderRulesDialog(game, showFleetSetup)
+    showFleetSetup();
 }
 
 function handleGameStart(playerName) {

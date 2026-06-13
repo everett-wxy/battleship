@@ -8,10 +8,54 @@ import patrolBoatIcon from "../assets/patrol-boat.svg";
 
 let draggedShip = null;
 let shipOrientation = "horizontal";
+let targetRow;
+let targetCol;
 
-export function createGameboard(game) {
-    const gameboard = document.createElement("div");
-    gameboard.classList.add("gameboard");
+const shipIcons = {
+    carrier: carrierIcon,
+    battleship: battleshipIcon,
+    destroyer: destroyerIcon,
+    submarine: submarineIcon,
+    "patrol-boat": patrolBoatIcon,
+};
+
+export function createMessageHeader() {
+    const messageContainer = document.createElement("div");
+    messageContainer.id = "message-container";
+
+    const message = document.createElement("p");
+    message.innerText =
+        "Plan your formation by dragging and dropping ships on the map.";
+
+    messageContainer.append(message);
+    return messageContainer;
+}
+
+export function createAxisLabels() {
+    const numAxis = document.createElement("div");
+    numAxis.id = "number-axis";
+
+    const letterAxis = document.createElement("div");
+    letterAxis.id = "letter-axis";
+
+    for (let i = 0; i < 10; i++) {
+        const number = document.createElement("div");
+        number.classList.add("number");
+        number.innerText = `${i + 1}`;
+        numAxis.append(number);
+
+        const letter = document.createElement("div");
+        letter.classList.add("letter");
+        letter.innerText = String.fromCharCode(65 + i);
+        letterAxis.append(letter);
+    }
+
+    return { numAxis, letterAxis };
+}
+
+export function createGridMap(game) {
+    const gridMap = document.createElement("div");
+    gridMap.classList.add("grid-map");
 
     game.humanPlayer.gameboard.board.forEach((row, rowIndex) => {
         row.forEach((cell, colIndex) => {
@@ -21,11 +65,11 @@ export function createGameboard(game) {
             cellEl.dataset.row = rowIndex;
             cellEl.dataset.col = colIndex;
 
-            gameboard.append(cellEl);
+            gridMap.append(cellEl);
         });
     });
 
-    gameboard.addEventListener("dragover", (e) => {
+    gridMap.addEventListener("dragover", (e) => {
         e.preventDefault();
 
         if (!draggedShip) return;
@@ -33,15 +77,16 @@ export function createGameboard(game) {
         const targetCell = e.target.closest(".grid-cell");
         if (!targetCell) return;
 
-        clearHighlightedCells(gameboard);
+        clearHighlightedCells(gridMap);
 
-        const row = Number(targetCell.dataset.row);
-        const col = Number(targetCell.dataset.col);
+        targetRow = Number(targetCell.dataset.row);
+        targetCol = Number(targetCell.dataset.col);
+        console.log(targetRow, targetCol);
 
         const cellsToHighlight = getCellsForShip(
-            gameboard,
-            row,
-            col,
+            gridMap,
+            targetRow,
+            targetCol,
             draggedShip.length,
             shipOrientation,
         );
@@ -56,26 +101,18 @@ export function createGameboard(game) {
         });
     });
 
-    gameboard.addEventListener("dragleave", (e) => {
-        if (!gameboard.contains(e.relatedTarget)) {
-            clearHighlightedCells(gameboard);
+    gridMap.addEventListener("dragleave", (e) => {
+        if (!gridMap.contains(e.relatedTarget)) {
+            clearHighlightedCells(gridMap);
         }
     });
 
-    return gameboard;
+    return gridMap;
 }
 
-export function createFleetSetUp(gameboard) {
+export function createFleetContainer(game, gridMap, shipOverlay) {
     const fleetSetUp = document.createElement("div");
-    fleetSetUp.classList.add("fleet-setup");
-
-    const shipIcons = {
-        carrier: carrierIcon,
-        battleship: battleshipIcon,
-        destroyer: destroyerIcon,
-        submarine: submarineIcon,
-        "patrol-boat": patrolBoatIcon,
-    };
+    fleetSetUp.classList.add("fleet-container");
 
     Game.fleet.forEach((ship) => {
         const shipName = ship.name.toLowerCase().replaceAll(" ", "-");
@@ -99,8 +136,28 @@ export function createFleetSetUp(gameboard) {
         });
 
         shipIcon.addEventListener("dragend", () => {
+            try {
+                placeDroppedShip(
+                    shipIcon,
+                    game.humanPlayer.gameboard,
+                    draggedShip,
+                    targetRow,
+                    targetCol,
+                    shipOrientation,
+                );
+
+                renderPlacedShip(
+                    shipOverlay,
+                    draggedShip,
+                    targetRow,
+                    targetCol,
+                    shipOrientation,
+                );
+            } catch (e) {
+                console.log(e.message);
+            }
             draggedShip = null;
-            clearHighlightedCells(gameboard);
+            clearHighlightedCells(gridMap);
         });
 
         const shipNameEl = document.createElement("p");
@@ -115,20 +172,14 @@ export function createFleetSetUp(gameboard) {
     return fleetSetUp;
 }
 
-function getCellsForShip(
-    gameboard,
-    startRow,
-    startCol,
-    shipLength,
-    orientation,
-) {
+function getCellsForShip(gridMap, startRow, startCol, shipLength, orientation) {
     const cells = [];
 
     for (let i = 0; i < shipLength; i++) {
         const row = orientation === "vertical" ? startRow + i : startRow;
         const col = orientation === "horizontal" ? startCol + i : startCol;
 
-        const cell = gameboard.querySelector(
+        const cell = gridMap.querySelector(
             `[data-row="${row}"][data-col="${col}"]`,
         );
 
@@ -142,10 +193,60 @@ function getCellsForShip(
     return cells;
 }
 
-function clearHighlightedCells(gameboard) {
-    gameboard
+function clearHighlightedCells(gridMap) {
+    gridMap
         .querySelectorAll(".ship-preview, .ship-preview-invalid")
         .forEach((cell) => {
             cell.classList.remove("ship-preview", "ship-preview-invalid");
         });
+}
+
+function placeDroppedShip(
+    shipIcon,
+    gameboard,
+    ship,
+    yAxis,
+    xAxis,
+    shipOrientation,
+) {
+    gameboard.placeShip(ship.name, ship.length, yAxis, xAxis, shipOrientation);
+    shipIcon.draggable = false;
+    shipIcon.classList.add("placed-ship");
+}
+
+function renderPlacedShip(
+    shipOverlay,
+    ship,
+    targetRow,
+    targetCol,
+    shipOrientation,
+) {
+    const shipName = ship.name.toLowerCase().replaceAll(" ", "-");
+
+    const gridShipContainer = document.createElement("div");
+    gridShipContainer.classList.add("grid-ship-container");
+
+    const startRow = targetRow + 1;
+    const startCol = targetCol + 1;
+    const endRow =
+        shipOrientation === "horizontal"
+            ? targetRow + 2
+            : targetRow + 1 + ship.length;
+    const endCol =
+        shipOrientation === "horizontal"
+            ? targetCol + 1 + ship.length
+            : targetCol + 2;
+
+    gridShipContainer.style.gridArea = `${startRow} / ${startCol} / ${endRow} / ${endCol}`;
+    console.log(`${startRow} / ${startCol} / ${endRow} / ${endCol}`);
+
+    const gridShip = document.createElement("img");
+    gridShip.classList.add("grid-ship");
+    gridShip.src = shipIcons[shipName];
+    gridShip.alt = shipName;
+    gridShip.draggable = false;
+
+    // gridShipContainer.append(gridShip);
+
+    shipOverlay.append(gridShipContainer);
 }
