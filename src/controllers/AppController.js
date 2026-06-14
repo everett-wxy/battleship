@@ -1,40 +1,60 @@
 import {
     createAppShell,
     renderStartScreen,
-    renderRulesDialog,
-    renderPlaceFleet,
-} from "../views/DOMController.js";
+    renderBattleScreen,
+    renderRulesDialogScreen,
+    renderPlaceFleetScreen,
+} from "../views/screenRenderer.js";
 
 import { Game } from "../controllers/GameController.js";
 
-let game;
+let currentGame;
 
 export function initialise() {
     createAppShell();
-    // renderStartScreen(handleGameStart);
-    game = new Game("Everett");
-    // renderRulesDialog(game, showFleetSetup)
-    showFleetSetup();
+    renderStartScreen(handleGameStart);
 }
 
 function handleGameStart(playerName) {
-    game = new Game(playerName);
-    showRules();
+    currentGame = new Game(playerName);
+    showRules(currentGame);
 }
 
-function showRules() {
-    renderRulesDialog(game, showFleetSetup);
+function showRules(currentGame) {
+    renderRulesDialogScreen(currentGame, () => {
+        showFleetSetup(currentGame);
+    });
 }
 
-function showFleetSetup() {
-    renderPlaceFleet(game, startBattle);
+function showFleetSetup(currentGame) {
+    renderPlaceFleetScreen(currentGame, () => {
+        startBattle(currentGame);
+    });
+    currentGame.placeComputerFleet();
 }
 
-function startBattle() {
-    console.log("Start Battle!")
+function startBattle(currentGame) {
+    renderBattleScreen(currentGame);
 }
-
 
 // function showResultPage(result) {
-//     renderResultPage(game, result);
+//     renderResultPage(currentGame, result);
 // }
+
+// currentGame = new Game("Everett");
+
+// for (let i = 0; i < Game.fleet.length; i++) {
+//     const ship = Game.fleet[i];
+//     currentGame.humanPlayer.gameboard.placeShip(
+//         ship.name,
+//         ship.length,
+//         i + 1,
+//         1,
+//         "horizontal",
+//     );
+// }
+
+// currentGame.placeComputerFleet();
+
+// startBattle();
+// renderRulesDialog(currentGame, showFleetSetup)

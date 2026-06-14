@@ -1,4 +1,16 @@
-export function createTitle() {
+export function createStartScreen(handleGameStart) {
+    const startScreen = document.createElement("main");
+    startScreen.id = "start-screen";
+    startScreen.classList.add("screen");
+
+    const gameTitle = createTitle();
+    const playerNameForm = createPlayerNameForm(handleGameStart);
+
+    startScreen.append(gameTitle, playerNameForm);
+    return startScreen;
+}
+
+function createTitle() {
     const gameTitle = document.createElement("h1");
     gameTitle.id = "game-title";
     gameTitle.classList.add("matrix-text");
@@ -8,9 +20,9 @@ export function createTitle() {
     return gameTitle;
 }
 
-export function createPregameCard(handleGameStart) {
-    const pregameCard = document.createElement("div");
-    pregameCard.classList.add("pregame-card");
+function createPlayerNameForm(handleGameStart) {
+    const playerNameForm = document.createElement("div");
+    playerNameForm.classList.add("pregame-card");
 
     const form = document.createElement("form");
 
@@ -21,18 +33,18 @@ export function createPregameCard(handleGameStart) {
 
     const startBtn = document.createElement("button");
     startBtn.type = "submit";
-    startBtn.classList.add("modal-btn")
+    startBtn.classList.add("modal-btn");
     startBtn.innerText = "Enter Combat";
 
     form.append(nameInput, startBtn);
-    pregameCard.append(form);
+    playerNameForm.append(form);
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
-        
+
         const playerName = nameInput.value.trim();
         handleGameStart(playerName);
     });
 
-    return pregameCard;
+    return playerNameForm;
 }

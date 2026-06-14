@@ -1,0 +1,58 @@
+.grid-map-container {
+    flex: 0 0 auto;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.number-axis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.letter-axis {
+    display: flex;
+    justify-content: space-around;
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.board-wrapper {
+    position: relative;
+    height: calc(var(--cell-size) * var(--board-size));
+    width: calc(var(--cell-size) * var(--board-size));
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.grid-map,
+.ship-overlay,
+.marker-overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--board-size), minmax(0, 1fr));
+    grid-template-rows: repeat(var(--board-size), minmax(0, 1fr));
+}
+
+.grid-map {
+    z-index: 1;
+}
+
+.ship-overlay {
+    z-index: 2;
+    pointer-events: none;
+}
+
+.marker-overlay {
+    z-index: 3;
+    pointer-events: none;
+}
+
+.grid-cell {
+    border: 1px solid black;
+}

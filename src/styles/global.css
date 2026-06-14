@@ -52,6 +52,14 @@ body {
     z-index: -1; /* Place it behind the text */
 }
 
+#app {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 @keyframes rain {
     0% {
         transform: translateY(-100%);
@@ -101,17 +109,9 @@ body {
     height: 2rem;
 }
 
-#app {
-    display: flex;
-    height: 100vh;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
 button.modal-btn {
-    border-radius: .2em;
-    padding-block: .3em;
+    border-radius: 0.2em;
+    padding-block: 0.3em;
     padding-inline: 2em;
     background-color: rgba(0, 0, 0, 0.3);
     color: white;

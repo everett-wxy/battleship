@@ -11,6 +11,14 @@
     transform: translateY(-15%);
 }
 
+#start-screen {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 #game-title::before {
     content: attr(data-text);
     position: absolute;

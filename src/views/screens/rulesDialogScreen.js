@@ -1,4 +1,4 @@
-export function createRulesDialog(game, showFleetSetup) {
+export function createRulesDialogScreen(currentGame, onContinue) {
     const rulesDialog = document.createElement("dialog");
     rulesDialog.id = "rules-modal";
 
@@ -31,9 +31,8 @@ export function createRulesDialog(game, showFleetSetup) {
 
     beginButton.addEventListener("click", () => {
         console.log("begin button clicked");
-
         rulesDialog.close();
-        showFleetSetup();
+        onContinue();
     });
 
     rulesDialog.append(header, instructionsList, beginButton);
@@ -44,6 +43,7 @@ export function createRulesDialog(game, showFleetSetup) {
 export function createRulesBtn(rulesDialog) {
     const ruleBtn = document.createElement("button");
     ruleBtn.id = "rule-btn";
+    ruleBtn.classList.add("modal-button");
     ruleBtn.type = "button";
     ruleBtn.innerHTML = `<i data-lucide="file-text"></i>`;
 
