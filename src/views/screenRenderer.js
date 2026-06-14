@@ -2,6 +2,9 @@ import { createBgEffects, renderLucideIcons, createIconPanel } from "./appShell.
 import { createStartScreen } from "./screens/startScreen.js";
 import { createFleetPlacementScreen } from "./screens/fleetPlacementScreen.js";
 import { createRulesDialogScreen, createRulesBtn } from "./screens/rulesDialogScreen.js";
+import { createBattleScreen } from "./screens/battleScreen.js";
+import { renderAttackMarker } from "./components/attackMarkerRenderer.js";
+import { renderPlacedShip } from "./components/shipRenderer.js";
 
 const root = document.querySelector("#root");
 
@@ -46,16 +49,35 @@ export function renderPlaceFleetScreen(currentGame, onContinue) {
     app.append(fleetPlacementScreen);
 }
 
-export function renderBattleScreen(game) {
+export function renderBattleScreen(currentGame, handlers) {
     app.replaceChildren();
 
-    const battleWrapper = document.createElement("div");
-    battleWrapper.id = "battle-wrapper";
+    const battleScreenView = createBattleScreen(currentGame, handlers);
 
-    const friendlyWater = createFriendlyWater(game);
-    const hostileWater = createHostileWater(game);
-    const battleLog = createBattleLog(game);
-    const battleDialogBox = document.createElement("div");
+    app.append(battleScreenView.element);
 
-    battleWrapper.append(friendlyWater, hostileWater, battleDialogBox, battleLog);
+    return {
+        renderEnemyMarker(atkRes) {
+            renderAttackMarker(battleScreenView.hostileBoardComponent.markerOverlay, atkRes);
+        },
+
+        renderFriendlyMarker(atkRes) {
+            renderAttackMarker(battleScreenView.friendlyBoardComponent.markerOverlay, atkRes);
+        },
+
+        renderEnemyShip(shipPlacement) {
+            renderPlacedShip(
+                battleScreenView.hostileBoardComponent.shipOverlay,
+                shipPlacement,
+            );
+        },
+
+        renderBattleLog(message) {
+            battleScreenView.updateBattleLog(message);
+        },
+
+        renderGameOver(winner) {
+            battleScreenView.renderGameOver(winner, handlers.onRestart);
+        },
+    };
 }

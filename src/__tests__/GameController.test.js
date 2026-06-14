@@ -98,7 +98,7 @@ describe("Computer player fleet placement", () => {
 
         game.placeComputerFleet();
         expect(placeShipSpy.mock.calls.length).toBeGreaterThanOrEqual(5);
-        expect(game.computerPlayer.gameboard.ships.length).toBe(5);
+        expect(game.computerPlayer.gameboard.placedShips.length).toBe(5);
 
         const occupiedCells = game.computerPlayer.gameboard.board
             .flat()

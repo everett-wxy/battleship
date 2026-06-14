@@ -1,24 +1,11 @@
 import { Game } from "../../controllers/GameController.js";
 import { createBoardComponent } from "../components/boardComponent.js";
-
-import carrierIcon from "../../assets/carrier.svg";
-import battleshipIcon from "../../assets/battleship.svg";
-import destroyerIcon from "../../assets/destroyer.svg";
-import submarineIcon from "../../assets/submarine.svg";
-import patrolBoatIcon from "../../assets/patrol-boat.svg";
+import { renderPlacedShip, shipIcons } from "../components/shipRenderer.js";
 
 let draggedShip = null;
 let draggedShipIcon = null;
 let shipOrientation = "horizontal";
 let placedShips = new Set();
-
-const shipIcons = {
-    carrier: carrierIcon,
-    battleship: battleshipIcon,
-    destroyer: destroyerIcon,
-    submarine: submarineIcon,
-    "patrol-boat": patrolBoatIcon,
-};
 
 export function createFleetPlacementScreen(currentGame, onContinue) {
     const fleetPlacementScreen = document.createElement("div");
@@ -190,7 +177,7 @@ function enableFleetPlacementDrag(gridMap, shipOverlay, game, confirmBtn) {
         }
 
         try {
-            placeDroppedShip(
+            const shipPlacement = placeDroppedShip(
                 draggedShipIcon,
                 game.humanPlayer.gameboard,
                 draggedShip,
@@ -199,7 +186,7 @@ function enableFleetPlacementDrag(gridMap, shipOverlay, game, confirmBtn) {
                 shipOrientation,
             );
 
-            renderPlacedShip(shipOverlay, draggedShip, targetRow, targetCol, shipOrientation);
+            renderPlacedShip(shipOverlay, shipPlacement);
             placedShips.add(draggedShip.name);
             updateConfirmBtn(confirmBtn);
         } catch (error) {
@@ -321,32 +308,8 @@ function placeDroppedShip(shipIcon, gameboard, ship, yAxis, xAxis, orientation) 
 
     shipIcon.draggable = false;
     shipIcon.classList.add("placed-ship");
-}
 
-function renderPlacedShip(shipOverlay, ship, targetRow, targetCol, orientation) {
-    const shipName = ship.name.toLowerCase().replaceAll(" ", "-");
-
-    const gridShipContainer = document.createElement("div");
-    gridShipContainer.classList.add("grid-ship-container");
-    gridShipContainer.classList.add(orientation);
-
-    const startRow = targetRow + 1;
-    const startCol = targetCol + 1;
-
-    const endRow = orientation === "horizontal" ? targetRow + 2 : targetRow + 1 + ship.length;
-
-    const endCol = orientation === "horizontal" ? targetCol + 1 + ship.length : targetCol + 2;
-
-    gridShipContainer.style.gridArea = `${startRow} / ${startCol} / ${endRow} / ${endCol}`;
-
-    const gridShip = document.createElement("img");
-    gridShip.classList.add("grid-ship");
-    gridShip.src = shipIcons[shipName];
-    gridShip.alt = shipName;
-    gridShip.draggable = false;
-
-    gridShipContainer.append(gridShip);
-    shipOverlay.append(gridShipContainer);
+    return gameboard.placedShips.at(-1);
 }
 
 function updateConfirmBtn(confirmBtn) {

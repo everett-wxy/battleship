@@ -33,8 +33,8 @@ describe("Gameboard", () => {
         });
     });
 
-    it("starts with an empty ships array", () => {
-        expect(gameboard.ships).toEqual([]);
+    it("starts with an empty placedShips array", () => {
+        expect(gameboard.placedShips).toEqual([]);
     });
 });
 
@@ -107,14 +107,41 @@ describe("ship placement on gameboard logic", () => {
         }).toThrow("Cell already contains a ship");
     });
 
-    it("each ship placed should be pushed into Gameboard.ships", () => {
-        const ships = [
-            gameboard.placeShip(undefined, 1, 0, 0),
-            gameboard.placeShip(undefined, 2, 1, 0, "horizontal"),
-            gameboard.placeShip(undefined, 3, 2, 0, "horizontal"),
-        ];
+    it("each ship placed should be pushed into Gameboard.placedShips", () => {
+        const carrier = gameboard.placeShip("Carrier", 5, 0, 2, "horizontal");
+        const patrolBoat = gameboard.placeShip(
+            "Patrol boat",
+            2,
+            2,
+            0,
+            "vertical",
+        );
 
-        expect(gameboard.ships).toEqual(ships);
+        expect(gameboard.placedShips).toEqual([
+            {
+                ship: carrier,
+                startRow: 0,
+                startCol: 2,
+                orientation: "horizontal",
+                coordinates: [
+                    [0, 2],
+                    [0, 3],
+                    [0, 4],
+                    [0, 5],
+                    [0, 6],
+                ],
+            },
+            {
+                ship: patrolBoat,
+                startRow: 2,
+                startCol: 0,
+                orientation: "vertical",
+                coordinates: [
+                    [2, 0],
+                    [3, 0],
+                ],
+            },
+        ]);
     });
 });
 

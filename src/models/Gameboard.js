@@ -3,7 +3,7 @@ import { Ship } from "./Ship.js";
 export class Gameboard {
     constructor(size = 10) {
         this.size = size;
-        this.ships = [];
+        this.placedShips = [];
         this.board = Array.from({ length: this.size }, () => {
             return Array.from({ length: this.size }, () => ({
                 ship: null,
@@ -56,7 +56,13 @@ export class Gameboard {
             };
         });
 
-        this.ships.push(ship);
+        this.placedShips.push({
+            ship,
+            startRow: yAxis,
+            startCol: xAxis,
+            orientation,
+            coordinates,
+        });
         return ship;
     }
 
@@ -103,12 +109,15 @@ export class Gameboard {
 
     isAllSunk() {
         return (
-            this.ships.length > 0 && this.ships.every((ship) => ship.isSunk())
+            this.placedShips.length > 0 &&
+            this.placedShips.every((shipPlacement) =>
+                shipPlacement.ship.isSunk(),
+            )
         );
     }
 
     reset() {
-        this.ships = [];
+        this.placedShips = [];
         this.board = Array.from({ length: this.size }, () => {
             return Array.from({ length: this.size }, () => ({
                 ship: null,
