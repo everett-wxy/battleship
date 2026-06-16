@@ -52,10 +52,9 @@ function startBattle(currentGame) {
 
     async function handleAtkFeedback(atkRes, renderMarker) {
         playCannonFireSound();
-
-        await delay(800);
-
         renderMarker();
+
+        await delay(500);
 
         if (atkRes.isHit) {
             playExplosionSound();

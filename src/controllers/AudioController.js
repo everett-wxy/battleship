@@ -117,15 +117,18 @@ function fadeAudio(audio, targetVolume, duration = 1000) {
 }
 export function playCannonFireSound() {
     const canonFire = new Audio(canonFireSound);
+    canonFire.volume = 0.1;
     canonFire.play();
 }
 
 export function playMissedSound() {
     const waterSplash = new Audio(missedSound);
+    waterSplash.volume = 0.1;
     waterSplash.play();
 }
 
 export function playExplosionSound() {
     const explosion = new Audio(explosionSound);
+    explosion.volume = 0.1;
     explosion.play();
 }
