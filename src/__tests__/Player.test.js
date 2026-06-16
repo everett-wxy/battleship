@@ -1,4 +1,4 @@
-import { Game } from "../controllers/GameController.js";
+import { Game } from "../models/GameSession.js";
 import { Gameboard } from "../models/Gameboard.js";
 import { HumanPlayer, ComputerPlayer } from "../models/Player.js";
 

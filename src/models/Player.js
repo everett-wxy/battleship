@@ -2,7 +2,7 @@ import { Gameboard } from "./Gameboard.js";
 
 export class Player {
     constructor(name) {
-        this.name = name;
+        this.name = name.trim().charAt(0).toUpperCase() + name.trim().slice(1).toLowerCase();
         this.gameboard = new Gameboard();
     }
 
@@ -36,9 +36,7 @@ export class ComputerPlayer extends Player {
     fire(enemy) {
         const target = this.struck.find((target) => !target.isSunk);
 
-        const coord = target
-            ? this.smartTarget(enemy, target)
-            : this.randomTarget(enemy);
+        const coord = target ? this.smartTarget(enemy, target) : this.randomTarget(enemy);
 
         const atkResult = enemy.gameboard.receiveAttack(coord.y, coord.x);
 
@@ -61,10 +59,7 @@ export class ComputerPlayer extends Player {
     }
 
     smartTarget(enemy, target) {
-        const candidateCoord =
-            target.coord.length === 1
-                ? this.adjTargets(target.coord[0])
-                : this.lineTargets(target);
+        const candidateCoord = target.coord.length === 1 ? this.adjTargets(target.coord[0]) : this.lineTargets(target);
 
         const validCoord = this.validateTargets(enemy, candidateCoord);
 
@@ -158,17 +153,12 @@ export class ComputerPlayer extends Player {
             return null;
         }
 
-        throw new Error(
-            "Coordinates are not horizontally or vertically aligned",
-        );
+        throw new Error("Coordinates are not horizontally or vertically aligned");
     }
 
     validateTargets(enemy, coord) {
         return coord.filter(({ y, x }) => {
-            return (
-                enemy.gameboard.isValidCoordinates(y, x) &&
-                !enemy.gameboard.board[y][x].isHit
-            );
+            return enemy.gameboard.isValidCoordinates(y, x) && !enemy.gameboard.board[y][x].isHit;
         });
     }
 

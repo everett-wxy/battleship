@@ -26,17 +26,17 @@
 
 .battle-dialogue-wrapper{
     position: relative;
-    height: 150px;
+    height: 120px;
     width: 100%;
 }
 
 .battle-dialogue-container {
     position: absolute;
     inset: 0;
-    padding-inline: 3rem;
+    padding: 1rem;
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 .battle-dialogue-container.hidden{
@@ -49,11 +49,25 @@
     max-width: 100%;
     max-height: 100%;
     object-fit: cover;
-    object-position: center calc(0% - 5px);
+    object-position: center calc(0% - 7px);
+    /* border: 1px solid white; */
 }
+
+/* .battle-dialogue-container img.friendly{
+    object-fit: contain;
+    object-position: center top;
+} */
 
 .battle-dialogue-container img.hostile{
     filter: drop-shadow(0 4px 8px rgba(255, 0, 0, 0.7));
+}
+
+.battle-dialogue-container img.friendly{
+    filter: drop-shadow(0 2px 8px rgba(0, 255, 119, 0.7));
+}
+
+.battle-dialogue-container p{
+    font-size: 1.2rem;
 }
 
 .battle-dialogue-container p.hostile{
@@ -62,9 +76,6 @@
     margin-left: auto;
 }
 
-.battle-dialogue-container img.friendly{
-    filter: drop-shadow(0 4px 8px rgba(0, 255, 119, 0.7));
-}
 
 .battle-dialogue-container p.friendly{
     color: green;

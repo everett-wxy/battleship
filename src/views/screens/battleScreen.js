@@ -1,6 +1,7 @@
 import { createBoardComponent } from "../components/boardComponent.js";
 import { renderPlacedShip } from "../helpers/shipRenderer.js";
 import villain from "../../assets/villain.png";
+import friendlySoldier from "../../assets/friendlySoldier.png";
 
 export function createBattleScreen(currentGame, { onHumanFire }) {
     const battleScreen = document.createElement("div");
@@ -28,8 +29,8 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
     const dialoguesWrapper = document.createElement("div");
     dialoguesWrapper.classList.add("battle-dialogue-wrapper");
 
-    const friendlyBattleDialogue = createFriendlyBattleDialogue();
-    const hostileBattleDialogue = createHostileBattleDialogue();
+    const friendlyBattleDialogue = createDialogue(currentGame, "friendly");
+    const hostileBattleDialogue = createDialogue(currentGame, "hostile");
 
     dialoguesWrapper.append(
         friendlyBattleDialogue.battleDialogueContainer,
@@ -43,12 +44,7 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
         friendlyBoardComponent: friendlyZone.boardComponent,
         hostileBoardComponent: hostileZone.boardComponent,
         updateBattleDialogue(turn, message) {
-            updateBattleDialogue(
-                turn,
-                message,
-                friendlyBattleDialogue,
-                hostileBattleDialogue,
-            );
+            updateBattleDialogue(turn, message, friendlyBattleDialogue, hostileBattleDialogue);
         },
         renderGameOver(winner, onRestart) {
             renderGameOver(battleScreen, winner, onRestart);
@@ -81,45 +77,66 @@ function createZone({ gameboard, type, titleText, shouldRenderFleet = false, onH
     };
 }
 
-function createFriendlyBattleDialogue() {
+function createDialogue(currentGame, type) {
     const battleDialogueContainer = document.createElement("div");
     battleDialogueContainer.classList.add("battle-dialogue-container", "panel");
+    if (type === "hostile") battleDialogueContainer.classList.add("hidden");
 
-    const character = document.createElement("img");
-    character.classList.add("character", "friendly");
-    character.src = villain;
+    const characterImg = document.createElement("img");
+    characterImg.classList.add("character", type);
+    characterImg.src = type === "friendly" ? friendlySoldier : villain;
 
-    const dialogue = document.createElement("p");
-    dialogue.classList.add("dialogue", "friendly");
-    dialogue.innerText = "Enemy fleet spotted! Awaiting orders, commander!";
+    const dialogueMessage = document.createElement("p");
+    dialogueMessage.classList.add("dialogue", type);
+    dialogueMessage.innerText = `Commander ${currentGame.humanPlayer.name}, enemy fleet spotted in hostile waters, awaiting your command!`;
 
-    battleDialogueContainer.append(character, dialogue);
-
-    return {
-        battleDialogueContainer,
-        dialogue,
-    };
-}
-
-function createHostileBattleDialogue() {
-    const battleDialogueContainer = document.createElement("div");
-    battleDialogueContainer.classList.add("battle-dialogue-container", "panel", "hidden");
-
-    const character = document.createElement("img");
-    character.classList.add("character", "hostile");
-    character.src = villain;
-
-    const dialogue = document.createElement("p");
-    dialogue.classList.add("dialogue", "hostile");
-    dialogue.innerText = "You're going down!";
-
-    battleDialogueContainer.append(character, dialogue);
+    battleDialogueContainer.append(characterImg, dialogueMessage);
 
     return {
         battleDialogueContainer,
-        dialogue,
+        dialogueMessage,
     };
 }
+
+// function createFriendlyBattleDialogue() {
+//     const battleDialogueContainer = document.createElement("div");
+//     battleDialogueContainer.classList.add("battle-dialogue-container", "panel");
+
+//     const character = document.createElement("img");
+//     character.classList.add("character", "friendly");
+//     character.src = villain;
+
+//     const dialogue = document.createElement("p");
+//     dialogue.classList.add("dialogue", "friendly");
+//     dialogue.innerText = "Enemy fleet spotted! Awaiting orders, commander!";
+
+//     battleDialogueContainer.append(character, dialogue);
+
+//     return {
+//         battleDialogueContainer,
+//         dialogue,
+//     };
+// }
+
+// function createHostileBattleDialogue() {
+//     const battleDialogueContainer = document.createElement("div");
+//     battleDialogueContainer.classList.add("battle-dialogue-container", "panel", "hidden");
+
+//     const character = document.createElement("img");
+//     character.classList.add("character", "hostile");
+//     character.src = villain;
+
+//     const dialogue = document.createElement("p");
+//     dialogue.classList.add("dialogue", "hostile");
+//     dialogue.innerText = "You're going down!";
+
+//     battleDialogueContainer.append(character, dialogue);
+
+//     return {
+//         battleDialogueContainer,
+//         dialogue,
+//     };
+// }
 
 function updateBattleDialogue(turn, message, friendlyDialogue, hostileDialogue) {
     console.log(`Turn: ${turn}`);
@@ -136,7 +153,7 @@ function updateBattleDialogue(turn, message, friendlyDialogue, hostileDialogue) 
     }
     pastDialogue.battleDialogueContainer.classList.add("hidden");
     currentDialogue.battleDialogueContainer.classList.remove("hidden");
-    currentDialogue.dialogue.innerText = message;
+    currentDialogue.dialogueMessage.innerText = message;
 }
 
 function renderFleet(shipOverlay, placedShips) {

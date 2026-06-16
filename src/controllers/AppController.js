@@ -56,16 +56,15 @@ function startBattle(currentGame) {
 
         try {
             let currentPlayer = currentGame.currentPlayer === currentGame.humanPlayer ? "human" : "computer";
-            console.log(currentPlayer)
-            
-            battleView.updateDialogue(currentPlayer, "Attack!!!!");
-            
+
             const humanAtkRes = currentGame.runTurn(row, col);
+
+            battleView.updateDialogue(currentPlayer, generateDialogueMessage(currentGame, humanAtkRes));
             currentPlayer = currentGame.currentPlayer === currentGame.humanPlayer ? "human" : "computer";
-            
+
             battleView.renderEnemyMarker(humanAtkRes);
             // battleView.renderBattleLog(
-                //     `You fired at (${row}, ${col}) - ${humanAtkRes.isHit ? "Hit" : "Miss"}`,
+            //     `You fired at (${row}, ${col}) - ${humanAtkRes.isHit ? "Hit" : "Miss"}`,
             // );
 
             if (humanAtkRes.isSunk) {
@@ -84,12 +83,12 @@ function startBattle(currentGame) {
 
             isWaitingForComputer = true;
 
-            await delay(500);
-            console.log(currentPlayer)
-            battleView.updateDialogue(currentPlayer, "---------------------!!!!");
+            await delay(1500);
 
-
+            
             const comAtkRes = currentGame.runTurn();
+            
+            battleView.updateDialogue(currentPlayer, generateDialogueMessage(currentGame, comAtkRes));
 
             battleView.renderFriendlyMarker(comAtkRes);
             // battleView.renderBattleLog(
@@ -107,8 +106,8 @@ function startBattle(currentGame) {
                 return;
             }
         } catch (e) {
-            console.log(e.message)
-            console.log(e.stack)
+            console.log(e.message);
+            console.log(e.stack);
         } finally {
             isWaitingForComputer = false;
         }
@@ -127,4 +126,16 @@ function getShipPlacement(gameboard, ship) {
 
 function delay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function generateDialogueMessage(currentGame, atkRes) {
+    let message;
+
+    if (!atkRes.isHit) {
+        message = "Target missed! Better aim next time";
+    } else {
+        message = "Target hit!";
+    }
+
+    return message;
 }

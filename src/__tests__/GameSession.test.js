@@ -1,4 +1,4 @@
-import { Game } from "../controllers/GameController.js";
+import { Game } from "../models/GameSession.js";
 import { ComputerPlayer, HumanPlayer } from "../models/Player.js";
 
 afterEach(() => {
@@ -192,7 +192,7 @@ describe("Reset Game", () => {
         game.reset("Tom", "AI");
 
         expect(game.humanPlayer.name).toBe("Tom");
-        expect(game.computerPlayer.name).toBe("AI");
+        expect(game.computerPlayer.name).toBe("Ai");
 
         expect(game.currentPlayer).toBe(game.humanPlayer);
         expect(game.opponent).toBe(game.computerPlayer);
