@@ -7,6 +7,7 @@ import {
 } from "../views/screenRenderer.js";
 
 import { Game } from "../models/GameSession.js";
+import { playCannonFireSound, playExplosionSound, playMissedSound } from "./AudioController.js";
 
 export function initialise() {
     createAppShell();
@@ -49,6 +50,20 @@ function startBattle(currentGame) {
         onRestart: restartGame,
     });
 
+    async function handleAtkFeedback(atkRes, renderMarker) {
+        playCannonFireSound();
+
+        await delay(800);
+
+        renderMarker();
+
+        if (atkRes.isHit) {
+            playExplosionSound();
+        } else {
+            playMissedSound();
+        }
+    }
+
     async function handleHumanFire(row, col) {
         if (currentGame.isGameOver || isWaitingForComputer) {
             return;
@@ -58,47 +73,42 @@ function startBattle(currentGame) {
             let currentPlayer = currentGame.currentPlayer === currentGame.humanPlayer ? "human" : "computer";
 
             const humanAtkRes = currentGame.runTurn(row, col);
-
+            
+            isWaitingForComputer = true;
+            
+            
+            
+            await handleAtkFeedback(humanAtkRes, () => {
+                battleView.renderEnemyMarker(humanAtkRes);
+            });
             battleView.updateDialogue(currentPlayer, generateDialogueMessage(currentGame, humanAtkRes));
-            currentPlayer = currentGame.currentPlayer === currentGame.humanPlayer ? "human" : "computer";
-
-            battleView.renderEnemyMarker(humanAtkRes);
-            // battleView.renderBattleLog(
-            //     `You fired at (${row}, ${col}) - ${humanAtkRes.isHit ? "Hit" : "Miss"}`,
-            // );
-
+            
             if (humanAtkRes.isSunk) {
                 const sunkShipPlacement = getShipPlacement(currentGame.computerPlayer.gameboard, humanAtkRes.ship);
-
+                
                 battleView.renderEnemyShip(sunkShipPlacement);
-                // battleView.renderBattleLog(
-                //     `Enemy ${humanAtkRes.ship.name} has been sunk!`,
-                // );
             }
-
+            
             if (currentGame.isGameOver) {
                 battleView.renderGameOver(currentGame.winner);
                 return;
             }
-
-            isWaitingForComputer = true;
-
+            
+            currentPlayer = currentGame.currentPlayer === currentGame.humanPlayer ? "human" : "computer";
+            
             await delay(1500);
-
             
             const comAtkRes = currentGame.runTurn();
             
+            
+            await handleAtkFeedback(comAtkRes, () => {
+                battleView.renderFriendlyMarker(comAtkRes);
+            });
+            
             battleView.updateDialogue(currentPlayer, generateDialogueMessage(currentGame, comAtkRes));
-
-            battleView.renderFriendlyMarker(comAtkRes);
-            // battleView.renderBattleLog(
-            //     `Enemy fired at (${comAtkRes.coord.y}, ${comAtkRes.coord.x}) - ${comAtkRes.isHit ? "Hit" : "Miss"}`,
-            // );
-
+            
             if (comAtkRes.isSunk) {
-                // battleView.renderBattleLog(
-                //     `Your ${comAtkRes.ship.name} has been sunk!`,
-                // );
+                //
             }
 
             if (currentGame.isGameOver) {

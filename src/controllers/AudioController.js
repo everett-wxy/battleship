@@ -1,4 +1,11 @@
 import bgMusic from "../assets/music_for_videos-pirates-163389.mp3";
+import missedSound from "../assets/missed.mp3";
+import canonFireSound from "../assets/canon-fire.mp3";
+import explosionSound from "../assets/explosion.mp3";
+
+const canonFire = new Audio(canonFireSound);
+const explosion = new Audio(explosionSound);
+const waterSplash = new Audio(missedSound);
 
 const normalVolume = 0.3;
 const fadeDuration = 7000;
@@ -111,4 +118,19 @@ function fadeAudio(audio, targetVolume, duration = 1000) {
             clearInterval(interval);
         }
     }, duration / steps);
+}
+
+export function playCannonFireSound() {
+    canonFire.currentTime = 0;
+    canonFire.play();
+}
+
+export function playMissedSound() {
+    waterSplash.currentTime = 0;
+    waterSplash.play();
+}
+
+export function playExplosionSound() {
+    explosion.currentTime = 0;
+    explosion.play();
 }

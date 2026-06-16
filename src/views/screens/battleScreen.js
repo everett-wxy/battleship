@@ -2,6 +2,7 @@ import { createBoardComponent } from "../components/boardComponent.js";
 import { renderPlacedShip } from "../helpers/shipRenderer.js";
 import villain from "../../assets/villain.png";
 import friendlySoldier from "../../assets/friendlySoldier.png";
+import { playCannonFireSound } from "../../controllers/AudioController.js";
 
 export function createBattleScreen(currentGame, { onHumanFire }) {
     const battleScreen = document.createElement("div");
@@ -209,3 +210,4 @@ function renderGameOver(battleScreen, winner, onRestart) {
     overlay.append(dialog);
     battleScreen.append(overlay);
 }
+

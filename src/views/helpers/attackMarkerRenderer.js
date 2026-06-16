@@ -1,6 +1,5 @@
 export function renderAttackMarker(markerOverlay, atkRes) {
     const { y, x } = atkRes.coord;
-
     const marker = document.createElement("div");
     marker.classList.add("atk-marker");
 
