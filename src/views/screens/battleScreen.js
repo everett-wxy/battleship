@@ -3,43 +3,33 @@ import { renderPlacedShip } from "../helpers/shipRenderer.js";
 
 export function createBattleScreen(currentGame, { onHumanFire }) {
     const battleScreen = document.createElement("div");
-    battleScreen.classList.add("battle-screen");
+    battleScreen.classList.add("battle-screen", "screen");
 
-    // const battleLog = createBattleLog();
+    const zonesContainer = document.createElement("div");
+    zonesContainer.id = "zones-container";
 
-    const boardsContainer = document.createElement("div");
-    boardsContainer.id = "zones-container";
-
-    // const friendlyWater = createFriendlyZone(currentGame.humanPlayer.gameboard);
-    const friendlyWater = createZone({
+    const friendlyZone = createZone({
         gameboard: currentGame.humanPlayer.gameboard,
         type: "friendly",
         titleText: "Friendly Water",
         shouldRenderFleet: true,
     });
 
-    // const hostileWater = createHostileWater(currentGame.computerPlayer.gameboard, onHumanFire);
-
-    const hostileWater = createZone({
+    const hostileZone = createZone({
         gameboard: currentGame.computerPlayer.gameboard,
         type: "hostile",
         titleText: "HOSTILE WATER",
         onHumanFire,
     });
 
-    boardsContainer.append(friendlyWater.zoneContainer, hostileWater.zoneContainer);
+    zonesContainer.append(friendlyZone.zoneContainer, hostileZone.zoneContainer);
 
-    // battleScreen.append(battleLog.battlelogWrapper, boardsContainer);
-    battleScreen.append(boardsContainer);
+    battleScreen.append(zonesContainer);
 
     return {
         element: battleScreen,
-        // battleLog: battleLog.log,
-        friendlyBoardComponent: friendlyWater.boardComponent,
-        hostileBoardComponent: hostileWater.boardComponent,
-        // updateBattleLog(message) {
-        //     updateBattleLog(battleLog.log, message);
-        // },
+        friendlyBoardComponent: friendlyZone.boardComponent,
+        hostileBoardComponent: hostileZone.boardComponent,
         renderGameOver(winner, onRestart) {
             renderGameOver(battleScreen, winner, onRestart);
         },
@@ -91,34 +81,6 @@ function enableHumanFire(enemyGridMap, onHumanFire) {
         onHumanFire(row, col);
     });
 }
-
-// function createBattleLog() {
-//     const battlelogWrapper = document.createElement("div");
-//     battlelogWrapper.classList.add("battle-log-wrapper");
-
-//     const title = document.createElement("h1");
-//     title.classList.add("battle-log-title");
-//     title.innerText = "Battle Log";
-
-//     const log = document.createElement("div");
-//     log.classList.add("battle-log");
-
-//     // each time an attack happens
-//     // log append atk coordingate
-//     // log append atk result
-
-//     battlelogWrapper.append(title, log);
-
-//     return { battlelogWrapper, log };
-// }
-
-// function updateBattleLog(log, message) {
-//     const logItem = document.createElement("p");
-//     logItem.classList.add("battle-log-item");
-//     logItem.innerText = message;
-
-//     log.prepend(logItem);
-// }
 
 function renderGameOver(battleScreen, winner, onRestart) {
     const existingOverlay = battleScreen.querySelector(".game-over-overlay");
