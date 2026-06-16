@@ -24,7 +24,7 @@ export function renderLucideIcons() {
 }
 
 function createAudioBtn() {
-    enableBackgroundMusic();
+    // enableBackgroundMusic();
 
     const audioBtn = document.createElement("button");
 

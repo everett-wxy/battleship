@@ -1,6 +1,6 @@
-import { Game } from "../../controllers/GameController.js";
+import { Game } from "../../models/GameSession.js";
 import { createBoardComponent } from "../components/boardComponent.js";
-import { renderPlacedShip, shipIcons } from "../components/shipRenderer.js";
+import { renderPlacedShip, shipIcons } from "../helpers/shipRenderer.js";
 
 let draggedShip = null;
 let draggedShipIcon = null;
@@ -21,7 +21,7 @@ export function createFleetPlacementScreen(currentGame, onContinue) {
 
     const fleetContainer = createFleetContainer(boardComponent.gridMap);
 
-    gridFleetContainer.append(boardComponent.gridMapContainer, fleetContainer);
+    gridFleetContainer.append(boardComponent.gameBoardContainer, fleetContainer);
 
     const buttonPanel = document.createElement("div");
     buttonPanel.classList.add("button-panel");

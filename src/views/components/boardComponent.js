@@ -1,13 +1,14 @@
-export function createBoardComponent(board) {
-    const gridMapContainer = document.createElement("div");
-    gridMapContainer.classList.add("grid-map-container");
+
+export function createBoardComponent(gameboard) {
+    const gameBoardContainer = document.createElement("div");
+    gameBoardContainer.classList.add("grid-map-container");
 
     const { numAxis, letterAxis } = createAxisLabels();
 
     const boardWrapper = document.createElement("div");
-    boardWrapper.classList.add("board-wrapper");
+    boardWrapper.classList.add("gameboard-wrapper");
 
-    const gridMap = createGridMap(board);
+    const gridMap = createGridMap(gameboard);
 
     const shipOverlay = document.createElement("div");
     shipOverlay.classList.add("ship-overlay");
@@ -16,10 +17,10 @@ export function createBoardComponent(board) {
     markerOverlay.classList.add("marker-overlay");
 
     boardWrapper.append(gridMap, shipOverlay, markerOverlay);
-    gridMapContainer.append(numAxis, letterAxis, boardWrapper);
+    gameBoardContainer.append(numAxis, letterAxis, boardWrapper);
 
     return {
-        gridMapContainer,
+        gameBoardContainer,
         gridMap,
         shipOverlay,
         markerOverlay,
@@ -48,11 +49,11 @@ function createAxisLabels() {
     return { numAxis, letterAxis };
 }
 
-function createGridMap(board) {
+function createGridMap(gameboard) {
     const gridMap = document.createElement("div");
     gridMap.classList.add("grid-map");
 
-    board.forEach(function (row, rowIndex) {
+    gameboard.forEach(function (row, rowIndex) {
         row.forEach(function (cell, colIndex) {
             const cellEl = document.createElement("div");
 

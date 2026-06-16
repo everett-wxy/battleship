@@ -1,4 +1,4 @@
-import { ComputerPlayer, HumanPlayer, Player } from "../models/Player.js";
+import { ComputerPlayer, HumanPlayer, Player } from "./Player.js";
 
 export class Game {
     static fleet = [
@@ -40,7 +40,6 @@ export class Game {
         return this.humanPlayerShipIdx === Game.fleet.length;
     }
 
-    // function to set up computer player feet
     placeComputerFleet() {
         Game.fleet.forEach((shipType) => {
             let placed = false;
@@ -51,11 +50,7 @@ export class Game {
                 const placement = this.computerPlayer.randomPlacement();
 
                 try {
-                    this.placeFleetShip(
-                        this.computerPlayer,
-                        shipType,
-                        placement,
-                    );
+                    this.placeFleetShip(this.computerPlayer, shipType, placement);
                     placed = true;
                 } catch {
                     // Invalid placement, try again
@@ -98,10 +93,7 @@ export class Game {
     }
 
     switchPlayer() {
-        [this.currentPlayer, this.opponent] = [
-            this.opponent,
-            this.currentPlayer,
-        ];
+        [this.currentPlayer, this.opponent] = [this.opponent, this.currentPlayer];
     }
 
     reset(humanPlayerName, computerPlayerName) {

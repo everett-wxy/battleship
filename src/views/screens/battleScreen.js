@@ -1,72 +1,72 @@
 import { createBoardComponent } from "../components/boardComponent.js";
-import { renderPlacedShip } from "../components/shipRenderer.js";
+import { renderPlacedShip } from "../helpers/shipRenderer.js";
 
 export function createBattleScreen(currentGame, { onHumanFire }) {
     const battleScreen = document.createElement("div");
     battleScreen.classList.add("battle-screen");
 
-    const battleLog = createBattleLog();
+    // const battleLog = createBattleLog();
 
-    const battleWrapper = document.createElement("div");
-    battleWrapper.id = "battle-wrapper";
+    const boardsContainer = document.createElement("div");
+    boardsContainer.id = "zones-container";
 
-    const friendlyWater = createFriendlyWater(currentGame.humanPlayer.gameboard);
+    // const friendlyWater = createFriendlyZone(currentGame.humanPlayer.gameboard);
+    const friendlyWater = createZone({
+        gameboard: currentGame.humanPlayer.gameboard,
+        type: "friendly",
+        titleText: "Friendly Water",
+        shouldRenderFleet: true,
+    });
 
-    const hostileWater = createHostileWater(currentGame.computerPlayer.gameboard, onHumanFire);
+    // const hostileWater = createHostileWater(currentGame.computerPlayer.gameboard, onHumanFire);
 
-    battleWrapper.append(friendlyWater.friendlyWrapper, hostileWater.hostileWrapper);
-    battleScreen.append(battleLog.battlelogWrapper, battleWrapper);
+    const hostileWater = createZone({
+        gameboard: currentGame.computerPlayer.gameboard,
+        type: "hostile",
+        titleText: "HOSTILE WATER",
+        onHumanFire,
+    });
+
+    boardsContainer.append(friendlyWater.zoneContainer, hostileWater.zoneContainer);
+
+    // battleScreen.append(battleLog.battlelogWrapper, boardsContainer);
+    battleScreen.append(boardsContainer);
 
     return {
         element: battleScreen,
-        battleLog: battleLog.log,
+        // battleLog: battleLog.log,
         friendlyBoardComponent: friendlyWater.boardComponent,
         hostileBoardComponent: hostileWater.boardComponent,
-        updateBattleLog(message) {
-            updateBattleLog(battleLog.log, message);
-        },
+        // updateBattleLog(message) {
+        //     updateBattleLog(battleLog.log, message);
+        // },
         renderGameOver(winner, onRestart) {
             renderGameOver(battleScreen, winner, onRestart);
         },
     };
 }
 
-function createFriendlyWater(gameboard) {
-    const friendlyWrapper = document.createElement("div");
-    friendlyWrapper.classList.add("water-wrapper", "friendly");
+function createZone({ gameboard, type, titleText, shouldRenderFleet = false, onHumanFire = null }) {
+    const zoneContainer = document.createElement("div");
+    zoneContainer.classList.add("zone-container", type);
 
     const title = document.createElement("p");
-    title.classList.add("title", "friendly");
-    title.innerText = "FRIENDLY WATER";
+    title.classList.add("zone-title", type);
+    title.innerText = titleText;
 
     const boardComponent = createBoardComponent(gameboard.board);
 
-    renderFleet(boardComponent.shipOverlay, gameboard.placedShips);
+    if (shouldRenderFleet) {
+        renderFleet(boardComponent.shipOverlay, gameboard.placedShips);
+    }
 
-    friendlyWrapper.append(title, boardComponent.gridMapContainer);
+    if (onHumanFire) {
+        enableHumanFire(boardComponent.gridMap, onHumanFire);
+    }
 
+    zoneContainer.append(title, boardComponent.gameBoardContainer);
     return {
-        friendlyWrapper,
-        boardComponent,
-    };
-}
-
-function createHostileWater(gameboard, onHumanFire) {
-    const hostileWrapper = document.createElement("div");
-    hostileWrapper.classList.add("water-wrapper", "hostile");
-
-    const title = document.createElement("p");
-    title.classList.add("title", "hostile");
-    title.innerText = "HOSTILE WATER";
-
-    const boardComponent = createBoardComponent(gameboard.board);
-
-    enableHumanFire(boardComponent.gridMap, onHumanFire);
-
-    hostileWrapper.append(title, boardComponent.gridMapContainer);
-
-    return {
-        hostileWrapper,
+        zoneContainer,
         boardComponent,
     };
 }
@@ -92,33 +92,33 @@ function enableHumanFire(enemyGridMap, onHumanFire) {
     });
 }
 
-function createBattleLog() {
-    const battlelogWrapper = document.createElement("div");
-    battlelogWrapper.classList.add("battle-log-wrapper");
+// function createBattleLog() {
+//     const battlelogWrapper = document.createElement("div");
+//     battlelogWrapper.classList.add("battle-log-wrapper");
 
-    const title = document.createElement("h1");
-    title.classList.add("battle-log-title");
-    title.innerText = "Battle Log";
+//     const title = document.createElement("h1");
+//     title.classList.add("battle-log-title");
+//     title.innerText = "Battle Log";
 
-    const log = document.createElement("div");
-    log.classList.add("battle-log");
+//     const log = document.createElement("div");
+//     log.classList.add("battle-log");
 
-    // each time an attack happens
-    // log append atk coordingate
-    // log append atk result
+//     // each time an attack happens
+//     // log append atk coordingate
+//     // log append atk result
 
-    battlelogWrapper.append(title, log);
+//     battlelogWrapper.append(title, log);
 
-    return { battlelogWrapper, log };
-}
+//     return { battlelogWrapper, log };
+// }
 
-function updateBattleLog(log, message) {
-    const logItem = document.createElement("p");
-    logItem.classList.add("battle-log-item");
-    logItem.innerText = message;
+// function updateBattleLog(log, message) {
+//     const logItem = document.createElement("p");
+//     logItem.classList.add("battle-log-item");
+//     logItem.innerText = message;
 
-    log.prepend(logItem);
-}
+//     log.prepend(logItem);
+// }
 
 function renderGameOver(battleScreen, winner, onRestart) {
     const existingOverlay = battleScreen.querySelector(".game-over-overlay");

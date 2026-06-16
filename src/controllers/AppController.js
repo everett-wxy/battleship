@@ -6,17 +6,25 @@ import {
     renderPlaceFleetScreen,
 } from "../views/screenRenderer.js";
 
-import { Game } from "../controllers/GameController.js";
-
-let currentGame;
+import { Game } from "../models/GameSession.js";
 
 export function initialise() {
     createAppShell();
-    renderStartScreen(handleGameStart);
+    // renderStartScreen(handleGameStart);
+
+    // generalte random placement
+    const currentGame = new Game("everett");
+    // set up fleet
+    Game.fleet.forEach((ship, i) => {
+        currentGame.humanPlayer.gameboard.placeShip(ship.name, ship.length, i + 1, i, "horizontal");
+    });
+    currentGame.placeComputerFleet();
+
+    startBattle(currentGame);
 }
 
 function handleGameStart(playerName) {
-    currentGame = new Game(playerName);
+    const currentGame = new Game(playerName);
     showRules(currentGame);
 }
 
@@ -50,20 +58,17 @@ function startBattle(currentGame) {
             const humanAtkRes = currentGame.runTurn(row, col);
 
             battleView.renderEnemyMarker(humanAtkRes);
-            battleView.renderBattleLog(
-                `You fired at (${row}, ${col}) - ${humanAtkRes.isHit ? "Hit" : "Miss"}`,
-            );
+            // battleView.renderBattleLog(
+            //     `You fired at (${row}, ${col}) - ${humanAtkRes.isHit ? "Hit" : "Miss"}`,
+            // );
 
             if (humanAtkRes.isSunk) {
-                const sunkShipPlacement = getShipPlacement(
-                    currentGame.computerPlayer.gameboard,
-                    humanAtkRes.ship,
-                );
+                const sunkShipPlacement = getShipPlacement(currentGame.computerPlayer.gameboard, humanAtkRes.ship);
 
                 battleView.renderEnemyShip(sunkShipPlacement);
-                battleView.renderBattleLog(
-                    `Enemy ${humanAtkRes.ship.name} has been sunk!`,
-                );
+                // battleView.renderBattleLog(
+                //     `Enemy ${humanAtkRes.ship.name} has been sunk!`,
+                // );
             }
 
             if (currentGame.isGameOver) {
@@ -78,14 +83,14 @@ function startBattle(currentGame) {
             const comAtkRes = currentGame.runTurn();
 
             battleView.renderFriendlyMarker(comAtkRes);
-            battleView.renderBattleLog(
-                `Enemy fired at (${comAtkRes.coord.y}, ${comAtkRes.coord.x}) - ${comAtkRes.isHit ? "Hit" : "Miss"}`,
-            );
+            // battleView.renderBattleLog(
+            //     `Enemy fired at (${comAtkRes.coord.y}, ${comAtkRes.coord.x}) - ${comAtkRes.isHit ? "Hit" : "Miss"}`,
+            // );
 
             if (comAtkRes.isSunk) {
-                battleView.renderBattleLog(
-                    `Your ${comAtkRes.ship.name} has been sunk!`,
-                );
+                // battleView.renderBattleLog(
+                //     `Your ${comAtkRes.ship.name} has been sunk!`,
+                // );
             }
 
             if (currentGame.isGameOver) {
@@ -93,7 +98,7 @@ function startBattle(currentGame) {
                 return;
             }
         } catch (error) {
-            battleView.renderBattleLog(error.message);
+            // battleView.renderBattleLog(error.message);
         } finally {
             isWaitingForComputer = false;
         }

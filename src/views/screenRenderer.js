@@ -3,8 +3,8 @@ import { createStartScreen } from "./screens/startScreen.js";
 import { createFleetPlacementScreen } from "./screens/fleetPlacementScreen.js";
 import { createRulesDialogScreen, createRulesBtn } from "./screens/rulesDialogScreen.js";
 import { createBattleScreen } from "./screens/battleScreen.js";
-import { renderAttackMarker } from "./components/attackMarkerRenderer.js";
-import { renderPlacedShip } from "./components/shipRenderer.js";
+import { renderAttackMarker } from "./helpers/attackMarkerRenderer.js";
+import { renderPlacedShip } from "./helpers/shipRenderer.js";
 
 const root = document.querySelector("#root");
 
@@ -66,15 +66,12 @@ export function renderBattleScreen(currentGame, handlers) {
         },
 
         renderEnemyShip(shipPlacement) {
-            renderPlacedShip(
-                battleScreenView.hostileBoardComponent.shipOverlay,
-                shipPlacement,
-            );
+            renderPlacedShip(battleScreenView.hostileBoardComponent.shipOverlay, shipPlacement);
         },
 
-        renderBattleLog(message) {
-            battleScreenView.updateBattleLog(message);
-        },
+        // renderBattleLog(message) {
+        //     battleScreenView.updateBattleLog(message);
+        // },
 
         renderGameOver(winner) {
             battleScreenView.renderGameOver(winner, handlers.onRestart);

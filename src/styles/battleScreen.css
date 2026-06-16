@@ -1,71 +1,26 @@
 .battle-screen {
     min-height: 100vh;
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 2fr 8fr 2fr;
+    display: flex;
+    justify-content: center;
     align-items: center;
-    justify-items: center;
-    gap: 2rem;
 }
 
-.battle-log-wrapper {
-    grid-column: 2;
-    width: 300px;
-    height: 80vh;
-    border: black 1px solid;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    background-color: rgba(0, 0, 0, 0.75);
-}
-
-.battle-log-wrapper h1 {
-    font-size: large;
-    margin-bottom: 0.5em;
-}
-
-.battle-log {
-    height: 95%;
-    overflow-y: auto;
-}
-
-.battle-log::-webkit-scrollbar {
-    width: 8px;
-}
-
-.battle-log::-webkit-scrollbar-track {
-    /* background: rgba(255, 255, 255, 0.1); */
-    border-radius: 999px;
-}
-
-.battle-log::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 999px;
-}
-
-.battle-log::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.7);
-}
-
-.battle-log p {
-    font-size: small;
-    margin-bottom: 0.5em;
-}
-
-#battle-wrapper {
+#zones-container {
     grid-column: 3;
     justify-self: center;
     display: flex;
     gap: 2rem;
 }
 
-.water-wrapper {
+.zone-container {
     border-radius: 0.5rem;
     padding: 1rem;
     background-color: rgba(0, 0, 0, 0.75);
     box-shadow: 0 0 30px 0.625rem rgba(0, 0, 0, 0.3);
 }
 
-.water-wrapper .title.hostile {
+.zone-container .zone-title.hostile {
     color: red;
 }
 
@@ -108,3 +63,45 @@
 .restart-btn {
     cursor: pointer;
 }
+
+/* .battle-log-wrapper {
+    grid-column: 2;
+    width: 300px;
+    height: 80vh;
+    border: black 1px solid;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+.battle-log-wrapper h1 {
+    font-size: large;
+    margin-bottom: 0.5em;
+}
+
+.battle-log {
+    height: 95%;
+    overflow-y: auto;
+}
+
+.battle-log::-webkit-scrollbar {
+    width: 8px;
+}
+
+.battle-log::-webkit-scrollbar-track {
+    border-radius: 999px;
+}
+
+.battle-log::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 999px;
+}
+
+.battle-log::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.battle-log p {
+    font-size: small;
+    margin-bottom: 0.5em;
+} */

@@ -21,7 +21,7 @@
     grid-row: 1;
 }
 
-.board-wrapper {
+.gameboard-wrapper {
     position: relative;
     height: calc(var(--cell-size) * var(--board-size));
     width: calc(var(--cell-size) * var(--board-size));
