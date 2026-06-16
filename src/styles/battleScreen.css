@@ -24,23 +24,100 @@
     color: red;
 }
 
-.battle-dialogue-wrapper{
+.battle-dialogue-wrapper {
     position: relative;
-    height: 120px;
+    margin-top: 2rem;
+    height: 130px;
     width: 100%;
+    max-width: 90%;
+    isolation: isolate;
+    display: grid;
+    grid-template-areas: "stack";
+
+    --dialogue-offset: -2.25rem;
+    --dialogue-active-scale: 1;
+    --dialogue-inactive-scale: 0.9;
+    --dialogue-active-opacity: 1;
+    --dialogue-inactive-opacity: 0.5;
 }
 
 .battle-dialogue-container {
-    position: absolute;
-    inset: 0;
+    grid-area: stack;
+    border: 1px solid rgba(255, 255, 255, 0.18);
     padding: 1rem;
+    background-color: transparent;
+    box-shadow: none;
+    overflow: visible;
+
     display: flex;
     align-items: center;
     gap: 1rem;
+
+    transition:
+        opacity 350ms ease,
+        transform 350ms ease,
+        filter 350ms ease,
+        box-shadow 350ms ease;
 }
 
-.battle-dialogue-container.hidden{
-    display: none;
+.battle-dialogue-container::before,
+.battle-dialogue-container::after {
+    content: "";
+    position: absolute;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.battle-dialogue-container::before {
+    z-index: -2;
+    inset: -16px;
+    background-position: center;
+    background-repeat: repeat;
+    background-size: 6px 6px;
+    opacity: 0;
+    transition: opacity 350ms ease;
+}
+
+.battle-dialogue-container::after {
+    z-index: -1;
+    inset: 0;
+    background: linear-gradient(90deg, var(--dialogue-glow), transparent 62%), rgba(0, 0, 0, 0.76);
+    opacity: 1;
+}
+
+.battle-dialogue-container.friendly::after {
+    background: linear-gradient(270deg, var(--dialogue-glow), transparent 62%), rgba(0, 0, 0, 0.76);
+}
+
+.battle-dialogue-container.friendly {
+    --dialogue-glow: rgba(0, 255, 119, 0.22);
+    --dialogue-shadow: rgba(0, 255, 119, 0.22);
+}
+
+.battle-dialogue-container.hostile {
+    --dialogue-accent: rgba(255, 0, 0, 0.72);
+    --dialogue-glow: rgba(255, 0, 0, 0.24);
+    --dialogue-shadow: rgba(255, 0, 0, 0.22);
+}
+
+.battle-dialogue-container.active {
+    z-index: 2;
+    opacity: var(--dialogue-active-opacity);
+    filter: saturate(1.2);
+    transform: translateY(0) scale(var(--dialogue-active-scale));
+    box-shadow: 0 0 30px 0.625rem var(--dialogue-shadow);
+}
+
+.battle-dialogue-container.active::before {
+    opacity: 0.72;
+}
+
+.battle-dialogue-container.inactive {
+    z-index: 1;
+    opacity: var(--dialogue-inactive-opacity);
+    filter: grayscale(0.25) saturate(0.75);
+    transform: translateY(var(--dialogue-offset)) scale(var(--dialogue-inactive-scale));
+    pointer-events: none;
 }
 
 .battle-dialogue-container img {
@@ -50,34 +127,27 @@
     max-height: 100%;
     object-fit: cover;
     object-position: center calc(0% - 7px);
-    /* border: 1px solid white; */
 }
 
-/* .battle-dialogue-container img.friendly{
-    object-fit: contain;
-    object-position: center top;
-} */
-
-.battle-dialogue-container img.hostile{
+.battle-dialogue-container img.hostile {
     filter: drop-shadow(0 4px 8px rgba(255, 0, 0, 0.7));
 }
 
-.battle-dialogue-container img.friendly{
+.battle-dialogue-container img.friendly {
     filter: drop-shadow(0 2px 8px rgba(0, 255, 119, 0.7));
 }
 
-.battle-dialogue-container p{
+.battle-dialogue-container p {
     font-size: 1.2rem;
 }
 
-.battle-dialogue-container p.hostile{
+.battle-dialogue-container p.hostile {
     color: red;
     order: -1;
     margin-left: auto;
 }
 
-
-.battle-dialogue-container p.friendly{
+.battle-dialogue-container p.friendly {
     color: green;
 }
 
@@ -120,45 +190,3 @@
 .restart-btn {
     cursor: pointer;
 }
-
-/* .battle-log-wrapper {
-    grid-column: 2;
-    width: 300px;
-    height: 80vh;
-    border: black 1px solid;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    background-color: rgba(0, 0, 0, 0.75);
-}
-
-.battle-log-wrapper h1 {
-    font-size: large;
-    margin-bottom: 0.5em;
-}
-
-.battle-log {
-    height: 95%;
-    overflow-y: auto;
-}
-
-.battle-log::-webkit-scrollbar {
-    width: 8px;
-}
-
-.battle-log::-webkit-scrollbar-track {
-    border-radius: 999px;
-}
-
-.battle-log::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 999px;
-}
-
-.battle-log::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.7);
-}
-
-.battle-log p {
-    font-size: small;
-    margin-bottom: 0.5em;
-} */

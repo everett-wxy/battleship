@@ -2,7 +2,6 @@ import { createBoardComponent } from "../components/boardComponent.js";
 import { renderPlacedShip } from "../helpers/shipRenderer.js";
 import villain from "../../assets/villain.png";
 import friendlySoldier from "../../assets/friendlySoldier.png";
-import { playCannonFireSound } from "../../controllers/AudioController.js";
 
 export function createBattleScreen(currentGame, { onHumanFire }) {
     const battleScreen = document.createElement("div");
@@ -80,8 +79,9 @@ function createZone({ gameboard, type, titleText, shouldRenderFleet = false, onH
 
 function createDialogue(currentGame, type) {
     const battleDialogueContainer = document.createElement("div");
-    battleDialogueContainer.classList.add("battle-dialogue-container", "panel");
-    if (type === "hostile") battleDialogueContainer.classList.add("hidden");
+    battleDialogueContainer.classList.add("battle-dialogue-container", "panel", type);
+    battleDialogueContainer.classList.add(type === "friendly" ? "active" : "inactive");
+    battleDialogueContainer.setAttribute("aria-hidden", type === "friendly" ? "false" : "true");
 
     const characterImg = document.createElement("img");
     characterImg.classList.add("character", type);
@@ -99,46 +99,6 @@ function createDialogue(currentGame, type) {
     };
 }
 
-// function createFriendlyBattleDialogue() {
-//     const battleDialogueContainer = document.createElement("div");
-//     battleDialogueContainer.classList.add("battle-dialogue-container", "panel");
-
-//     const character = document.createElement("img");
-//     character.classList.add("character", "friendly");
-//     character.src = villain;
-
-//     const dialogue = document.createElement("p");
-//     dialogue.classList.add("dialogue", "friendly");
-//     dialogue.innerText = "Enemy fleet spotted! Awaiting orders, commander!";
-
-//     battleDialogueContainer.append(character, dialogue);
-
-//     return {
-//         battleDialogueContainer,
-//         dialogue,
-//     };
-// }
-
-// function createHostileBattleDialogue() {
-//     const battleDialogueContainer = document.createElement("div");
-//     battleDialogueContainer.classList.add("battle-dialogue-container", "panel", "hidden");
-
-//     const character = document.createElement("img");
-//     character.classList.add("character", "hostile");
-//     character.src = villain;
-
-//     const dialogue = document.createElement("p");
-//     dialogue.classList.add("dialogue", "hostile");
-//     dialogue.innerText = "You're going down!";
-
-//     battleDialogueContainer.append(character, dialogue);
-
-//     return {
-//         battleDialogueContainer,
-//         dialogue,
-//     };
-// }
-
 function updateBattleDialogue(turn, message, friendlyDialogue, hostileDialogue) {
     console.log(`Turn: ${turn}`);
     let currentDialogue;
@@ -152,8 +112,15 @@ function updateBattleDialogue(turn, message, friendlyDialogue, hostileDialogue) 
         currentDialogue = hostileDialogue;
         pastDialogue = friendlyDialogue;
     }
-    pastDialogue.battleDialogueContainer.classList.add("hidden");
-    currentDialogue.battleDialogueContainer.classList.remove("hidden");
+
+    pastDialogue.battleDialogueContainer.classList.remove("active");
+    pastDialogue.battleDialogueContainer.classList.add("inactive");
+    pastDialogue.battleDialogueContainer.setAttribute("aria-hidden", "true");
+
+    currentDialogue.battleDialogueContainer.classList.remove("inactive");
+    currentDialogue.battleDialogueContainer.classList.add("active");
+    currentDialogue.battleDialogueContainer.setAttribute("aria-hidden", "false");
+
     currentDialogue.dialogueMessage.innerText = message;
 }
 
@@ -210,4 +177,3 @@ function renderGameOver(battleScreen, winner, onRestart) {
     overlay.append(dialog);
     battleScreen.append(overlay);
 }
-
