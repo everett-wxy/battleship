@@ -118,6 +118,21 @@
     position: relative;
     pointer-events: none;
     overflow: visible;
+    border: 2px dashed transparent;
+    animation: targeted 250ms ease 0ms 3;
+}
+
+@keyframes targeted {
+    0% {
+        border-color: rgb(255, 255, 255);
+    }
+    
+    50% {
+        border-color: rgba(255, 255, 255,0);
+    }
+    100% {
+        border-color: rgb(255, 255, 255);
+    }
 }
 
 .atk-marker::before {
