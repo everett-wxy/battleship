@@ -1,16 +1,16 @@
 .battle-screen {
     min-height: 100vh;
-    width: 100%;
+    /* width: 100%; */
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 1rem;
 }
 
 #zones-container {
-    grid-column: 3;
-    justify-self: center;
     display: flex;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 .zone-container {
@@ -22,6 +22,52 @@
 
 .zone-container .zone-title.hostile {
     color: red;
+}
+
+.battle-dialogue-wrapper{
+    position: relative;
+    height: 150px;
+    width: 100%;
+}
+
+.battle-dialogue-container {
+    position: absolute;
+    inset: 0;
+    padding-inline: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.battle-dialogue-container.hidden{
+    display: none;
+}
+
+.battle-dialogue-container img {
+    height: 100px;
+    width: 100px;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    object-position: center calc(0% - 5px);
+}
+
+.battle-dialogue-container img.hostile{
+    filter: drop-shadow(0 4px 8px rgba(255, 0, 0, 0.7));
+}
+
+.battle-dialogue-container p.hostile{
+    color: red;
+    order: -1;
+    margin-left: auto;
+}
+
+.battle-dialogue-container img.friendly{
+    filter: drop-shadow(0 4px 8px rgba(0, 255, 119, 0.7));
+}
+
+.battle-dialogue-container p.friendly{
+    color: green;
 }
 
 .game-over-overlay {

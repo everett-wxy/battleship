@@ -59,5 +59,6 @@ This separation makes the code easier to reason about, test, and modify as the p
 
 ### Attributions
 - Battleship Silhouette Vectors by Vecteezy.com
+- Villain character svg from magnific.com
 - Background image from StockCake.com
 - music from Pixabay.comn

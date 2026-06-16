@@ -69,9 +69,9 @@ export function renderBattleScreen(currentGame, handlers) {
             renderPlacedShip(battleScreenView.hostileBoardComponent.shipOverlay, shipPlacement);
         },
 
-        // renderBattleLog(message) {
-        //     battleScreenView.updateBattleLog(message);
-        // },
+        updateDialogue(turn, message) {
+            battleScreenView.updateBattleDialogue(turn, message);
+        },
 
         renderGameOver(winner) {
             battleScreenView.renderGameOver(winner, handlers.onRestart);

@@ -55,11 +55,17 @@ function startBattle(currentGame) {
         }
 
         try {
+            let currentPlayer = currentGame.currentPlayer === currentGame.humanPlayer ? "human" : "computer";
+            console.log(currentPlayer)
+            
+            battleView.updateDialogue(currentPlayer, "Attack!!!!");
+            
             const humanAtkRes = currentGame.runTurn(row, col);
-
+            currentPlayer = currentGame.currentPlayer === currentGame.humanPlayer ? "human" : "computer";
+            
             battleView.renderEnemyMarker(humanAtkRes);
             // battleView.renderBattleLog(
-            //     `You fired at (${row}, ${col}) - ${humanAtkRes.isHit ? "Hit" : "Miss"}`,
+                //     `You fired at (${row}, ${col}) - ${humanAtkRes.isHit ? "Hit" : "Miss"}`,
             // );
 
             if (humanAtkRes.isSunk) {
@@ -79,6 +85,9 @@ function startBattle(currentGame) {
             isWaitingForComputer = true;
 
             await delay(500);
+            console.log(currentPlayer)
+            battleView.updateDialogue(currentPlayer, "---------------------!!!!");
+
 
             const comAtkRes = currentGame.runTurn();
 
@@ -97,8 +106,9 @@ function startBattle(currentGame) {
                 battleView.renderGameOver(currentGame.winner);
                 return;
             }
-        } catch (error) {
-            // battleView.renderBattleLog(error.message);
+        } catch (e) {
+            console.log(e.message)
+            console.log(e.stack)
         } finally {
             isWaitingForComputer = false;
         }
