@@ -69,6 +69,14 @@ export function renderBattleScreen(currentGame, handlers) {
             renderPlacedShip(battleScreenView.hostileBoardComponent.shipOverlay, shipPlacement);
         },
 
+        setActiveDialogue(turn) {
+            battleScreenView.setActiveDialogue(turn);
+        },
+
+        updateBattleDialogue(turn, message) {
+            battleScreenView.updateBattleDialogue(turn, message);
+        },
+
         updateDialogue(turn, message) {
             battleScreenView.updateBattleDialogue(turn, message);
         },

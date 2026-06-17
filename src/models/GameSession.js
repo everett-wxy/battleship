@@ -74,7 +74,7 @@ export class Game {
             throw new Error("Game is already over");
         }
         // computerPlayer.fire will ignore yAxis, xAxis argument
-        const atkResult = this.currentPlayer.fire(this.opponent, yAxis, xAxis);
+        const atkRes = this.currentPlayer.fire(this.opponent, yAxis, xAxis);
 
         this.updateWinner();
 
@@ -83,7 +83,7 @@ export class Game {
         }
 
         return {
-            atkResult,
+            atkRes,
             attacker: this.currentPlayer === this.humanPlayer ? "computer" : "human",
             defender: this.currentPlayer === this.humanPlayer ? "human" : "human",
             isGameOver: this.isGameOver,

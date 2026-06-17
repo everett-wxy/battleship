@@ -38,11 +38,11 @@ export class ComputerPlayer extends Player {
 
         const coord = target ? this.smartTarget(enemy, target) : this.randomTarget(enemy);
 
-        const atkResult = enemy.gameboard.receiveAttack(coord.y, coord.x);
+        const atkRes = enemy.gameboard.receiveAttack(coord.y, coord.x);
 
-        this.updateTargets(atkResult);
+        this.updateTargets(atkRes);
 
-        return atkResult;
+        return atkRes;
     }
 
     randomTarget(enemy) {
@@ -166,23 +166,23 @@ export class ComputerPlayer extends Player {
         return coord[Math.floor(Math.random() * coord.length)];
     }
 
-    updateTargets(atkResult) {
-        if (!atkResult.isHit) return;
+    updateTargets(atkRes) {
+        if (!atkRes.isHit) return;
 
         const existingTarget = this.struck.find((target) => {
-            return target.ship === atkResult.ship;
+            return target.ship === atkRes.ship;
         });
 
         if (existingTarget) {
-            existingTarget.isSunk = atkResult.isSunk;
-            existingTarget.coord.push(atkResult.coord);
+            existingTarget.isSunk = atkRes.isSunk;
+            existingTarget.coord.push(atkRes.coord);
             return;
         }
 
         this.struck.push({
-            ship: atkResult.ship,
-            isSunk: atkResult.isSunk,
-            coord: [atkResult.coord],
+            ship: atkRes.ship,
+            isSunk: atkRes.isSunk,
+            coord: [atkRes.coord],
         });
     }
 }

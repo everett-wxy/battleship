@@ -43,6 +43,12 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
         element: battleScreen,
         friendlyBoardComponent: friendlyZone.boardComponent,
         hostileBoardComponent: hostileZone.boardComponent,
+        setActiveDialogue(turn) {
+            setActiveDialogue(turn, friendlyBattleDialogue, hostileBattleDialogue);
+        },
+        updateDialogueMessage(turn, message) {
+            updateDialogueMessage(turn, message, friendlyBattleDialogue, hostileBattleDialogue);
+        },
         updateBattleDialogue(turn, message) {
             updateBattleDialogue(turn, message, friendlyBattleDialogue, hostileBattleDialogue);
         },
@@ -99,8 +105,47 @@ function createDialogue(currentGame, type) {
     };
 }
 
+function setActiveDialogue(turn, friendlyBattleDialogue, hostileBattleDialogue) {
+    const { activeBattleDialogue, inactiveBattleDialogue } = getDialogueByTurn(
+        turn,
+        friendlyBattleDialogue,
+        hostileBattleDialogue,
+    );
+
+    activeBattleDialogue.battleDialogueContainer.classList.add("active");
+    activeBattleDialogue.battleDialogueContainer.classList.remove("inactive");
+    activeBattleDialogue.battleDialogueContainer.setAttribute("aria-hidden", "false");
+
+    inactiveBattleDialogue.battleDialogueContainer.classList.add("inactive");
+    inactiveBattleDialogue.battleDialogueContainer.classList.remove("active");
+    inactiveBattleDialogue.battleDialogueContainer.setAttribute("aria-hidden", "true");
+}
+
+function updateDialogueMessage(turn, message, friendlyBattleDialogue, hostileBattleDialogue) {
+    const { activeBattleDialogue } = getDialogueByTurn(turn, friendlyBattleDialogue, hostileBattleDialogue);
+
+    activeBattleDialogue.dialogueMessage.innerText = message;
+}
+
+function getDialogueByTurn(turn, friendlyBattleDialogue, hostileBattleDialogue) {
+    if (turn === "human") {
+        return {
+            activeBattleDialogue: friendlyBattleDialogue,
+            inactiveBattleDialogue: hostileBattleDialogue,
+        };
+    }
+
+    if (turn === "computer") {
+        return {
+            activeBattleDialogue: hostileBattleDialogue,
+            inactiveBattleDialogue: friendlyBattleDialogue,
+        };
+    }
+
+    throw new Error(`Invalid turn: ${turn}`);
+}
+
 function updateBattleDialogue(turn, message, friendlyDialogue, hostileDialogue) {
-    console.log(`Turn: ${turn}`);
     let currentDialogue;
     let pastDialogue;
 

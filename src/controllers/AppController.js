@@ -61,6 +61,8 @@ function startBattle(currentGame) {
         } else {
             playMissedSound();
         }
+        // update dialogue
+        // switch dialogue
     }
 
     async function handleHumanFire(row, col) {
@@ -71,15 +73,15 @@ function startBattle(currentGame) {
         try {
             let currentPlayer = currentGame.currentPlayer === currentGame.humanPlayer ? "human" : "computer";
 
-            const humanAtkRes = currentGame.runTurn(row, col);
+            const humanAtkRes = currentGame.runTurn(row, col).atkRes;
+            console.log(humanAtkRes)
             
             isWaitingForComputer = true;
-            
-            
             
             await handleAtkFeedback(humanAtkRes, () => {
                 battleView.renderEnemyMarker(humanAtkRes);
             });
+            
             battleView.updateDialogue(currentPlayer, generateDialogueMessage(currentGame, humanAtkRes));
             
             if (humanAtkRes.isSunk) {
@@ -97,7 +99,7 @@ function startBattle(currentGame) {
             
             await delay(1500);
             
-            const comAtkRes = currentGame.runTurn();
+            const comAtkRes = currentGame.runTurn().atkRes;
             
             
             await handleAtkFeedback(comAtkRes, () => {
