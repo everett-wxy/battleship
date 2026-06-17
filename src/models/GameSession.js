@@ -82,7 +82,14 @@ export class Game {
             this.switchPlayer();
         }
 
-        return atkResult;
+        return {
+            atkResult,
+            attacker: this.currentPlayer === this.humanPlayer ? "computer" : "human",
+            defender: this.currentPlayer === this.humanPlayer ? "human" : "human",
+            isGameOver: this.isGameOver,
+            winner: this.winner,
+            nextPlayer: this.currentPlayer,
+        };
     }
 
     updateWinner() {

@@ -179,8 +179,8 @@ describe("Computer fire logic", () => {
             { y: 4, x: 3 },
             { y: 4, x: 5 },
         ];
-        const atkResult = game.runTurn();
-        expect(validAdjacentCoordinates).toContainEqual(atkResult.coord);
+        const turnResult = game.runTurn();
+        expect(validAdjacentCoordinates).toContainEqual(turnResult.atkResult.coord);
     });
 
     it("falls back to random targeting when no valid smart targets remain", () => {
