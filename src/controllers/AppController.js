@@ -8,6 +8,7 @@ import {
 
 import { Game } from "../models/GameSession.js";
 import { playCannonFireSound, playExplosionSound, playMissedSound } from "./AudioController.js";
+import { MarsStroke } from "lucide";
 
 export function initialise() {
     createAppShell();
@@ -50,67 +51,34 @@ function startBattle(currentGame) {
         onRestart: restartGame,
     });
 
-    async function handleAtkFeedback(atkRes, renderMarker) {
-        playCannonFireSound();
-        renderMarker();
-
-        await delay(500);
-
-        if (atkRes.isHit) {
-            playExplosionSound();
-        } else {
-            playMissedSound();
-        }
-        // update dialogue
-        // switch dialogue
-    }
-
     async function handleHumanFire(row, col) {
         if (currentGame.isGameOver || isWaitingForComputer) {
             return;
         }
 
         try {
-            let currentPlayer = currentGame.currentPlayer === currentGame.humanPlayer ? "human" : "computer";
+            const turnRes = currentGame.runTurn(row, col);
 
-            const humanAtkRes = currentGame.runTurn(row, col).atkRes;
-            console.log(humanAtkRes)
-            
             isWaitingForComputer = true;
-            
-            await handleAtkFeedback(humanAtkRes, () => {
-                battleView.renderEnemyMarker(humanAtkRes);
-            });
-            
-            battleView.updateDialogue(currentPlayer, generateDialogueMessage(currentGame, humanAtkRes));
-            
-            if (humanAtkRes.isSunk) {
-                const sunkShipPlacement = getShipPlacement(currentGame.computerPlayer.gameboard, humanAtkRes.ship);
-                
+
+            await handleTurnFeedback(turnRes, battleView, "enemy");
+
+            if (turnRes.atkRes.isSunk) {
+                const sunkShipPlacement = getShipPlacement(currentGame.computerPlayer.gameboard, turnRes.atkRes.ship);
+
                 battleView.renderEnemyShip(sunkShipPlacement);
             }
-            
+
             if (currentGame.isGameOver) {
                 battleView.renderGameOver(currentGame.winner);
                 return;
             }
-            
-            currentPlayer = currentGame.currentPlayer === currentGame.humanPlayer ? "human" : "computer";
-            
+
             await delay(1500);
-            
-            const comAtkRes = currentGame.runTurn().atkRes;
-            
-            
-            await handleAtkFeedback(comAtkRes, () => {
-                battleView.renderFriendlyMarker(comAtkRes);
-            });
-            
-            battleView.updateDialogue(currentPlayer, generateDialogueMessage(currentGame, comAtkRes));
-            
-            if (comAtkRes.isSunk) {
-                //
-            }
+
+            const computerTurnRes = currentGame.runTurn();
+
+            await handleTurnFeedback(computerTurnRes, battleView, "friendly");
 
             if (currentGame.isGameOver) {
                 battleView.renderGameOver(currentGame.winner);
@@ -139,14 +107,34 @@ function delay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function generateDialogueMessage(currentGame, atkRes) {
-    let message;
-
-    if (!atkRes.isHit) {
-        message = "Target missed! Better aim next time";
-    } else {
-        message = "Target hit!";
+function generateDialogueMessage({ atkRes, nextPlayer }) {
+    if (nextPlayer.type === "computer") {
+        return atkRes.isHit
+            ? "Direct hit! Enemy is preparing to retaliate!"
+            : "Shot missed. Enemy is preparing to retaliate!";
     }
 
-    return message;
+    return atkRes.isHit ? "We took a hit! Awaiting your next command!" : "Enemy missed! Awaiting your next command!";
+}
+
+async function handleTurnFeedback(turnRes, battleView, markerTarget) {
+    playCannonFireSound();
+
+    markerTarget === "enemy"
+        ? battleView.renderEnemyMarker(turnRes.atkRes)
+        : battleView.renderFriendlyMarker(turnRes.atkRes);
+
+    await delay(500);
+
+    turnRes.atkRes.isHit ? playExplosionSound() : playMissedSound();
+
+    const dialogue = generateDialogueMessage(turnRes);
+
+    battleView.updateBattleDialogue(turnRes.attacker, dialogue);
+
+    await delay(2000);
+
+    if (!turnRes.isGameOver) {
+        battleView.setActiveDialogue(turnRes.nextPlayer);
+    }
 }
