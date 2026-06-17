@@ -43,7 +43,6 @@
 
 .battle-dialogue-container {
     grid-area: stack;
-    border: 1px solid rgba(255, 255, 255, 0.18);
     padding: 1rem;
     background-color: transparent;
     box-shadow: none;
@@ -68,14 +67,25 @@
     pointer-events: none;
 }
 
+.battle-dialogue-container.friendly {
+    --dialogue-accent: rgb(28, 0, 189);
+    --dialogue-glow: rgba(0, 0, 255, 0.22);
+    --dialogue-shadow: rgba(8, 0, 255, 0.22);
+}
+
+.battle-dialogue-container.hostile {
+    --dialogue-accent: rgba(255, 0, 0, 0.72);
+    --dialogue-glow: rgba(255, 0, 0, 0.24);
+    --dialogue-shadow: rgba(255, 0, 0, 0.22);
+}
+
 .battle-dialogue-container::before {
     z-index: -2;
-    inset: -16px;
+    inset: 0;
+    background-image: radial-gradient(var(--dialogue-accent) 1px, transparent 1px);
     background-position: center;
     background-repeat: repeat;
-    background-size: 6px 6px;
-    opacity: 0;
-    transition: opacity 350ms ease;
+    background-size: 4px 4px;
 }
 
 .battle-dialogue-container::after {
@@ -89,27 +99,12 @@
     background: linear-gradient(270deg, var(--dialogue-glow), transparent 62%), rgba(0, 0, 0, 0.76);
 }
 
-.battle-dialogue-container.friendly {
-    --dialogue-glow: rgba(0, 255, 119, 0.22);
-    --dialogue-shadow: rgba(0, 255, 119, 0.22);
-}
-
-.battle-dialogue-container.hostile {
-    --dialogue-accent: rgba(255, 0, 0, 0.72);
-    --dialogue-glow: rgba(255, 0, 0, 0.24);
-    --dialogue-shadow: rgba(255, 0, 0, 0.22);
-}
-
 .battle-dialogue-container.active {
     z-index: 2;
     opacity: var(--dialogue-active-opacity);
     filter: saturate(1.2);
     transform: translateY(0) scale(var(--dialogue-active-scale));
     box-shadow: 0 0 30px 0.625rem var(--dialogue-shadow);
-}
-
-.battle-dialogue-container.active::before {
-    opacity: 0.72;
 }
 
 .battle-dialogue-container.inactive {
@@ -127,28 +122,18 @@
     max-height: 100%;
     object-fit: cover;
     object-position: center calc(0% - 7px);
-}
-
-.battle-dialogue-container img.hostile {
-    filter: drop-shadow(0 4px 8px rgba(255, 0, 0, 0.7));
-}
-
-.battle-dialogue-container img.friendly {
-    filter: drop-shadow(0 2px 8px rgba(0, 255, 119, 0.7));
+    filter: drop-shadow(0 4px 8px var(--dialogue-accent));
 }
 
 .battle-dialogue-container p {
     font-size: 1.2rem;
+    max-width: 80%;
+    color: white;
 }
 
 .battle-dialogue-container p.hostile {
-    color: red;
     order: -1;
     margin-left: auto;
-}
-
-.battle-dialogue-container p.friendly {
-    color: green;
 }
 
 .game-over-overlay {
