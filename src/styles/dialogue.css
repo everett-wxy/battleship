@@ -100,18 +100,21 @@
 }
 
 .battle-dialogue-container img.friendly {
-    filter: drop-shadow(2px 2px 4px rgba(6, 143, 247, 0.5));
+    /* filter: drop-shadow(2px 2px 4px rgba(6, 143, 247, 0.5)); */
+    filter: drop-shadow(0px 0px 10px rgba(255, 0, 0, 0.5));
 }
 
 .battle-dialogue-container p {
-    font-size: 1.2rem;
+    font-size: 1rem;
     max-width: 80%;
     color: white;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }
 
-.battle-dialogue-container p.friendly{
+.battle-dialogue-container p.friendly {
     /* color: rgb(var(--friendly-light)); */
 }
+
 .battle-dialogue-container p.hostile {
     order: -1;
     margin-left: auto;

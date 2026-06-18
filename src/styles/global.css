@@ -20,6 +20,7 @@ html {
     font-family: "Quantico", sans-serif;
     font-size: 16px;
     color: white;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }
 
 button,
@@ -38,6 +39,7 @@ body {
     background-size: cover;
     background-position: 30%;
     background-repeat: no-repeat;
+    /* text-shadow: (0px 0px 10px rgba(255, 0, 0, 1));     */
 }
 
 .rain {
@@ -163,4 +165,8 @@ button.modal-button:hover {
     cursor: pointer;
     transform: translateY(-2px);
     box-shadow: 0 6px 12px #0004;
+}
+
+button {
+    text-shadow: 0 0 10px rgba(255, 0, 0, .5);
 }
