@@ -2,31 +2,31 @@
     width: 700px;
     display: flex;
     flex-direction: column;
-}
-
-#message-container {
-    /* border: blue 1px solid; */
-    background-color: rgba(0, 0, 0, 0.5);
-    padding-block: 1rem;
-    padding-inline: 2rem;
-    border-radius: 0.5rem;
-    margin-bottom: 0.5rem;
-    text-align: center;
+    gap: 1rem;
 }
 
 #grid-fleet-container {
     width: 100%;
+    max-width: 720px;
     /* border: green 2px solid; */
+    border-radius: 0.5rem;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: stretch;
+    flex-wrap: wrap;
+}
+
+.board-and-buttons-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .fleet-container {
     flex: 1;
     min-width: 0;
     /* border: yellow 3px solid; */
-    padding: 1rem;
+    padding: 1rem 1rem 1rem 0rem;
     /* min-width: 0; */
 
     display: flex;
@@ -37,36 +37,122 @@
 
 .ship-card {
     /* take up remaining free space */
+    position: relative;
     flex: 1;
-    min-height: 0;
-    width: 100%;
+    width: 130px;
+    height: 100px;
+    /* border: .125rem solid rgb(179, 179, 179); */
     border-radius: 0.5rem;
-    background-color: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 10px 2px rgba(var(--friendly-dark), 0.5);
+
+    overflow: hidden;
+    transition:
+        transform 0.5s ease,
+        box-shadow 0.5s ease;
+
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: space-evenly;
+
+    --border: 3px solid rgba(110, 101, 101, 0.7);
+}
+
+.ship-card::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+
+    background: linear-gradient(0deg, transparent, transparent 30%, rgba(255, 255, 255, 0.7));
+
+    transform: rotate(-45deg);
+    opacity: 0;
+    transition:
+        opacity 0.5s ease,
+        transform 0.5s ease;
+
+    pointer-events: none;
+    z-index: 1;
+}
+
+.ship-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px 2px rgba(var(--friendly-med), 0.5);
+}
+
+.ship-card:hover::before {
+    opacity: 0.8;
+    transform: rotate(-45deg) translateY(100%);
+}
+
+.corner {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+}
+
+.top-left {
+    top: 0px;
+    left: 0px;
+    border-top: var(--border);
+    border-left: var(--border);
+    border-top-left-radius: 0.5rem;
+}
+
+.top-right {
+    top: 0px;
+    right: 0px;
+    border-top: var(--border);
+    border-right: var(--border);
+    border-top-right-radius: 0.5rem;
+}
+
+.bottom-left {
+    bottom: 0px;
+    left: 0px;
+    border-bottom: var(--border);
+    border-left: var(--border);
+    border-bottom-left-radius: 0.5rem;
+}
+
+.bottom-right {
+    bottom: 0px;
+    right: 0px;
+    border-bottom: var(--border);
+    border-right: var(--border);
+    border-bottom-right-radius: 0.5rem;
 }
 
 .ship-icon-wrapper {
     /* take up remaining free space */
     flex: 1;
-    min-height: 0;
+    height: 100%;
     width: 100%;
+    padding: 1.2rem; 
+    /* min-height: 0; */
     /* border: rgba(255, 255, 0, 0.5) dashed 2px; */
+
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    font-size: 0.9rem;
 }
 
 .fleet-container img.ship-icon {
-    height: 70%;
-    width: auto;
-    max-width: 80%;
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
     filter: invert(100%);
 }
 
 #battleship {
-    max-width: 70%;
+    max-width: 80%;
 }
 
 #destroyer {
@@ -96,19 +182,26 @@
 }
 
 .placed-ship {
-    opacity: 30%;
+    opacity: 60%;
+    pointer-events: none;
+}
+
+.placed-ship::before{
+    pointer-events: none;
 }
 
 .button-panel {
-    padding-block: 1rem;
+    padding-inline: 1rem;
+    padding-bottom: 1rem;
     display: flex;
-    justify-content: space-evenly;
+    gap: 1em;
+    justify-content: center;
 }
 
 .button-panel button {
     border-radius: 0.2em;
-    padding-block: 0.3em;
-    padding-inline: 2em;
+    padding-block: 0.5em;
+    padding-inline: .7em;
     background-color: rgba(0, 0, 0, 0.3);
     color: white;
     position: relative;
@@ -116,6 +209,11 @@
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.button-panel button.change-orientation-btn {
+    width: 235px;
 }
 
 .button-panel button::before {
@@ -148,6 +246,6 @@
 }
 
 .confirm-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.7;
     cursor: not-allowed;
 }

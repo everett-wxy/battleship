@@ -1,3 +1,4 @@
+import { playHoverSound } from "../../controllers/AudioController.js";
 
 export function createBoardComponent(gameboard) {
     const gameBoardContainer = document.createElement("div");
@@ -60,6 +61,9 @@ function createGridMap(gameboard) {
             cellEl.classList.add("grid-cell");
             cellEl.dataset.row = rowIndex;
             cellEl.dataset.col = colIndex;
+            cellEl.addEventListener("mouseenter", () => {
+                playHoverSound();
+            });
 
             gridMap.append(cellEl);
         });

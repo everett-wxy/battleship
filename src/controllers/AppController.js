@@ -8,7 +8,6 @@ import {
 
 import { Game } from "../models/GameSession.js";
 import { playCannonFireSound, playExplosionSound, playMissedSound } from "./AudioController.js";
-import { MarsStroke } from "lucide";
 
 export function initialise() {
     createAppShell();
@@ -16,13 +15,13 @@ export function initialise() {
 
     // generalte random placement
     const currentGame = new Game("everett");
-    // set up fleet
-    Game.fleet.forEach((ship, i) => {
-        currentGame.humanPlayer.gameboard.placeShip(ship.name, ship.length, i + 1, i, "horizontal");
-    });
-    currentGame.placeComputerFleet();
+    showFleetSetup(currentGame);
 
-    startBattle(currentGame);
+    // Game.fleet.forEach((ship, i) => {
+    //     currentGame.humanPlayer.gameboard.placeShip(ship.name, ship.length, i + 1, i, "horizontal");
+    // });
+    // currentGame.placeComputerFleet();
+    // startBattle(currentGame);
 }
 
 function handleGameStart(playerName) {
@@ -148,11 +147,14 @@ function generateDialogueMessage(atkRes, attacker) {
         hostile: {
             hit: [
                 "AHHH HAAAAAA. I warned you these waters were mine.",
+                "This is tooooooooo easy",
+                "To tell you the truth, I didn't even aim for that one.",
                 "Come on... Your defenses are disappointingly soft...",
-                "Yawn~ Try not to make this too easy.",
+                "Yawn. Try not to make this too easy.",
+                "Is that all you got? Ptff",
                 "I've sunk better captains before breakfast.",
-                "I expected more resistance, Commander noob.",
-                "Go back to playing on your pool.",
+                "I expected more resistance, Commander.",
+                "Go back to your toy boats, Commander. These waters are no place for pretend admirals.",
             ],
             miss: [
                 "A rare miscalculation. Do not mistake it for mercy.",

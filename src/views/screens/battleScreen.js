@@ -1,6 +1,6 @@
 import { createBoardComponent } from "../components/boardComponent.js";
 import { renderPlacedShip } from "../helpers/shipRenderer.js";
-import villain from "../../assets/villain.png";
+import villain from "../../assets/hostile-admiral-neutral.png";
 import friendlySoldier from "../../assets/friendlySoldier.png";
 
 export function createBattleScreen(currentGame, { onHumanFire }) {
@@ -105,22 +105,6 @@ function createDialogue(currentGame, type) {
     };
 }
 
-function setActiveDialogue(turn, friendlyBattleDialogue, hostileBattleDialogue) {
-    const { activeBattleDialogue, inactiveBattleDialogue } = getDialogueByTurn(
-        turn,
-        friendlyBattleDialogue,
-        hostileBattleDialogue,
-    );
-
-    activeBattleDialogue.battleDialogueContainer.classList.add("active");
-    activeBattleDialogue.battleDialogueContainer.classList.remove("inactive");
-    activeBattleDialogue.battleDialogueContainer.setAttribute("aria-hidden", "false");
-
-    inactiveBattleDialogue.battleDialogueContainer.classList.add("inactive");
-    inactiveBattleDialogue.battleDialogueContainer.classList.remove("active");
-    inactiveBattleDialogue.battleDialogueContainer.setAttribute("aria-hidden", "true");
-}
-
 function updateDialogueMessage(turn, message, friendlyBattleDialogue, hostileBattleDialogue) {
     const { activeBattleDialogue } = getDialogueByTurn(turn, friendlyBattleDialogue, hostileBattleDialogue);
 
@@ -167,6 +151,22 @@ function updateBattleDialogue(turn, message, friendlyDialogue, hostileDialogue) 
     currentDialogue.battleDialogueContainer.setAttribute("aria-hidden", "false");
 
     currentDialogue.dialogueMessage.innerText = message;
+}
+
+function setActiveDialogue(turn, friendlyBattleDialogue, hostileBattleDialogue) {
+    const { activeBattleDialogue, inactiveBattleDialogue } = getDialogueByTurn(
+        turn,
+        friendlyBattleDialogue,
+        hostileBattleDialogue,
+    );
+
+    activeBattleDialogue.battleDialogueContainer.classList.add("active");
+    activeBattleDialogue.battleDialogueContainer.classList.remove("inactive");
+    activeBattleDialogue.battleDialogueContainer.setAttribute("aria-hidden", "false");
+
+    inactiveBattleDialogue.battleDialogueContainer.classList.add("inactive");
+    inactiveBattleDialogue.battleDialogueContainer.classList.remove("active");
+    inactiveBattleDialogue.battleDialogueContainer.setAttribute("aria-hidden", "true");
 }
 
 function renderFleet(shipOverlay, placedShips) {

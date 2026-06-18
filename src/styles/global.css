@@ -3,6 +3,11 @@
 :root {
     --cell-size: 50px;
     --board-size: 10;
+    --friendly-light: 238, 71, 83;
+    --friendly-med: 193, 18, 31;
+    --friendly-dark: 120, 0, 0;
+    --hostile-light: 65, 71, 112;
+    --hostile-dark: 55, 34, 72;
 }
 
 * {

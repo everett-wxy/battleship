@@ -1,9 +1,10 @@
 import { Game } from "../../models/GameSession.js";
 import { createBoardComponent } from "../components/boardComponent.js";
+import { createDialogue } from "../components/dialogue.js";
 import { renderPlacedShip, shipIcons } from "../helpers/shipRenderer.js";
 
 let draggedShip = null;
-let draggedShipIcon = null;
+let draggedShipCard = null;
 let shipOrientation = "horizontal";
 let placedShips = new Set();
 
@@ -12,7 +13,16 @@ export function createFleetPlacementScreen(currentGame, onContinue) {
     fleetPlacementScreen.id = "fleet-placement-screen";
     fleetPlacementScreen.classList.add("screen");
 
-    const messageHeader = createMessageHeader();
+    const dialogue = createDialogue({
+        side: "friendly",
+        message: `Welcome aboard Commander ${currentGame.humanPlayer.name}!`,
+    });
+
+    setTimeout(() => {
+        dialogue.setMessage("Plan our formation by dragging and dropping ships on the map.");
+    }, 3000);
+
+    dialogue.setCharacterImg("serious");
 
     const gridFleetContainer = document.createElement("div");
     gridFleetContainer.id = "grid-fleet-container";
@@ -20,8 +30,6 @@ export function createFleetPlacementScreen(currentGame, onContinue) {
     const boardComponent = createBoardComponent(currentGame.humanPlayer.gameboard.board);
 
     const fleetContainer = createFleetContainer(boardComponent.gridMap);
-
-    gridFleetContainer.append(boardComponent.gameBoardContainer, fleetContainer);
 
     const buttonPanel = document.createElement("div");
     buttonPanel.classList.add("button-panel");
@@ -38,21 +46,15 @@ export function createFleetPlacementScreen(currentGame, onContinue) {
 
     buttonPanel.append(changeOrientationBtn, resetBtn, confirmBtn);
 
-    fleetPlacementScreen.append(messageHeader, gridFleetContainer, buttonPanel);
+    const boardAndButtonsWrapper = document.createElement("div");
+    boardAndButtonsWrapper.classList.add("board-and-buttons-wrapper");
+    boardAndButtonsWrapper.append(boardComponent.gameBoardContainer, buttonPanel);
+
+    gridFleetContainer.append(boardAndButtonsWrapper, fleetContainer);
+
+    fleetPlacementScreen.append(gridFleetContainer, dialogue.battleDialogueContainer);
 
     return fleetPlacementScreen;
-}
-
-function createMessageHeader() {
-    const messageContainer = document.createElement("div");
-    messageContainer.id = "message-container";
-
-    const message = document.createElement("p");
-    message.innerText = "Plan your formation by dragging and dropping ships on the map.";
-
-    messageContainer.append(message);
-
-    return messageContainer;
 }
 
 function createFleetContainer(gridMap) {
@@ -65,6 +67,14 @@ function createFleetContainer(gridMap) {
         const shipCard = document.createElement("div");
         shipCard.classList.add("ship-card");
 
+        const corners = ["top-left", "top-right", "bottom-left", "bottom-right"];
+
+        corners.forEach((position) => {
+            const corner = document.createElement("span");
+            corner.classList.add("corner", position);
+            shipCard.append(corner);
+        });
+
         const shipIconWrapper = document.createElement("div");
         shipIconWrapper.classList.add("ship-icon-wrapper");
 
@@ -73,18 +83,19 @@ function createFleetContainer(gridMap) {
         shipIcon.id = shipName;
         shipIcon.src = shipIcons[shipName];
         shipIcon.alt = ship.name;
-        shipIcon.draggable = true;
+        shipIcon.draggable = false;
+        shipCard.draggable = true;
 
-        shipIcon.addEventListener("dragstart", function (event) {
+        shipCard.addEventListener("dragstart", function (event) {
             draggedShip = ship;
-            draggedShipIcon = shipIcon;
+            draggedShipCard = shipCard;
 
             event.dataTransfer.setData("text/plain", shipName);
         });
 
-        shipIcon.addEventListener("dragend", function () {
+        shipCard.addEventListener("dragend", function () {
             draggedShip = null;
-            draggedShipIcon = null;
+            draggedShipCard = null;
 
             clearHighlightedCells(gridMap);
         });
@@ -93,8 +104,8 @@ function createFleetContainer(gridMap) {
         shipNameEl.classList.add("ship-name");
         shipNameEl.innerText = ship.name;
 
-        shipIconWrapper.append(shipIcon);
-        shipCard.append(shipIconWrapper, shipNameEl);
+        shipIconWrapper.append(shipIcon, shipNameEl);
+        shipCard.append(shipIconWrapper);
         fleetSetUp.append(shipCard);
     });
 
@@ -150,7 +161,7 @@ function enableFleetPlacementDrag(gridMap, shipOverlay, game, confirmBtn) {
     gridMap.addEventListener("drop", (event) => {
         event.preventDefault();
 
-        if (!draggedShip || !draggedShipIcon) {
+        if (!draggedShip || !draggedShipCard) {
             return;
         }
 
@@ -178,7 +189,7 @@ function enableFleetPlacementDrag(gridMap, shipOverlay, game, confirmBtn) {
 
         try {
             const shipPlacement = placeDroppedShip(
-                draggedShipIcon,
+                draggedShipCard,
                 game.humanPlayer.gameboard,
                 draggedShip,
                 targetRow,
@@ -194,7 +205,7 @@ function enableFleetPlacementDrag(gridMap, shipOverlay, game, confirmBtn) {
         }
 
         draggedShip = null;
-        draggedShipIcon = null;
+        draggedShipCard = null;
 
         clearHighlightedCells(gridMap);
     });
@@ -204,10 +215,11 @@ function createFleetPlacementBtns(game, fleetContainer, gridMap, shipOverlay, st
     const changeOrientationBtn = document.createElement("button");
     changeOrientationBtn.type = "button";
     changeOrientationBtn.classList.add("change-orientation-btn");
-    changeOrientationBtn.innerText = "Change Orientation";
+    changeOrientationBtn.innerText = `Change Orientation: ${shipOrientation[0].toUpperCase(1) + shipOrientation.slice(1)}`;
 
     changeOrientationBtn.addEventListener("click", () => {
         shipOrientation = shipOrientation === "horizontal" ? "vertical" : "horizontal";
+        changeOrientationBtn.innerText = `Change Orientation: ${shipOrientation[0].toUpperCase(1) + shipOrientation.slice(1)}`;
     });
 
     const resetBtn = document.createElement("button");
@@ -236,15 +248,15 @@ function createFleetPlacementBtns(game, fleetContainer, gridMap, shipOverlay, st
         shipOverlay.replaceChildren();
         clearHighlightedCells(gridMap);
 
-        const shipIconEls = fleetContainer.querySelectorAll(".ship-icon");
+        const shipCards = fleetContainer.querySelectorAll(".ship-card");
 
-        shipIconEls.forEach((shipIcon) => {
-            shipIcon.draggable = true;
-            shipIcon.classList.remove("placed-ship");
+        shipCards.forEach((shipCard) => {
+            shipCard.draggable = true;
+            shipCard.classList.remove("placed-ship");
         });
 
         draggedShip = null;
-        draggedShipIcon = null;
+        draggedShipCard = null;
         shipOrientation = "horizontal";
         placedShips.clear();
         confirmBtn.disabled = true;
@@ -303,11 +315,11 @@ function clearHighlightedCells(gridMap) {
     });
 }
 
-function placeDroppedShip(shipIcon, gameboard, ship, yAxis, xAxis, orientation) {
+function placeDroppedShip(shipCard, gameboard, ship, yAxis, xAxis, orientation) {
     gameboard.placeShip(ship.name, ship.length, yAxis, xAxis, orientation);
 
-    shipIcon.draggable = false;
-    shipIcon.classList.add("placed-ship");
+    shipCard.draggable = false;
+    shipCard.classList.add("placed-ship");
 
     return gameboard.placedShips.at(-1);
 }
