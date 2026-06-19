@@ -2,7 +2,10 @@ import bgMusic from "../assets/music_for_videos-pirates-163389.mp3";
 import missedSound from "../assets/missed.mp3";
 import canonFireSound from "../assets/canon-fire.mp3";
 import explosionSound from "../assets/explosion.mp3";
-import hoverSound from "../assets/hover-1.mp3";
+// import gridCellHoverSound from "../assets/click-1.wav";
+import gridCellHoverSound from "../assets/hover-1.mp3";
+import shipCardHoverSound from "../assets/hover-5.wav";
+import buttonClickSound from "../assets/click-2.wav";
 
 const normalVolume = 0.3;
 const fadeDuration = 7000;
@@ -37,6 +40,20 @@ export function enableBackgroundMusic() {
         },
         { once: true },
     );
+}
+
+export function enableButtonClickSound() {
+    const buttonClickSoundEffect = new Audio(buttonClickSound);
+
+    document.addEventListener("click", (event) => {
+        const clickedButton = event.target.closest("button");
+
+        if (!clickedButton) return;
+        if (clickedButton.disabled) return;
+
+        buttonClickSoundEffect.currentTime = 0;
+        buttonClickSoundEffect.play();
+    });
 }
 
 export async function toggleBackgroundMusic() {
@@ -135,8 +152,14 @@ export function playExplosionSound() {
     explosion.play();
 }
 
-export function playHoverSound() {
-    const hoverSoundEffect = new Audio(hoverSound);
-    hoverSoundEffect.volume = 0.1;
+export function playGridCellHoverSound() {
+    const hoverSoundEffect = new Audio(gridCellHoverSound);
+    hoverSoundEffect.volume = 0.8;
     hoverSoundEffect.play();
+}
+
+export function playHoverSoundShipCard() {
+    const hoverSoundShipCardEffect = new Audio(shipCardHoverSound);
+    hoverSoundShipCardEffect.volume = 0.6;
+    hoverSoundShipCardEffect.play();
 }

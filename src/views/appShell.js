@@ -1,6 +1,7 @@
 import { createIcons, Volume2, VolumeX, FileText } from "lucide";
 import {
     enableBackgroundMusic,
+    enableButtonClickSound,
     toggleBackgroundMusic,
 } from "../controllers/AudioController.js";
 
@@ -24,7 +25,8 @@ export function renderLucideIcons() {
 }
 
 function createAudioBtn() {
-    // enableBackgroundMusic();
+    enableBackgroundMusic();
+    enableButtonClickSound();
 
     const audioBtn = document.createElement("button");
 

@@ -1,3 +1,4 @@
+import { playHoverSoundShipCard } from "../../controllers/AudioController.js";
 import { Game } from "../../models/GameSession.js";
 import { createBoardComponent } from "../components/boardComponent.js";
 import { createDialogue } from "../components/dialogue.js";
@@ -85,6 +86,11 @@ function createFleetContainer(gridMap) {
         shipIcon.alt = ship.name;
         shipIcon.draggable = false;
         shipCard.draggable = true;
+
+        shipCard.addEventListener("mouseenter", function () {
+            console.log("hi");
+            playHoverSoundShipCard();
+        });
 
         shipCard.addEventListener("dragstart", function (event) {
             draggedShip = ship;
