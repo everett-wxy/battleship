@@ -1,5 +1,6 @@
 #fleet-placement-screen {
-    width: 700px;
+    max-width: 700px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -39,7 +40,7 @@
     /* take up remaining free space */
     position: relative;
     flex: 1;
-    width: 130px;
+    width: 110px;
     height: 100px;
     /* border: .125rem solid rgb(179, 179, 179); */
     border-radius: 0.5rem;
@@ -133,7 +134,7 @@
     flex: 1;
     height: 100%;
     width: 100%;
-    padding: 1.2rem; 
+    padding: 1rem; 
     /* min-height: 0; */
     /* border: rgba(255, 255, 0, 0.5) dashed 2px; */
 
@@ -148,7 +149,7 @@
     height: 100%;
     width: 100%;
     object-fit: contain;
-    filter: invert(100%);
+    filter: invert(100%) drop-shadow(0px 0px 3px rgba(255, 0, 0, 1));;
 }
 
 #battleship {
@@ -188,6 +189,10 @@
 
 .placed-ship::before{
     pointer-events: none;
+}
+
+.placed-ship img.ship-icon{
+    filter: drop-shadow(0px 0px 5px rgba(255, 0, 0, .8));;
 }
 
 .button-panel {

@@ -258,6 +258,7 @@ function createFleetPlacementBtns(game, fleetContainer, gridMap, shipOverlay, st
         draggedShip = null;
         draggedShipCard = null;
         shipOrientation = "horizontal";
+        changeOrientationBtn.innerText = `Change Orientation: ${shipOrientation[0].toUpperCase(1) + shipOrientation.slice(1)}`;
         placedShips.clear();
         confirmBtn.disabled = true;
 
