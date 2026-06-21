@@ -29,6 +29,7 @@ textarea,
 select {
     color: inherit;
     font: inherit;
+    text-shadow: inherit;
 }
 
 body {
@@ -167,6 +168,3 @@ button.modal-button:hover {
     box-shadow: 0 6px 12px #0004;
 }
 
-button {
-    text-shadow: 0 0 10px rgba(255, 0, 0, .5);
-}

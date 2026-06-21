@@ -8,6 +8,7 @@ import {
 
 import { Game } from "../models/GameSession.js";
 import { playCannonFireSound, playExplosionSound, playMissedSound } from "./AudioController.js";
+import { delay } from "../views/helpers/delay.js";
 
 export function initialise() {
     createAppShell();
@@ -15,13 +16,13 @@ export function initialise() {
 
     // generalte random placement
     const currentGame = new Game("everett");
-    showFleetSetup(currentGame);
+    // showFleetSetup(currentGame);
 
-    // Game.fleet.forEach((ship, i) => {
-    //     currentGame.humanPlayer.gameboard.placeShip(ship.name, ship.length, i + 1, i, "horizontal");
-    // });
-    // currentGame.placeComputerFleet();
-    // startBattle(currentGame);
+    Game.fleet.forEach((ship, i) => {
+        currentGame.humanPlayer.gameboard.placeShip(ship.name, ship.length, i + 1, i, "horizontal");
+    });
+    currentGame.placeComputerFleet();
+    startBattle(currentGame);
 }
 
 function handleGameStart(playerName) {
@@ -102,85 +103,6 @@ function getShipPlacement(gameboard, ship) {
     });
 }
 
-function delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function generateDialogueMessage(atkRes, attacker) {
-    const dialogues = {
-        friendly: {
-            hit: [
-                "Direct hit, Commander! Enemy hull integrity compromised!",
-                "Good strike, Commander! We've punched through their defenses!",
-                "Confirmed hit! Enemy vessel is taking damage!",
-                "Impact confirmed, Commander! Their fleet is under pressure!",
-                "Excellent shot, Commander! Enemy ship has sustained damage!",
-                "Target struck! Enemy crew is scrambling to respond!",
-                "Hit confirmed! Their position is weakening!",
-                "Clean impact, Commander! Keep the pressure on!",
-                "Enemy ship hit! Awaiting your next firing command!",
-                "That one landed, Commander! Enemy vessel is damaged!",
-                "Strike successful! Their fleet won't hold for long!",
-                "Confirmed impact! Enemy armor has been breached!",
-                "Great shot, Commander! We have them on the back foot!",
-                "Shell impact confirmed! Enemy vessel is reeling!",
-                "Direct strike! Their formation is starting to break!",
-            ],
-            miss: [
-                "Shot missed, Commander. Enemy vessel remains untouched.",
-                "Miss confirmed. Adjusting targeting data now.",
-                "No impact, Commander. The round landed wide.",
-                "Splash confirmed. Target remains operational.",
-                "Missed strike, Commander. Recommend recalibrating aim.",
-                "Round fell short. Enemy ship is still in fighting condition.",
-                "No hit registered. Awaiting your next command.",
-                "Negative impact, Commander. Enemy fleet is still holding position.",
-                "Shot went wide. We'll correct the firing solution.",
-                "Miss confirmed. The enemy got lucky this time.",
-                "No damage dealt. Ready for your next order, Commander.",
-                "Splash only, Commander. Target still active.",
-                "The shot missed. Recalculating trajectory.",
-                "No contact. Enemy vessel evaded the strike.",
-                "Missed, Commander. We'll get them on the next salvo.",
-            ],
-        },
-        hostile: {
-            hit: [
-                "AHHH HAAAAAA. I warned you these waters were mine.",
-                "This is tooooooooo easy",
-                "To tell you the truth, I didn't even aim for that one.",
-                "Come on... Your defenses are disappointingly soft...",
-                "Yawn. Try not to make this too easy.",
-                "Is that all you got? Ptff",
-                "I've sunk better captains before breakfast.",
-                "I expected more resistance, Commander.",
-                "Go back to your toy boats, Commander. These waters are no place for pretend admirals.",
-            ],
-            miss: [
-                "A rare miscalculation. Do not mistake it for mercy.",
-                "Hmph. The shot went wide. Even veterans allow the sea one favour.",
-                "Enjoy that breath, Commander — it may be your last.",
-                "The waves interfered, nothing more.",
-                "Consider it a brief extension of your command.",
-                "Your luck is proving annoyingly persistent.",
-                "A minor error. Your fleet remains doomed all the same.",
-                "The salvo failed to connect. The next one will not.",
-                "The sea shields you for now, Commander.",
-                "The shot drifted wide. Your survival remains accidental.",
-            ],
-        },
-    };
-
-    const side = attacker === "human" ? "friendly" : "hostile";
-    const result = atkRes.isHit ? "hit" : "miss";
-
-    return getRandomDialogue(dialogues[side][result]);
-}
-
-function getRandomDialogue(dialogueList) {
-    return dialogueList[Math.floor(Math.random() * dialogueList.length)];
-}
-
 async function handleTurnFeedback(turnRes, battleView, markerTarget) {
     playCannonFireSound();
 
@@ -192,13 +114,14 @@ async function handleTurnFeedback(turnRes, battleView, markerTarget) {
 
     turnRes.atkRes.isHit ? playExplosionSound() : playMissedSound();
 
-    const dialogue = generateDialogueMessage(turnRes.atkRes, turnRes.attacker);
-
-    battleView.updateBattleDialogue(turnRes.attacker, dialogue);
-
+    // update dialogue based on hitRes
+    battleView.updateBattleDialogue(turnRes.atkRes.isHit, turnRes.attacker === "human" ? "friendly" : "hostile");
+    // wait 1.5 sec
     await delay(2000);
+    // swap dialogue active
 
     if (!turnRes.isGameOver) {
+        console.log("running ," + turnRes.nextPlayer);
         battleView.setActiveDialogue(turnRes.nextPlayer);
     }
 }

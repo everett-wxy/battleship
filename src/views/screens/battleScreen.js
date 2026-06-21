@@ -1,7 +1,9 @@
 import { createBoardComponent } from "../components/boardComponent.js";
 import { renderPlacedShip } from "../helpers/shipRenderer.js";
-import villain from "../../assets/hostile-admiral-neutral.png";
-import friendlySoldier from "../../assets/friendlySoldier.png";
+// import villain from "../../assets/hostile-admiral-neutral.png";
+// import friendlySoldier from "../../assets/friendlySoldier.png";
+import { createBattleDialogues } from "../components/dialogue.js";
+import { delay } from "../helpers/delay.js";
 
 export function createBattleScreen(currentGame, { onHumanFire }) {
     const battleScreen = document.createElement("div");
@@ -29,13 +31,15 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
     const dialoguesWrapper = document.createElement("div");
     dialoguesWrapper.classList.add("battle-dialogue-wrapper");
 
-    const friendlyBattleDialogue = createDialogue(currentGame, "friendly");
-    const hostileBattleDialogue = createDialogue(currentGame, "hostile");
+    const battleDialogues = createBattleDialogues({
+        playerName: currentGame.humanPlayer.name,
+    });
 
-    dialoguesWrapper.append(
-        friendlyBattleDialogue.battleDialogueContainer,
-        hostileBattleDialogue.battleDialogueContainer,
-    );
+    const { friendlyDialogue, hostileDialogue } = battleDialogues;
+
+    runBattleIntroDialogueSequence(battleDialogues, currentGame.humanPlayer.name);
+
+    dialoguesWrapper.append(friendlyDialogue.element, hostileDialogue.element);
 
     battleScreen.append(zonesContainer, dialoguesWrapper);
 
@@ -43,15 +47,15 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
         element: battleScreen,
         friendlyBoardComponent: friendlyZone.boardComponent,
         hostileBoardComponent: hostileZone.boardComponent,
+
+        showAttackReaction(isHit, side) {
+            battleDialogues.showAttackReaction(isHit, side);
+        },
+
         setActiveDialogue(turn) {
-            setActiveDialogue(turn, friendlyBattleDialogue, hostileBattleDialogue);
+            battleDialogues.setActiveDialogue(turn);
         },
-        updateDialogueMessage(turn, message) {
-            updateDialogueMessage(turn, message, friendlyBattleDialogue, hostileBattleDialogue);
-        },
-        updateBattleDialogue(turn, message) {
-            updateBattleDialogue(turn, message, friendlyBattleDialogue, hostileBattleDialogue);
-        },
+
         renderGameOver(winner, onRestart) {
             renderGameOver(battleScreen, winner, onRestart);
         },
@@ -81,92 +85,6 @@ function createZone({ gameboard, type, titleText, shouldRenderFleet = false, onH
         zoneContainer,
         boardComponent,
     };
-}
-
-function createDialogue(currentGame, type) {
-    const battleDialogueContainer = document.createElement("div");
-    battleDialogueContainer.classList.add("battle-dialogue-container", "panel", type);
-    battleDialogueContainer.classList.add(type === "friendly" ? "active" : "inactive");
-    battleDialogueContainer.setAttribute("aria-hidden", type === "friendly" ? "false" : "true");
-
-    const characterImg = document.createElement("img");
-    characterImg.classList.add("character", type);
-    characterImg.src = type === "friendly" ? friendlySoldier : villain;
-
-    const dialogueMessage = document.createElement("p");
-    dialogueMessage.classList.add("dialogue", type);
-    dialogueMessage.innerText = `Commander ${currentGame.humanPlayer.name}, enemy fleet spotted in hostile waters, awaiting your command!`;
-
-    battleDialogueContainer.append(characterImg, dialogueMessage);
-
-    return {
-        battleDialogueContainer,
-        dialogueMessage,
-    };
-}
-
-function updateDialogueMessage(turn, message, friendlyBattleDialogue, hostileBattleDialogue) {
-    const { activeBattleDialogue } = getDialogueByTurn(turn, friendlyBattleDialogue, hostileBattleDialogue);
-
-    activeBattleDialogue.dialogueMessage.innerText = message;
-}
-
-function getDialogueByTurn(turn, friendlyBattleDialogue, hostileBattleDialogue) {
-    if (turn === "human") {
-        return {
-            activeBattleDialogue: friendlyBattleDialogue,
-            inactiveBattleDialogue: hostileBattleDialogue,
-        };
-    }
-
-    if (turn === "computer") {
-        return {
-            activeBattleDialogue: hostileBattleDialogue,
-            inactiveBattleDialogue: friendlyBattleDialogue,
-        };
-    }
-
-    throw new Error(`Invalid turn: ${turn}`);
-}
-
-function updateBattleDialogue(turn, message, friendlyDialogue, hostileDialogue) {
-    let currentDialogue;
-    let pastDialogue;
-
-    if (turn === "human") {
-        currentDialogue = friendlyDialogue;
-        pastDialogue = hostileDialogue;
-    }
-    if (turn === "computer") {
-        currentDialogue = hostileDialogue;
-        pastDialogue = friendlyDialogue;
-    }
-
-    pastDialogue.battleDialogueContainer.classList.remove("active");
-    pastDialogue.battleDialogueContainer.classList.add("inactive");
-    pastDialogue.battleDialogueContainer.setAttribute("aria-hidden", "true");
-
-    currentDialogue.battleDialogueContainer.classList.remove("inactive");
-    currentDialogue.battleDialogueContainer.classList.add("active");
-    currentDialogue.battleDialogueContainer.setAttribute("aria-hidden", "false");
-
-    currentDialogue.dialogueMessage.innerText = message;
-}
-
-function setActiveDialogue(turn, friendlyBattleDialogue, hostileBattleDialogue) {
-    const { activeBattleDialogue, inactiveBattleDialogue } = getDialogueByTurn(
-        turn,
-        friendlyBattleDialogue,
-        hostileBattleDialogue,
-    );
-
-    activeBattleDialogue.battleDialogueContainer.classList.add("active");
-    activeBattleDialogue.battleDialogueContainer.classList.remove("inactive");
-    activeBattleDialogue.battleDialogueContainer.setAttribute("aria-hidden", "false");
-
-    inactiveBattleDialogue.battleDialogueContainer.classList.add("inactive");
-    inactiveBattleDialogue.battleDialogueContainer.classList.remove("active");
-    inactiveBattleDialogue.battleDialogueContainer.setAttribute("aria-hidden", "true");
 }
 
 function renderFleet(shipOverlay, placedShips) {
@@ -221,4 +139,66 @@ function renderGameOver(battleScreen, winner, onRestart) {
     dialog.append(heading, winnerLabel, winnerName, restartBtn);
     overlay.append(dialog);
     battleScreen.append(overlay);
+}
+
+async function runBattleIntroDialogueSequence(battleDialogues, playerName) {
+    const { friendlyDialogue, hostileDialogue } = battleDialogues;
+
+    await friendlyDialogue.setMessage(
+        `Commander ${playerName}! Enemy vessels have appeared on radar and are closing in on our territory!`,
+    );
+    friendlyDialogue.showPrompt();
+    await waitForEnter();
+    friendlyDialogue.hidePrompt();
+
+    battleDialogues.setActiveDialogue("computer");
+    await hostileDialogue.setMessage("Who dares stand before my path to global domination?");
+    hostileDialogue.showPrompt();
+    await waitForEnter();
+    hostileDialogue.hidePrompt();
+
+    await hostileDialogue.setMessage(
+        `Admiral ${playerName}? How amusing. I have never heard that name in any respectable waters.`,
+    );
+
+    hostileDialogue.showPrompt();
+    await waitForEnter();
+    hostileDialogue.hidePrompt();
+
+    await hostileDialogue.setMessage(
+        "Go on, then. Take the first shot. I'd hate for you to lose before feeling involved.",
+    );
+
+    hostileDialogue.showPrompt();
+    await waitForEnter();
+    hostileDialogue.hidePrompt();
+
+    battleDialogues.setActiveDialogue("human");
+    await battleDialogues.friendlyDialogue.setMessage(
+        `How dare that old fool look down on you, Commander ${playerName}!`,
+    );
+
+    friendlyDialogue.showPrompt();
+    await waitForEnter();
+    friendlyDialogue.hidePrompt();
+
+    await battleDialogues.friendlyDialogue.setMessage(
+        "All launch systems are online. Give the order, and we'll make him regret every word.",
+    );
+
+    friendlyDialogue.setPromptText("Click on a cell to fire")
+    friendlyDialogue.showPrompt();
+
+    function waitForEnter() {
+        return new Promise((resolve) => {
+            function handleKeydown(e) {
+                if (e.key !== "Enter") return;
+
+                document.removeEventListener("keydown", handleKeydown);
+                resolve();
+            }
+
+            document.addEventListener("keydown", handleKeydown);
+        });
+    }
 }

@@ -1,4 +1,4 @@
-import { playHoverSoundShipCard } from "../../controllers/AudioController.js";
+import { playHoverSoundShipCard, playShipPlacedSound } from "../../controllers/AudioController.js";
 import { Game } from "../../models/GameSession.js";
 import { createBoardComponent } from "../components/boardComponent.js";
 import { createDialogue } from "../components/dialogue.js";
@@ -13,28 +13,17 @@ export function createFleetPlacementScreen(currentGame, onContinue) {
     const fleetPlacementScreen = document.createElement("div");
     fleetPlacementScreen.id = "fleet-placement-screen";
     fleetPlacementScreen.classList.add("screen");
-
-    const dialogue = createDialogue({
-        side: "friendly",
-        message: `Welcome aboard Commander ${currentGame.humanPlayer.name}!`,
-    });
-
-    setTimeout(() => {
-        dialogue.setMessage("Plan our formation by dragging and dropping ships on the map.");
-    }, 3000);
-
-    dialogue.setCharacterImg("serious");
-
+    
     const gridFleetContainer = document.createElement("div");
     gridFleetContainer.id = "grid-fleet-container";
-
+    
     const boardComponent = createBoardComponent(currentGame.humanPlayer.gameboard.board);
-
+    
     const fleetContainer = createFleetContainer(boardComponent.gridMap);
-
+    
     const buttonPanel = document.createElement("div");
     buttonPanel.classList.add("button-panel");
-
+    
     const { changeOrientationBtn, resetBtn, confirmBtn } = createFleetPlacementBtns(
         currentGame,
         fleetContainer,
@@ -42,18 +31,28 @@ export function createFleetPlacementScreen(currentGame, onContinue) {
         boardComponent.shipOverlay,
         onContinue,
     );
-
+    
     enableFleetPlacementDrag(boardComponent.gridMap, boardComponent.shipOverlay, currentGame, confirmBtn);
-
+    
     buttonPanel.append(changeOrientationBtn, resetBtn, confirmBtn);
-
+    
     const boardAndButtonsWrapper = document.createElement("div");
     boardAndButtonsWrapper.classList.add("board-and-buttons-wrapper");
     boardAndButtonsWrapper.append(boardComponent.gameBoardContainer, buttonPanel);
-
+    
     gridFleetContainer.append(boardAndButtonsWrapper, fleetContainer);
+    
+    const dialogue = createDialogue({
+        side: "friendly",
+        expression: "serious",
+        message: `Welcome aboard Commander ${currentGame.humanPlayer.name}!`,
+    });
 
-    fleetPlacementScreen.append(gridFleetContainer, dialogue.battleDialogueContainer);
+    setTimeout(() => {
+        dialogue.setMessage("Plan our formation by dragging and dropping ships on the map.");
+    }, 3000);
+
+    fleetPlacementScreen.append(gridFleetContainer, dialogue.element);
 
     return fleetPlacementScreen;
 }
@@ -88,7 +87,6 @@ function createFleetContainer(gridMap) {
         shipCard.draggable = true;
 
         shipCard.addEventListener("mouseenter", function () {
-            console.log("hi");
             playHoverSoundShipCard();
         });
 
@@ -212,6 +210,7 @@ function enableFleetPlacementDrag(gridMap, shipOverlay, game, confirmBtn) {
 
         draggedShip = null;
         draggedShipCard = null;
+        playShipPlacedSound();
 
         clearHighlightedCells(gridMap);
     });
@@ -240,7 +239,9 @@ function createFleetPlacementBtns(game, fleetContainer, gridMap, shipOverlay, st
     confirmBtn.innerText = "Confirm Placement";
 
     confirmBtn.addEventListener("click", () => {
-        const placedShips = fleetContainer.querySelectorAll(".ship-icon.placed-ship");
+        const placedShips = fleetContainer.querySelectorAll(".ship-card.placed-ship");
+
+        console.log(`Game.fleet.lenght: ${Game.fleet.length}, placedShips.length: ${placedShips.length}`);
 
         if (placedShips.length !== Game.fleet.length) {
             console.log("Place all ships before starting the battle.");

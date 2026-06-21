@@ -6,6 +6,7 @@ import explosionSound from "../assets/explosion.mp3";
 import gridCellHoverSound from "../assets/hover-1.mp3";
 import shipCardHoverSound from "../assets/hover-5.wav";
 import buttonClickSound from "../assets/click-2.wav";
+import shipPlacedSound from "../assets/ship-placed.wav";
 
 const normalVolume = 0.3;
 const fadeDuration = 7000;
@@ -136,19 +137,19 @@ function fadeAudio(audio, targetVolume, duration = 1000) {
 
 export function playCannonFireSound() {
     const canonFire = new Audio(canonFireSound);
-    canonFire.volume = 0.1;
+    canonFire.volume = 0.5;
     canonFire.play();
 }
 
 export function playMissedSound() {
     const waterSplash = new Audio(missedSound);
-    waterSplash.volume = 0.1;
+    waterSplash.volume = 0.5;
     waterSplash.play();
 }
 
 export function playExplosionSound() {
     const explosion = new Audio(explosionSound);
-    explosion.volume = 0.1;
+    explosion.volume = 0.5;
     explosion.play();
 }
 
@@ -162,4 +163,9 @@ export function playHoverSoundShipCard() {
     const hoverSoundShipCardEffect = new Audio(shipCardHoverSound);
     hoverSoundShipCardEffect.volume = 0.6;
     hoverSoundShipCardEffect.play();
+}
+
+export function playShipPlacedSound() {
+    const shipPlacedSoundEffect = new Audio(shipPlacedSound);
+    shipPlacedSoundEffect.play();
 }

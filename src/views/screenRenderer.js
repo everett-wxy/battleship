@@ -73,12 +73,8 @@ export function renderBattleScreen(currentGame, handlers) {
             battleScreenView.setActiveDialogue(turn);
         },
 
-        updateBattleDialogue(turn, message) {
-            battleScreenView.updateBattleDialogue(turn, message);
-        },
-
-        updateDialogue(turn, message) {
-            battleScreenView.updateBattleDialogue(turn, message);
+        updateBattleDialogue(isHit, side) {
+            battleScreenView.showAttackReaction(isHit, side);
         },
 
         renderGameOver(winner) {

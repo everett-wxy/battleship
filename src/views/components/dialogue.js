@@ -34,24 +34,46 @@ const characterAssets = {
     },
 };
 
-export function createDialogue({ side, message = "...", isActive = true }) {
-    const battleDialogueContainer = document.createElement("div");
-    battleDialogueContainer.classList.add("battle-dialogue-container", "panel", side);
-    battleDialogueContainer.classList.add(isActive ? "active" : "inactive");
-    battleDialogueContainer.setAttribute("aria-hidden", side === "friendly" ? "false" : "true");
+export function createDialogue({ side, expression = "neutral", message = "...", isActive = true }) {
+    const dialoguePanel = document.createElement("div");
+    dialoguePanel.classList.add("dialogue-panel", "panel", side);
 
     const characterImg = document.createElement("img");
     characterImg.classList.add("character", side);
-    characterImg.src = characterAssets[side].neutral;
+    characterImg.src = characterAssets[side][expression];
 
     const dialogueMessage = document.createElement("p");
-    dialogueMessage.classList.add("dialogue", side);
-    dialogueMessage.innerText = message;
+    dialogueMessage.classList.add("dialogue-message", side);
 
-    battleDialogueContainer.append(characterImg, dialogueMessage);
+    const prompt = document.createElement("p");
+    prompt.classList.add("prompt");
+    prompt.textContent = "Press Enter to continue";
+    prompt.hidden = true;
 
-    function setMessage(message) {
-        dialogueMessage.innerText = message;
+    let typingIntervalId = null;
+
+    function typeMessage(message) {
+        clearInterval(typingIntervalId);
+
+        dialogueMessage.textContent = "";
+
+        const characters = [...message];
+        if (characters.length === 0) return Promise.resolve();
+
+        let index = 0;
+
+        return new Promise((resolve) => {
+            typingIntervalId = setInterval(() => {
+                dialogueMessage.textContent += characters[index];
+                index++;
+
+                if (index >= characters.length) {
+                    clearInterval(typingIntervalId);
+                    typingIntervalId = null;
+                    resolve();
+                }
+            }, 15);
+        });
     }
 
     function setCharacterImg(expression) {
@@ -59,69 +81,98 @@ export function createDialogue({ side, message = "...", isActive = true }) {
     }
 
     function setActive(isActive) {
-        battleDialogueContainer.classList.toggle("active", isActive);
-        battleDialogueContainer.classList.toggle("inactive", !isActive);
-        battleDialogueContainer.setAttribute("aria-hidden", isActive ? "false" : "true");
+        dialoguePanel.classList.toggle("active", isActive);
+        dialoguePanel.classList.toggle("inactive", !isActive);
+        dialoguePanel.setAttribute("aria-hidden", isActive ? "false" : "true");
     }
 
+    function showPrompt() {
+        prompt.hidden = false;
+    }
+
+    function hidePrompt() {
+        prompt.hidden = true;
+    }
+
+    function setPromptText(text) {
+        prompt.textContent = text;
+    }
+
+    dialoguePanel.append(characterImg, dialogueMessage, prompt);
+    setActive(isActive);
+    typeMessage(message);
+
     return {
-        battleDialogueContainer,
-        setMessage,
+        element: dialoguePanel,
+        setMessage: typeMessage,
         setCharacterImg,
         setActive,
+        showPrompt,
+        hidePrompt,
+        setPromptText,
     };
 }
 
-export function createBattleDialogue(side, playerName) {
-    const dialogues = generateDialoguesDict(playerName);
+export function createBattleDialogues({ playerName, friendlyMessage = "...", hostileMessage = "..." }) {
+    const dialogueLines = generateDialogueLines(playerName);
 
-    const dialogue = createDialogue({ side, message: "...", isActive: side === "friendly" });
+    const friendlyDialogue = createDialogue({
+        side: "friendly",
+        message: friendlyMessage,
+        isActive: true,
+    });
 
-    function generateBattleDialogueMessage(isHit) {
-        if (!dialogues[side]) {
-            throw new Error(`Invalid side: ${side}`);
-        }
+    const hostileDialogue = createDialogue({
+        side: "hostile",
+        message: hostileMessage,
+        isActive: false,
+    });
 
-        const result = isHit ? "hit" : "miss";
+    function showAttackReaction(isHit, attacker) {
+        const { message, expression } = pickDialogueLine(dialogueLines, isHit, attacker);
 
-        if (!dialogues[side][result]) {
-            throw new Error(`Invalid result: ${result}`);
-        }
+        const dialogue = attacker === "friendly" ? friendlyDialogue : hostileDialogue;
 
-        const tones = Object.keys(dialogues[side][result]);
-        const tone = getRandomItem(tones);
-        const dialogueOptions = dialogues[side][result][tone];
-        const message = getRandomItem(dialogueOptions);
-        return {
-            message,
-            tone,
-        };
+        dialogue.setMessage(message);
+        dialogue.setCharacterImg(expression);
     }
 
-    function changeCharacterImage(tone) {
-        if (!tone) {
-            characterImg.src = side === "friendly" ? friendlySoldierNeutral : hostileAdmiralNeutral;
-            return;
-        }
+    function setActiveDialogue(turn) {
+        const { activeBattleDialogue, inactiveBattleDialogue } = getDialogueByTurn(
+            turn,
+            friendlyDialogue,
+            hostileDialogue,
+        );
 
-        const src = characterAssets[side]?.[tone];
+        activeBattleDialogue.setActive(true);
+        inactiveBattleDialogue.setActive(false);
 
-        if (!src) {
-            throw new Error(`Invalid character asset: side=${side}, tone=${tone}`);
-        }
-
-        characterImg.src = src;
+        friendlyDialogue.setMessage("All launch systems are green, Commander.");
+        hostileDialogue.setMessage("...");
+        friendlyDialogue.setCharacterImg("neutral");
+        hostileDialogue.setCharacterImg("neutral");
     }
 
-    function showAttackReaction(isHit) {
-        const { message, tone } = generateBattleDialogueMessage(isHit);
-        dialogueMessage.innerText = message;
-        changeCharacterImage(tone);
-    }
     return {
-        ...dialogue,
-        generateBattleDialogueMessage,
+        friendlyDialogue,
+        hostileDialogue,
         showAttackReaction,
+        setActiveDialogue,
+    };
+}
+
+function pickDialogueLine(dialogueLines, isHit, side) {
+    const result = isHit ? "hit" : "miss";
+
+    const tones = Object.keys(dialogueLines[side][result]);
+    const expression = getRandomItem(tones);
+
+    const dialogueOptions = dialogueLines[side][result][expression];
+    const message = getRandomItem(dialogueOptions);
+
+    return {
+        message,
+        expression,
     };
 }
 
@@ -129,7 +180,7 @@ function getRandomItem(array) {
     return array[Math.floor(Math.random() * array.length)];
 }
 
-function generateDialoguesDict(playerName) {
+function generateDialogueLines(playerName) {
     if (!playerName) {
         throw new Error("playerName is undefined");
     }
@@ -217,60 +268,20 @@ function generateDialoguesDict(playerName) {
     };
 }
 
-function setActiveDialogue(turn, friendlyBattleDialogue, hostileBattleDialogue) {
-    const { activeBattleDialogue, inactiveBattleDialogue } = getDialogueByTurn(
-        turn,
-        friendlyBattleDialogue,
-        hostileBattleDialogue,
-    );
-
-    activeBattleDialogue.battleDialogueContainer.classList.add("active");
-    activeBattleDialogue.battleDialogueContainer.classList.remove("inactive");
-    activeBattleDialogue.battleDialogueContainer.setAttribute("aria-hidden", "false");
-
-    inactiveBattleDialogue.battleDialogueContainer.classList.add("inactive");
-    inactiveBattleDialogue.battleDialogueContainer.classList.remove("active");
-    inactiveBattleDialogue.battleDialogueContainer.setAttribute("aria-hidden", "true");
-}
-
-function getDialogueByTurn(turn, friendlyBattleDialogue, hostileBattleDialogue) {
+function getDialogueByTurn(turn, friendlyDialogue, hostileDialogue) {
     if (turn === "human") {
         return {
-            activeBattleDialogue: friendlyBattleDialogue,
-            inactiveBattleDialogue: hostileBattleDialogue,
+            activeBattleDialogue: friendlyDialogue,
+            inactiveBattleDialogue: hostileDialogue,
         };
     }
 
     if (turn === "computer") {
         return {
-            activeBattleDialogue: hostileBattleDialogue,
-            inactiveBattleDialogue: friendlyBattleDialogue,
+            activeBattleDialogue: hostileDialogue,
+            inactiveBattleDialogue: friendlyDialogue,
         };
     }
 
     throw new Error(`Invalid turn: ${turn}`);
 }
-
-// function updateBattleDialogue(turn, message, friendlyDialogue, hostileDialogue) {
-//     let currentDialogue;
-//     let pastDialogue;
-
-//     if (turn === "human") {
-//         currentDialogue = friendlyDialogue;
-//         pastDialogue = hostileDialogue;
-//     }
-//     if (turn === "computer") {
-//         currentDialogue = hostileDialogue;
-//         pastDialogue = friendlyDialogue;
-//     }
-
-//     pastDialogue.battleDialogueContainer.classList.remove("active");
-//     pastDialogue.battleDialogueContainer.classList.add("inactive");
-//     pastDialogue.battleDialogueContainer.setAttribute("aria-hidden", "true");
-
-//     currentDialogue.battleDialogueContainer.classList.remove("inactive");
-//     currentDialogue.battleDialogueContainer.classList.add("active");
-//     currentDialogue.battleDialogueContainer.setAttribute("aria-hidden", "false");
-
-//     currentDialogue.dialogueMessage.innerText = message;
-// }
