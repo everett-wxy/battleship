@@ -50,10 +50,10 @@ export function createDialogue({
     const dialogueMessage = document.createElement("p");
     dialogueMessage.classList.add("dialogue-message", side);
 
-    const prompt = document.createElement("p");
-    prompt.classList.add("prompt");
-    prompt.textContent = "Press Enter to continue";
-    prompt.hidden = true;
+    const continuePrompt = document.createElement("p");
+    continuePrompt.classList.add("continue-prompt");
+    continuePrompt.textContent = "Press Enter to continue";
+    continuePrompt.hidden = true;
 
     let typingIntervalId = null;
 
@@ -77,7 +77,7 @@ export function createDialogue({
                     typingIntervalId = null;
                     resolve();
                 }
-            }, 15);
+            }, 12);
         });
     }
 
@@ -92,18 +92,18 @@ export function createDialogue({
     }
 
     function showPrompt() {
-        prompt.hidden = false;
+        continuePrompt.hidden = false;
     }
 
     function hidePrompt() {
-        prompt.hidden = true;
+        continuePrompt.hidden = true;
     }
 
     function setPromptText(text) {
-        prompt.textContent = text;
+        continuePrompt.textContent = text;
     }
 
-    dialoguePanel.append(characterImg, dialogueMessage, prompt);
+    dialoguePanel.append(characterImg, dialogueMessage, continuePrompt);
     setActive(isActive);
     typeMessage(message);
 

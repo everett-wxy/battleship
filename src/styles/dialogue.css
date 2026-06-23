@@ -67,12 +67,15 @@
 .dialogue-panel::after {
     z-index: -1;
     inset: 0;
-    background: linear-gradient(90deg, var(--dialogue-glow), transparent 62%), rgba(0, 0, 0, 0.76);
+    background:
+        linear-gradient(90deg, var(--dialogue-glow), transparent 62%), rgba(0, 0, 0, 0.76);
     opacity: 1;
 }
 
 .dialogue-panel.friendly::after {
-    background: linear-gradient(270deg, var(--dialogue-glow), transparent 62%), rgba(0, 0, 0, 0.76);
+    background:
+        linear-gradient(270deg, var(--dialogue-glow), transparent 62%),
+        rgba(0, 0, 0, 0.76);
 }
 
 .dialogue-panel.active {
@@ -117,7 +120,7 @@
     width: 0.5em;
     height: 1em;
     margin-left: 0.25em;
-    background-color: rgba(var(--friendly-light),.5);
+    background-color: rgba(var(--friendly-light), 0.5);
     vertical-align: -0.1em;
     animation: blink-cursor 1.5s ease infinite;
 }
@@ -141,10 +144,28 @@
     margin-left: auto;
 }
 
-.prompt{
+.continue-prompt {
     position: absolute;
-    right: 10px;
-    bottom: 10px;
-    font-size: small;
+    right:15px;
+    bottom: 15px;
+    font-size: 1rem;
     color: gray;
+    animation: blink 1.5s ease infinite;
+}
+
+.hostile .continue-prompt{
+    left: 15px; 
+    bottom: 15px;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0;
+    }
+    35%, 50%, 65% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }

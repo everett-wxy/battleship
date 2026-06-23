@@ -151,63 +151,65 @@ function renderGameOver(battleScreen, winner, onRestart) {
 async function runBattleIntroDialogueSequence(battleDialogues, playerName) {
     const { friendlyDialogue, hostileDialogue } = battleDialogues;
 
-    await friendlyDialogue.setMessage(
+    await showMessageAndWait(
+        friendlyDialogue,
         `Commander ${playerName}! Enemy vessels have appeared on radar and are closing in on our territory!`,
     );
-    friendlyDialogue.showPrompt();
-    await waitForEnter();
-    friendlyDialogue.hidePrompt();
 
     battleDialogues.setActiveDialogue("computer");
-    await hostileDialogue.setMessage(
+
+    await showMessageAndWait(
+        hostileDialogue,
         "Who dares stand before my path to global domination?",
     );
-    hostileDialogue.showPrompt();
-    await waitForEnter();
-    hostileDialogue.hidePrompt();
 
-    await hostileDialogue.setMessage(
+    await showMessageAndWait(
+        hostileDialogue,
         `Admiral ${playerName}? How amusing. I have never heard that name in any respectable waters.`,
     );
 
-    hostileDialogue.showPrompt();
-    await waitForEnter();
-    hostileDialogue.hidePrompt();
-
-    await hostileDialogue.setMessage(
+    await showMessageAndWait(
+        hostileDialogue,
         "Go on, then. Take the first shot. I'd hate for you to lose before feeling involved.",
     );
 
-    hostileDialogue.showPrompt();
-    await waitForEnter();
-    hostileDialogue.hidePrompt();
-
     battleDialogues.setActiveDialogue("human");
-    await battleDialogues.friendlyDialogue.setMessage(
+
+    await showMessageAndWait(
+        friendlyDialogue,
         `How dare that old fool look down on you, Commander ${playerName}!`,
     );
 
-    friendlyDialogue.showPrompt();
-    await waitForEnter();
-    friendlyDialogue.hidePrompt();
-
-    await battleDialogues.friendlyDialogue.setMessage(
+    friendlyDialogue.setMessage(
         "All launch systems are online. Give the order, and we'll make him regret every word.",
     );
+}
 
-    friendlyDialogue.setPromptText("Click on a cell to fire");
-    friendlyDialogue.showPrompt();
+function wait(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
 
-    function waitForEnter() {
-        return new Promise((resolve) => {
-            function handleKeydown(e) {
-                if (e.key !== "Enter") return;
+function waitForEnter() {
+    return new Promise((resolve) => {
+        function handleKeydown(e) {
+            if (e.key !== "Enter") return;
 
-                document.removeEventListener("keydown", handleKeydown);
-                resolve();
-            }
+            document.removeEventListener("keydown", handleKeydown);
+            resolve();
+        }
 
-            document.addEventListener("keydown", handleKeydown);
-        });
-    }
+        document.addEventListener("keydown", handleKeydown);
+    });
+}
+
+async function showMessageAndWait(dialogue, message) {
+    await dialogue.setMessage(message);
+
+    await wait(250);
+    dialogue.showPrompt();
+
+    await waitForEnter();
+    dialogue.hidePrompt();
 }
