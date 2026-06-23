@@ -34,7 +34,12 @@ const characterAssets = {
     },
 };
 
-export function createDialogue({ side, expression = "neutral", message = "...", isActive = true }) {
+export function createDialogue({
+    side, // friendly vs hostile
+    expression = "neutral",
+    message = "...",
+    isActive = true,
+}) {
     const dialoguePanel = document.createElement("div");
     dialoguePanel.classList.add("dialogue-panel", "panel", side);
 
@@ -113,7 +118,11 @@ export function createDialogue({ side, expression = "neutral", message = "...", 
     };
 }
 
-export function createBattleDialogues({ playerName, friendlyMessage = "...", hostileMessage = "..." }) {
+export function createBattleDialogues({
+    playerName,
+    friendlyMessage = "...",
+    hostileMessage = "...",
+}) {
     const dialogueLines = generateDialogueLines(playerName);
 
     const friendlyDialogue = createDialogue({

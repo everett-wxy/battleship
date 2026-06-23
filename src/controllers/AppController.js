@@ -14,10 +14,8 @@ export function initialise() {
     createAppShell();
     // renderStartScreen(handleGameStart);
 
-    // generalte random placement
     const currentGame = new Game("everett");
-    // showFleetSetup(currentGame);
-
+    showFleetSetup(currentGame);
     Game.fleet.forEach((ship, i) => {
         currentGame.humanPlayer.gameboard.placeShip(ship.name, ship.length, i + 1, i, "horizontal");
     });

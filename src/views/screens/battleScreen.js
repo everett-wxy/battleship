@@ -23,7 +23,6 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
         gameboard: currentGame.computerPlayer.gameboard,
         type: "hostile",
         titleText: "HOSTILE WATER",
-        onHumanFire,
     });
 
     zonesContainer.append(friendlyZone.zoneContainer, hostileZone.zoneContainer);
@@ -37,7 +36,9 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
 
     const { friendlyDialogue, hostileDialogue } = battleDialogues;
 
-    runBattleIntroDialogueSequence(battleDialogues, currentGame.humanPlayer.name);
+    runBattleIntroDialogueSequence(battleDialogues, currentGame.humanPlayer.name).then(
+        () => enableHumanFire(hostileZone.boardComponent.gridMap, onHumanFire),
+    );
 
     dialoguesWrapper.append(friendlyDialogue.element, hostileDialogue.element);
 
@@ -62,7 +63,13 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
     };
 }
 
-function createZone({ gameboard, type, titleText, shouldRenderFleet = false, onHumanFire = null }) {
+function createZone({
+    gameboard,
+    type,
+    titleText,
+    shouldRenderFleet = false,
+    onHumanFire = null,
+}) {
     const zoneContainer = document.createElement("div");
     zoneContainer.classList.add("zone-container", type);
 
@@ -152,7 +159,9 @@ async function runBattleIntroDialogueSequence(battleDialogues, playerName) {
     friendlyDialogue.hidePrompt();
 
     battleDialogues.setActiveDialogue("computer");
-    await hostileDialogue.setMessage("Who dares stand before my path to global domination?");
+    await hostileDialogue.setMessage(
+        "Who dares stand before my path to global domination?",
+    );
     hostileDialogue.showPrompt();
     await waitForEnter();
     hostileDialogue.hidePrompt();
@@ -186,7 +195,7 @@ async function runBattleIntroDialogueSequence(battleDialogues, playerName) {
         "All launch systems are online. Give the order, and we'll make him regret every word.",
     );
 
-    friendlyDialogue.setPromptText("Click on a cell to fire")
+    friendlyDialogue.setPromptText("Click on a cell to fire");
     friendlyDialogue.showPrompt();
 
     function waitForEnter() {
