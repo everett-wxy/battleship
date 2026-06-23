@@ -4,10 +4,13 @@ import { renderPlacedShip } from "../helpers/shipRenderer.js";
 // import friendlySoldier from "../../assets/friendlySoldier.png";
 import { createBattleDialogues } from "../components/dialogue.js";
 import { delay } from "../helpers/delay.js";
+import { createPrompt } from "../components/prompt.js";
 
 export function createBattleScreen(currentGame, { onHumanFire }) {
     const battleScreen = document.createElement("div");
     battleScreen.classList.add("battle-screen", "screen");
+
+    const prompt = createPrompt("Click on an enemy grid cell to fire");
 
     const zonesContainer = document.createElement("div");
     zonesContainer.id = "zones-container";
@@ -15,7 +18,7 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
     const friendlyZone = createZone({
         gameboard: currentGame.humanPlayer.gameboard,
         type: "friendly",
-        titleText: "Friendly Water",
+        titleText: "FRIENDLY WATER",
         shouldRenderFleet: true,
     });
 
@@ -25,7 +28,11 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
         titleText: "HOSTILE WATER",
     });
 
-    zonesContainer.append(friendlyZone.zoneContainer, hostileZone.zoneContainer);
+    zonesContainer.append(
+        prompt.element,
+        friendlyZone.zoneContainer,
+        hostileZone.zoneContainer,
+    );
 
     const dialoguesWrapper = document.createElement("div");
     dialoguesWrapper.classList.add("battle-dialogue-wrapper");
@@ -36,8 +43,10 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
 
     const { friendlyDialogue, hostileDialogue } = battleDialogues;
 
-    runBattleIntroDialogueSequence(battleDialogues, currentGame.humanPlayer.name).then(
-        () => enableHumanFire(hostileZone.boardComponent.gridMap, onHumanFire),
+    runBattleIntroDialogueSequence(battleDialogues, currentGame.humanPlayer.name, prompt).then(
+        () => {
+            enableHumanFire(hostileZone.boardComponent.gridMap, onHumanFire);
+        },
     );
 
     dialoguesWrapper.append(friendlyDialogue.element, hostileDialogue.element);
@@ -148,7 +157,7 @@ function renderGameOver(battleScreen, winner, onRestart) {
     battleScreen.append(overlay);
 }
 
-async function runBattleIntroDialogueSequence(battleDialogues, playerName) {
+async function runBattleIntroDialogueSequence(battleDialogues, playerName, prompt) {
     const { friendlyDialogue, hostileDialogue } = battleDialogues;
 
     await showMessageAndWait(
@@ -180,9 +189,11 @@ async function runBattleIntroDialogueSequence(battleDialogues, playerName) {
         `How dare that old fool look down on you, Commander ${playerName}!`,
     );
 
-    friendlyDialogue.setMessage(
+    await friendlyDialogue.setMessage(
         "All launch systems are online. Give the order, and we'll make him regret every word.",
     );
+
+    prompt.togglePrompt();
 }
 
 function wait(ms) {

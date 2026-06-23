@@ -1,32 +1,45 @@
+
+/* =========================
+   Battle Dialogue Layout
+========================= */
+
 .battle-dialogue-wrapper {
     position: relative;
-    margin-top: 2rem;
-    height: 130px;
-    width: 100%;
-    max-width: 90%;
     isolation: isolate;
+
     display: grid;
     grid-template-areas: "stack";
 
-    --dialogue-offset: -2.25rem;
+    width: 100%;
+    max-width: 90%;
+    height: 130px;
+    margin-top: 2rem;
+
+    --dialogue-offset: -1.5rem;
     --dialogue-active-scale: 1;
     --dialogue-inactive-scale: 0.9;
     --dialogue-active-opacity: 1;
-    --dialogue-inactive-opacity: 0.5;
+    --dialogue-inactive-opacity: 0.8;
 }
+
+/* =========================
+   Dialogue Panel Base
+========================= */
 
 .dialogue-panel {
     position: relative;
     grid-area: stack;
-    padding-block: 1rem;
-    padding-inline: 2rem;
-    background-color: transparent;
-    box-shadow: none;
-    overflow: visible;
+    width: 100%;
 
     display: flex;
     align-items: center;
     gap: 1rem;
+
+    padding-block: 1rem;
+    padding-inline: 2rem;
+
+    background-color: rgb(0, 0, 0);
+    overflow: visible;
 
     transition:
         opacity 350ms ease,
@@ -39,37 +52,51 @@
 .dialogue-panel::after {
     content: "";
     position: absolute;
+    inset: 0;
     border-radius: inherit;
     pointer-events: none;
 }
 
+/* =========================
+   Dialogue Panel Themes
+========================= */
+
 .dialogue-panel.friendly {
-    --dialogue-accent: var(--friendly-dark);
+    --dialogue-accent: rgb(var(--friendly-dark));
     --dialogue-glow: rgba(var(--friendly-med), 0.25);
     --dialogue-shadow: rgba(var(--friendly-light), 0.25);
+    --dialogue-text-glow: rgba(var(--friendly-light), 0.9);
+    --dialogue-character-glow: rgba(var(--friendly-light), 0.5);
 }
 
 .dialogue-panel.hostile {
     --dialogue-accent: rgba(255, 0, 0, 0.72);
     --dialogue-glow: rgba(255, 0, 0, 0.24);
     --dialogue-shadow: rgba(255, 0, 0, 0.22);
+    --dialogue-text-glow: rgba(255, 0, 0, 1);
+    --dialogue-character-glow: rgba(255, 0, 0, 0.5);
 }
 
+/* Dotted background layer */
 .dialogue-panel::before {
     z-index: -2;
-    inset: 0;
-    background-image: radial-gradient(var(--dialogue-accent) 1px, transparent 1px);
+
+    background-image: radial-gradient(
+        var(--dialogue-accent) 1px,
+        transparent 1px
+    );
     background-position: center;
     background-repeat: repeat;
     background-size: 4px 4px;
 }
 
+/* Dark overlay glow layer */
 .dialogue-panel::after {
     z-index: -1;
-    inset: 0;
+
     background:
-        linear-gradient(90deg, var(--dialogue-glow), transparent 62%), rgba(0, 0, 0, 0.76);
-    opacity: 1;
+        linear-gradient(90deg, var(--dialogue-glow), transparent 62%),
+        rgba(0, 0, 0, 0.76);
 }
 
 .dialogue-panel.friendly::after {
@@ -78,50 +105,76 @@
         rgba(0, 0, 0, 0.76);
 }
 
+/* =========================
+   Active / Inactive States
+========================= */
+
 .dialogue-panel.active {
     z-index: 2;
+
     opacity: var(--dialogue-active-opacity);
     filter: saturate(1.2);
     transform: translateY(0) scale(var(--dialogue-active-scale));
+
     box-shadow: 0 0 30px 0.625rem var(--dialogue-shadow);
 }
 
 .dialogue-panel.inactive {
     z-index: 1;
+
     opacity: var(--dialogue-inactive-opacity);
     filter: grayscale(0.25) saturate(0.75);
     transform: translateY(var(--dialogue-offset)) scale(var(--dialogue-inactive-scale));
+
     pointer-events: none;
 }
 
+/* =========================
+   Character Image
+========================= */
+
 .dialogue-panel img {
-    height: 100px;
+    flex: 0 0 100px;
+
     width: 100px;
-    max-width: 100%;
-    max-height: 100%;
+    height: 100px;
+
     object-fit: cover;
     object-position: center top;
+
+    filter: drop-shadow(0 0 10px var(--dialogue-character-glow));
 }
 
-.dialogue-panel img.friendly {
-    filter: drop-shadow(0px 0px 10px rgba(255, 0, 0, 0.5));
-}
+/* =========================
+   Dialogue Text
+========================= */
 
-.dialogue-panel .dialogue-message {
+.dialogue-message {
     max-width: 80%;
+    min-width: 0;
+
     font-size: 1rem;
     color: white;
-    text-shadow: 0 0 10px rgba(255, 0, 0, 1);
+    text-shadow: 0 0 10px var(--dialogue-text-glow);
 }
 
-.dialogue-panel .dialogue-message::after {
+.dialogue-message.hostile {
+    order: -1;
+    margin-left: auto;
+}
+
+/* Typing cursor */
+.dialogue-message::after {
     content: "";
     display: inline-block;
+
     width: 0.5em;
     height: 1em;
     margin-left: 0.25em;
+
     background-color: rgba(var(--friendly-light), 0.5);
     vertical-align: -0.1em;
+
     animation: blink-cursor 1.5s ease infinite;
 }
 
@@ -135,37 +188,36 @@
         opacity: 1;
     }
 }
-.dialogue-panel p.friendly {
-    /* color: rgb(var(--friendly-light)); */
-}
 
-.dialogue-panel p.hostile {
-    order: -1;
-    margin-left: auto;
-}
+/* =========================
+   Continue Prompt
+========================= */
 
 .continue-prompt {
     position: absolute;
-    right:15px;
+    right: 15px;
     bottom: 15px;
+
     font-size: 1rem;
     color: gray;
+
     animation: blink 1.5s ease infinite;
 }
 
-.hostile .continue-prompt{
-    left: 15px; 
-    bottom: 15px;
+.dialogue-panel.hostile .continue-prompt {
+    right: auto;
+    left: 15px;
 }
 
 @keyframes blink {
-    0% {
-        opacity: 0;
-    }
-    35%, 50%, 65% {
-        opacity: 1;
-    }
+    0%,
     100% {
         opacity: 0;
+    }
+
+    35%,
+    50%,
+    65% {
+        opacity: 1;
     }
 }

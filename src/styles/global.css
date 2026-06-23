@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Audiowide&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Kode+Mono:wght@400..700&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&family=Share+Tech&display=swap');
 
 :root {
     --cell-size: 50px;
@@ -35,7 +35,8 @@ select {
 body {
     min-height: 100vh;
     background-image:
-        linear-gradient(rgba(20, 30, 40, 0.1), rgba(20, 30, 40, 0.7)), url("../assets/23604548_sl_112119_25250_20.svg");
+        linear-gradient(rgba(20, 30, 40, 0.1), rgba(20, 30, 40, 0.7)),
+        url("../assets/23604548_sl_112119_25250_20.svg");
     background-size: 150% auto;
     background-size: cover;
     background-position: 30%;
@@ -57,7 +58,12 @@ body {
     content: "";
     position: absolute;
     inset: 0;
-    background: repeating-linear-gradient(0deg, rgba(255, 0, 0, 0.1) 0, rgba(255, 0, 0, 0.2) 2px, transparent 4px);
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(255, 0, 0, 0.1) 0,
+        rgba(255, 0, 0, 0.2) 2px,
+        transparent 4px
+    );
     animation: rain 10s linear infinite;
 }
 
@@ -143,7 +149,12 @@ button.modal-btn::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(-65deg, transparent 40%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+    background: linear-gradient(
+        -65deg,
+        transparent 40%,
+        rgba(255, 255, 255, 0.45) 50%,
+        transparent 70%
+    );
     background-size: 200% 100%;
     background-repeat: no-repeat;
     animation: shine 3s ease infinite;
@@ -167,4 +178,3 @@ button.modal-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px #0004;
 }
-

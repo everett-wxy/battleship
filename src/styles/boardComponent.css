@@ -1,8 +1,11 @@
 .grid-map-container {
     flex: 0 0 auto;
-    padding: 1rem;
+    padding: 1.5rem;
+    padding-left: 1rem;
+    padding-top: 1rem;
     display: grid;
     grid-template-columns: auto auto;
+    /* border:white 1px solid;  */
 }
 
 .number-axis {
@@ -102,9 +105,15 @@
     height: 100%;
     border-radius: 100% 0 0 0;
     transform-origin: 100% 100%;
-    background: linear-gradient(50deg, transparent 56%, #f17070);
+    background: linear-gradient(50deg, transparent 56%, #e04141);
     pointer-events: none;
     animation: sweep 3.5s linear infinite;
+}
+
+.hostile .marker-overlay::before{
+    background: linear-gradient(50deg, transparent 50%, #000000);
+    filter: drop-shadow(-10px -10px 5px rgba(66, 70, 152, 0.5));
+    /* animation: none; */
 }
 
 @keyframes sweep {
@@ -166,8 +175,8 @@
     pointer-events: none;
     user-select: none;
     opacity: 0.3;
-    filter: brightness(0) saturate(100%) invert(100%) sepia(10%) saturate(2100%) hue-rotate(343deg) brightness(100%)
-        contrast(96%);
+    filter: brightness(0) saturate(100%) invert(100%) sepia(10%) saturate(2100%)
+        hue-rotate(343deg) brightness(100%) contrast(96%);
 }
 
 .grid-ship-container.vertical .grid-ship {

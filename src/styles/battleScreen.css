@@ -1,27 +1,84 @@
 .battle-screen {
+    position: relative;
     min-height: 100vh;
     /* width: 100%; */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 1rem;
+    margin-top: 5rem;
 }
 
 #zones-container {
+    position: relative;
     display: flex;
-    gap: 1rem;
+    gap: 2rem;
 }
 
 .zone-container {
     border-radius: 0.5rem;
-    padding: 1rem;
+    /* padding: 1rem; */
     background-color: rgba(0, 0, 0, 0.75);
     box-shadow: 0 0 30px 0.625rem rgba(0, 0, 0, 0.3);
 }
 
-.zone-container .zone-title.hostile {
-    color: red;
+.battle-screen .gameboard-wrapper {
+    height: calc(45px * var(--board-size));
+    width: calc(45px * var(--board-size));
+}
+
+.battle-screen .grid-map-container {
+    padding: 1.5rem;
+}
+
+.zone-title {
+    position: absolute;
+    display: inline-block;
+    /* transform: translateY(-85%); */
+    font-size: 1.6rem;
+    font-family: "Kode Mono", sans-serif;
+    font-weight: 700;
+    z-index: -1;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    text-wrap: nowrap;
+}
+
+.zone-title.hostile {
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    /* color: rgb(24, 13, 120);
+    text-shadow: 0 0 3px rgba(255, 255, 255, 1); */
+    color: #050505; /* dark core */
+    -webkit-text-stroke: .5px rgb(158, 163, 255);
+    /* bright white edge */
+
+    text-shadow:
+        0 0 2px white,
+        0 0 6px rgba(109, 114, 206, 0.5),
+        0 0 14px rgba(66, 70, 152, 0.5),
+        0 0 28px rgba(27, 30, 70, 0.5);
+}
+
+.zone-title.friendly {
+    left: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    
+    -webkit-text-stroke: 0.5px rgb(var(--friendly-light));
+    color: rgb(var(--friendly-dark));
+    text-shadow:
+        0 0 2px rgb(171, 214, 255),
+        0 0 6px rgba(109, 83, 241, 0.9),
+        0 0 14px rgba(15, 45, 181, 0.6),
+        0 0 28px rgba(29, 4, 97, 0.35);
+
+    text-shadow:
+        0 0 2px white,
+        0 0 6px rgba(178, 111, 111, 0.9),
+        0 0 14px rgba(189, 45, 45, 0.6),
+        0 0 28px rgba(255, 255, 255, 0.35);
 }
 
 .game-over-overlay {
