@@ -13,11 +13,11 @@
     width: 100%;
     max-width: 90%;
     height: 130px;
-    margin-top: 2rem;
+    margin-top: 3rem;
 
-    --dialogue-offset: -1.5rem;
+    --dialogue-offset: -1.8rem;
     --dialogue-active-scale: 1;
-    --dialogue-inactive-scale: 0.9;
+    --dialogue-inactive-scale: 0.8;
     --dialogue-active-opacity: 1;
     --dialogue-inactive-opacity: 0.8;
 }
