@@ -1,24 +1,231 @@
 .prompt {
-    position: absolute;
-    top: -5rem;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    margin-bottom: 2rem;
-    background-color: rgb(175, 11, 11);
-    box-shadow: 0 0 5px 1px  rgba(255, 0, 0, 0.5);
-    border: 1px solid rgba(255, 0, 0, 0.5);
+    --prompt-rgb: 158, 163, 255;
+    --prompt-open-duration: 800ms;
+    --prompt-close-duration: 300ms;
 
-    /* border-radius: .3rem; */
+    position: absolute;
+    top: -3.5rem;
+    left: 50%;
+    z-index: 5;
+
+    min-width: 25rem;
+    padding: 0.5rem 2rem;
+
+    color: rgba(235, 244, 255, 0.7);
+    border-radius: 0.25rem;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent 0,
+            transparent 3px,
+            rgba(255, 255, 255, 0.08) 4px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(var(--prompt-rgb), 0.08),
+            rgba(4, 8, 18, 0.75) 18%,
+            rgba(4, 8, 18, 0.75) 82%,
+            rgba(var(--prompt-rgb), 0.08)
+        );
+
+    border-top: 2px solid rgba(var(--prompt-rgb), 1);
+    border-bottom: 2px solid rgba(var(--prompt-rgb), 1);
+    border-left: none;
+    border-right: none;
+
+    box-shadow:
+        0px -10px 10px -5px rgba(var(--prompt-rgb), 0.5),
+        0px 10px 10px -5px rgba(var(--prompt-rgb), 0.5);
+
     text-align: center;
+    letter-spacing: 0.12em;
     visibility: hidden;
+    opacity: 0;
     pointer-events: none;
-    padding-block: 0.5rem;
-    padding-inline: 1.5rem;
-    text-shadow: none;
+    transform: translate(-50%, -50%) scaleX(0.03);
+    transform-origin: center;
+
+    font-family: "Quantico", sans-serif;
     font-size: 0.9rem;
-    animation: blink 1.5s ease infinite;
+    font-weight: 400;
+    will-change: transform, opacity, filter;
+    overflow: hidden;
+}
+
+.prompt.friendly {
+    --prompt-rgb: 240, 43, 43;
+}
+
+.prompt::before,
+.prompt::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+}
+
+/* Scanner streak crossing the prompt during deployment. */
+.prompt::after {
+    top: 0;
+    bottom: 0;
+    left: -25%;
+    width: 18%;
+    opacity: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        rgba(var(--prompt-rgb), 0.3),
+        transparent
+    );
+    transform: skewX(-18deg);
 }
 
 .prompt.visible {
     visibility: visible;
+    animation: hud-prompt-open var(--prompt-open-duration) cubic-bezier(0.16, 1, 0.3, 1)
+        forwards;
+}
+
+@keyframes hud-prompt-open {
+    0% {
+        opacity: 0;
+        filter: brightness(2.4);
+        transform: translate(-50%, -50%) scaleX(0.03) scaleY(0.18);
+    }
+
+    38% {
+        opacity: 1;
+        filter: brightness(2);
+        transform: translate(-50%, -50%) scaleX(1) scaleY(0.18);
+    }
+
+    72% {
+        filter: brightness(1.35);
+        transform: translate(-50%, -50%) scaleX(1) scaleY(1.08);
+    }
+
+    100% {
+        opacity: 1;
+        filter: brightness(1);
+        transform: translate(-50%, -50%) scaleX(1) scaleY(1);
+    }
+}
+
+.prompt.visible::after {
+    animation: hud-prompt-scan 800ms 300ms ease-out forwards;
+}
+
+@keyframes hud-prompt-scan {
+    0% {
+        left: -25%;
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.9;
+    }
+
+    100% {
+        left: 110%;
+        opacity: 0;
+    }
+}
+
+.prompt.closing {
+    visibility: visible;
+    animation: hud-prompt-close var(--prompt-close-duration) ease-in forwards;
+}
+
+.prompt-text {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    opacity: 0;
+    text-shadow:
+        0 0 4px rgba(255, 255, 255, 0.75),
+        0 0 10px rgba(var(--prompt-rgb), 0.85);
+}
+
+.prompt.visible .prompt-text {
+    animation: hud-prompt-text-in 240ms 240ms steps(2, end) forwards;
+}
+
+.prompt.closing .prompt-text {
+    animation: hud-prompt-text-out 120ms steps(2, end) forwards;
+}
+
+.prompt.blink.visible .prompt-text {
+    animation:
+        hud-prompt-text-in 240ms 240ms steps(2, end) forwards,
+        hud-prompt-attention 1.5s 700ms ease-in-out infinite;
+}
+
+@keyframes hud-prompt-close {
+    0% {
+        opacity: 1;
+        filter: brightness(1);
+        transform: translate(-50%, -50%) scaleX(1) scaleY(1);
+    }
+
+    45% {
+        opacity: 1;
+        filter: brightness(2);
+        transform: translate(-50%, -50%) scaleX(1) scaleY(0.12);
+    }
+
+    100% {
+        opacity: 0;
+        filter: brightness(2.8);
+        transform: translate(-50%, -50%) scaleX(0.02) scaleY(0.12);
+    }
+}
+
+@keyframes hud-prompt-text-in {
+    0%,
+    45% {
+        opacity: 0;
+        transform: translateY(2px);
+    }
+
+    46%,
+    70% {
+        opacity: 0.45;
+    }
+
+    71%,
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes hud-prompt-text-out {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes hud-prompt-attention {
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.35;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .prompt,
+    .prompt::after,
+    .prompt-text {
+        animation-duration: 1ms !important;
+        animation-delay: 0ms !important;
+    }
 }

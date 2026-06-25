@@ -57,16 +57,33 @@ export function renderBattleScreen(currentGame, handlers) {
     app.append(battleScreenView.element);
 
     return {
+        removeFirstFirePrompt() {
+            battleScreenView.removeFirstFirePrompt();
+        },
+
+        setPrompt(options) {
+            battleScreenView.setPrompt(options);
+        },
+
         renderEnemyMarker(atkRes) {
-            renderAttackMarker(battleScreenView.hostileBoardComponent.markerOverlay, atkRes);
+            renderAttackMarker(
+                battleScreenView.hostileBoardComponent.markerOverlay,
+                atkRes,
+            );
         },
 
         renderFriendlyMarker(atkRes) {
-            renderAttackMarker(battleScreenView.friendlyBoardComponent.markerOverlay, atkRes);
+            renderAttackMarker(
+                battleScreenView.friendlyBoardComponent.markerOverlay,
+                atkRes,
+            );
         },
 
         renderEnemyShip(shipPlacement) {
-            renderPlacedShip(battleScreenView.hostileBoardComponent.shipOverlay, shipPlacement);
+            renderPlacedShip(
+                battleScreenView.hostileBoardComponent.shipOverlay,
+                shipPlacement,
+            );
         },
 
         setActiveDialogue(turn) {
@@ -77,7 +94,7 @@ export function renderBattleScreen(currentGame, handlers) {
             battleScreenView.showAttackReaction(isHit, side);
         },
 
-        toggleGridVisual(){
+        toggleGridVisual() {
             battleScreenView.toggleGridVisual();
         },
 

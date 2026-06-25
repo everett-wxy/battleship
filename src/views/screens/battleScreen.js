@@ -1,16 +1,26 @@
 import { createBoardComponent } from "../components/boardComponent.js";
 import { renderPlacedShip } from "../helpers/shipRenderer.js";
-// import villain from "../../assets/hostile-admiral-neutral.png";
-// import friendlySoldier from "../../assets/friendlySoldier.png";
 import { createBattleDialogues } from "../components/dialogue.js";
-import { delay } from "../helpers/delay.js";
-import { createPrompt } from "../components/prompt.js";
+import { createBattleStatusPrompt } from "../components/battleStatusPrompt.js";
 
 export function createBattleScreen(currentGame, { onHumanFire }) {
     const battleScreen = document.createElement("div");
     battleScreen.classList.add("battle-screen", "screen");
 
-    const prompt = createPrompt("Click on an enemy grid cell to fire");
+    const blinkingBattleStatusPrompt = createBattleStatusPrompt({
+        text: "Click on an enemy grid cell to fire",
+        type: "friendly",
+        isBlinking: true,
+    });
+
+    const friendlyBattleStatusPrompt = createBattleStatusPrompt({
+        text: "Click on an enemy grid cell to fire",
+        type: "friendly",
+    });
+    const hostileBattleStatusPrompt = createBattleStatusPrompt({
+        text: "Enemy fleet retaliating",
+        type: "hostile",
+    });
 
     const zonesContainer = document.createElement("div");
     zonesContainer.id = "zones-container";
@@ -29,7 +39,9 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
     });
 
     zonesContainer.append(
-        prompt.element,
+        blinkingBattleStatusPrompt.element,
+        friendlyBattleStatusPrompt.element,
+        hostileBattleStatusPrompt.element,
         friendlyZone.zoneContainer,
         hostileZone.zoneContainer,
     );
@@ -43,13 +55,12 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
 
     const { friendlyDialogue, hostileDialogue } = battleDialogues;
 
-    runBattleIntroDialogueSequence(
-        battleDialogues,
-        currentGame.humanPlayer.name,
-        prompt,
-    ).then(() => {
-        enableHumanFire(hostileZone.boardComponent.gridMap, onHumanFire);
-    });
+    runBattleIntroDialogueSequence(battleDialogues, currentGame.humanPlayer.name).then(
+        () => {
+            enableHumanFire(hostileZone.boardComponent.gridMap, onHumanFire);
+            blinkingBattleStatusPrompt.setPromptVisible(true);
+        },
+    );
 
     dialoguesWrapper.append(friendlyDialogue.element, hostileDialogue.element);
 
@@ -59,6 +70,24 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
         element: battleScreen,
         friendlyBoardComponent: friendlyZone.boardComponent,
         hostileBoardComponent: hostileZone.boardComponent,
+
+        setPrompt({ text, isVisible, side }) {
+            const prompts = {
+                friendly: friendlyBattleStatusPrompt,
+                hostile: hostileBattleStatusPrompt,
+            };
+
+            if (text !== undefined) {
+                prompts[side].setPromptText(text);
+            }
+            if (isVisible !== undefined) {
+                prompts[side].setPromptVisible(isVisible);
+            }
+        },
+
+        removeFirstFirePrompt() {
+            blinkingBattleStatusPrompt.remove();
+        },
 
         showAttackReaction(isHit, side) {
             battleDialogues.showAttackReaction(isHit, side);
@@ -141,40 +170,7 @@ function enableHumanFire(enemyGridMap, onHumanFire) {
     });
 }
 
-function renderGameOver(battleScreen, winner, onRestart) {
-    const existingOverlay = battleScreen.querySelector(".game-over-overlay");
-    existingOverlay?.remove();
-
-    const overlay = document.createElement("div");
-    overlay.classList.add("game-over-overlay");
-
-    const dialog = document.createElement("div");
-    dialog.classList.add("game-over-dialog");
-
-    const heading = document.createElement("h2");
-    heading.innerText = "Battle Complete";
-
-    const winnerLabel = document.createElement("p");
-    winnerLabel.classList.add("winner-label");
-    winnerLabel.innerText = "Winner";
-
-    const winnerName = document.createElement("p");
-    winnerName.classList.add("winner-name");
-    winnerName.innerText = winner.name;
-
-    const restartBtn = document.createElement("button");
-    restartBtn.type = "button";
-    restartBtn.classList.add("modal-btn", "restart-btn");
-    restartBtn.innerText = "Restart";
-
-    restartBtn.addEventListener("click", onRestart);
-
-    dialog.append(heading, winnerLabel, winnerName, restartBtn);
-    overlay.append(dialog);
-    battleScreen.append(overlay);
-}
-
-async function runBattleIntroDialogueSequence(battleDialogues, playerName, prompt) {
+async function runBattleIntroDialogueSequence(battleDialogues, playerName) {
     const { friendlyDialogue, hostileDialogue } = battleDialogues;
 
     // await showMessageAndWait(
@@ -209,8 +205,6 @@ async function runBattleIntroDialogueSequence(battleDialogues, playerName, promp
     await friendlyDialogue.setMessage(
         "All launch systems are online. Give the order, and we'll make him regret every word.",
     );
-
-    prompt.togglePrompt();
 }
 
 function wait(ms) {
@@ -240,4 +234,37 @@ async function showMessageAndWait(dialogue, message) {
 
     await waitForEnter();
     dialogue.hidePrompt();
+}
+
+function renderGameOver(battleScreen, winner, onRestart) {
+    const existingOverlay = battleScreen.querySelector(".game-over-overlay");
+    existingOverlay?.remove();
+
+    const overlay = document.createElement("div");
+    overlay.classList.add("game-over-overlay");
+
+    const dialog = document.createElement("div");
+    dialog.classList.add("game-over-dialog");
+
+    const heading = document.createElement("h2");
+    heading.innerText = "Battle Complete";
+
+    const winnerLabel = document.createElement("p");
+    winnerLabel.classList.add("winner-label");
+    winnerLabel.innerText = "Winner";
+
+    const winnerName = document.createElement("p");
+    winnerName.classList.add("winner-name");
+    winnerName.innerText = winner.name;
+
+    const restartBtn = document.createElement("button");
+    restartBtn.type = "button";
+    restartBtn.classList.add("modal-btn", "restart-btn");
+    restartBtn.innerText = "Restart";
+
+    restartBtn.addEventListener("click", onRestart);
+
+    dialog.append(heading, winnerLabel, winnerName, restartBtn);
+    overlay.append(dialog);
+    battleScreen.append(overlay);
 }

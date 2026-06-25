@@ -7,7 +7,11 @@ import {
 } from "../views/screenRenderer.js";
 
 import { Game } from "../models/GameSession.js";
-import { playCannonFireSound, playExplosionSound, playMissedSound } from "./AudioController.js";
+import {
+    playCannonFireSound,
+    playExplosionSound,
+    playMissedSound,
+} from "./AudioController.js";
 import { delay } from "../views/helpers/delay.js";
 
 export function initialise() {
@@ -17,7 +21,13 @@ export function initialise() {
     const currentGame = new Game("everett");
     // showFleetSetup(currentGame);
     Game.fleet.forEach((ship, i) => {
-        currentGame.humanPlayer.gameboard.placeShip(ship.name, ship.length, i + 1, i, "horizontal");
+        currentGame.humanPlayer.gameboard.placeShip(
+            ship.name,
+            ship.length,
+            i + 1,
+            i,
+            "horizontal",
+        );
     });
     currentGame.placeComputerFleet();
     startBattle(currentGame);
@@ -59,13 +69,12 @@ function startBattle(currentGame) {
 
             isWaitingForComputer = true;
 
-            await handleTurnFeedback(turnRes, battleView, "enemy");
-
-            if (turnRes.atkRes.isSunk) {
-                const sunkShipPlacement = getShipPlacement(currentGame.computerPlayer.gameboard, turnRes.atkRes.ship);
-
-                battleView.renderEnemyShip(sunkShipPlacement);
-            }
+            await handleTurnFeedback(
+                turnRes,
+                battleView,
+                "enemy",
+                currentGame.computerPlayer.gameboard,
+            );
 
             if (currentGame.isGameOver) {
                 battleView.renderGameOver(currentGame.winner);
@@ -101,7 +110,7 @@ function getShipPlacement(gameboard, ship) {
     });
 }
 
-async function handleTurnFeedback(turnRes, battleView, markerTarget) {
+async function handleTurnFeedback(turnRes, battleView, markerTarget, comGameboard) {
     playCannonFireSound();
 
     markerTarget === "enemy"
@@ -112,15 +121,29 @@ async function handleTurnFeedback(turnRes, battleView, markerTarget) {
 
     turnRes.atkRes.isHit ? playExplosionSound() : playMissedSound();
 
-    // update dialogue based on hitRes
-    battleView.updateBattleDialogue(turnRes.atkRes.isHit, turnRes.attacker === "human" ? "friendly" : "hostile");
-    // wait 1.5 sec
+    if (turnRes.attacker === "human" && turnRes.atkRes.isSunk) {
+        const sunkShipPlacement = getShipPlacement(comGameboard, turnRes.atkRes.ship);
+
+        battleView.renderEnemyShip(sunkShipPlacement);
+    }
+
+    battleView.updateBattleDialogue(
+        turnRes.atkRes.isHit,
+        turnRes.attacker === "human" ? "friendly" : "hostile",
+    );
+
     await delay(2000);
-    // swap dialogue active
 
     if (!turnRes.isGameOver) {
-        console.log("running ," + turnRes.nextPlayer);
+        battleView.removeFirstFirePrompt();
         battleView.setActiveDialogue(turnRes.nextPlayer);
         battleView.toggleGridVisual();
+        if (turnRes.nextPlayer === "human") {
+            battleView.setPrompt({ side: "hostile", isVisible: false });
+            battleView.setPrompt({ side: "friendly", isVisible: true });
+        } else if (turnRes.nextPlayer === "computer") {
+            battleView.setPrompt({ side: "hostile", isVisible: true });
+            battleView.setPrompt({ side: "friendly", isVisible: false });
+        }
     }
 }
