@@ -15,7 +15,7 @@ export function createBoardComponent(gameboard) {
     shipOverlay.classList.add("ship-overlay");
 
     const markerOverlay = document.createElement("div");
-    markerOverlay.classList.add("marker-overlay");
+    markerOverlay.classList.add("marker-overlay", "visible");
 
     boardWrapper.append(gridMap, shipOverlay, markerOverlay);
     gameBoardContainer.append(numAxis, letterAxis, boardWrapper);

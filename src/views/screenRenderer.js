@@ -77,6 +77,10 @@ export function renderBattleScreen(currentGame, handlers) {
             battleScreenView.showAttackReaction(isHit, side);
         },
 
+        toggleGridVisual(){
+            battleScreenView.toggleGridVisual();
+        },
+
         renderGameOver(winner) {
             battleScreenView.renderGameOver(winner, handlers.onRestart);
         },

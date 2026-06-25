@@ -121,5 +121,6 @@ async function handleTurnFeedback(turnRes, battleView, markerTarget) {
     if (!turnRes.isGameOver) {
         console.log("running ," + turnRes.nextPlayer);
         battleView.setActiveDialogue(turnRes.nextPlayer);
+        battleView.toggleGridVisual();
     }
 }

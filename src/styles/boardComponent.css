@@ -8,6 +8,11 @@
     /* border:white 1px solid;  */
 }
 
+/* .battle-screen .grid-map-container{
+    box-shadow: 0 0 20px rgba(var(--friendly-med));
+} */
+
+
 .number-axis {
     display: flex;
     flex-direction: column;
@@ -93,11 +98,17 @@
     z-index: 3;
     pointer-events: none;
     overflow: hidden;
+    
+}
+
+.marker-overlay.visible::before{
+    opacity: 1;
 }
 
 .marker-overlay::before {
     content: "";
     position: absolute;
+    opacity: .2;
     z-index: 0;
     top: -50%;
     left: -50%;
@@ -108,11 +119,13 @@
     background: linear-gradient(50deg, transparent 56%, #e04141);
     pointer-events: none;
     animation: sweep 3.5s linear infinite;
+    transition: opacity 1s ease;
 }
 
-.hostile .marker-overlay::before{
+.friendly .marker-overlay::before{
     background: linear-gradient(50deg, transparent 50%, #000000);
-    filter: drop-shadow(-10px -10px 5px rgba(66, 70, 152, 0.5));
+    filter: drop-shadow(-10px -10px 5px rgb(5, 9, 97)) ;
+    
     /* animation: none; */
 }
 
