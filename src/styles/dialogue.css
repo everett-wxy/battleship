@@ -11,7 +11,7 @@
 
     width: 100%;
     max-width: 90%;
-    height: 130px;
+    height: 150px;
     margin-top: 3rem;
 
     --dialogue-offset: -1.8rem;
@@ -21,14 +21,11 @@
     --dialogue-inactive-opacity: 0.8;
 }
 
-/* =========================
-   Dialogue Panel Base
-========================= */
-
 .dialogue-panel {
     position: relative;
     grid-area: stack;
     width: 100%;
+    height: 150px;
 
     display: flex;
     align-items: center;
@@ -36,9 +33,23 @@
 
     padding-block: 1rem;
     padding-inline: 2rem;
+    background: rgba(69, 10, 10, 0.2);
 
-    background-color: rgb(0, 0, 0);
-    overflow: visible;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-radius: 0.5rem;
+    border: 1px solid rgba(252, 165, 165, 0.2);
+
+    box-shadow:
+        0 0px 5px rgba(255, 0, 0, 0.4),
+        0 0px 20px rgba(118, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 0 51px rgba(239, 68, 68, 0.2);
+    /* inset 0px 0px 4px 2px rgba(255, 255, 255, 0.3); */
+
+    overflow: hidden;
 
     transition:
         opacity 350ms ease,
@@ -47,18 +58,43 @@
         box-shadow 350ms ease;
 }
 
-.dialogue-panel::before,
-.dialogue-panel::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
+.dialogue-panel.hostile {
+    border: 1px solid rgba(165, 191, 252, 0.2);
+    background: rgba(0, 0, 4, 0.4);
+    box-shadow:
+        0 0 5px rgba(165, 191, 252, 0.2),
+        0 0 2px rgba(255, 255, 255, 0.4),
+        0 0 14px rgba(66, 70, 152, 0.2),
+        0 0 28px rgba(0, 0, 0, 0.5),
+        0 0 14px rgba(66, 70, 152, 0.5),
+        0 0 28px rgba(0, 0, 0, 0.5),
+        0 0 28px rgba(27, 30, 70, 0.5),
+        0 0 28px rgba(27, 30, 70, 0.5),
+        /* inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 0 51px rgba(74, 68, 239, 0.2); */
+        inset 0 0 10px rgba(0, 0, 0, 0.6),
+        inset 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
-/* =========================
-   Dialogue Panel Themes
-========================= */
+.dialogue-panel.active {
+    z-index: 2;
+
+    opacity: var(--dialogue-active-opacity);
+    transform: translateY(0) scale(var(--dialogue-active-scale));
+    filter: saturate(1.2);
+
+    /* box-shadow: 0 0 30px 0.625rem var(--dialogue-shadow); */
+}
+
+.dialogue-panel.inactive {
+    z-index: 1;
+
+    opacity: var(--dialogue-inactive-opacity);
+    transform: translateY(var(--dialogue-offset)) scale(var(--dialogue-inactive-scale));
+
+    pointer-events: none;
+}
 
 .dialogue-panel.friendly {
     --dialogue-accent: rgb(var(--friendly-dark));
@@ -76,57 +112,38 @@
     --dialogue-character-glow: rgba(255, 0, 0, 0.5);
 }
 
-/* Dotted background layer */
-.dialogue-panel::before {
-    z-index: -2;
-
-    background-image: radial-gradient(var(--dialogue-accent) 1px, transparent 1px);
-    background-position: center;
-    background-repeat: repeat;
-    background-size: 4px 4px;
-}
-
-/* Dark overlay glow layer */
+.dialogue-panel::before,
 .dialogue-panel::after {
-    z-index: -1;
-
-    background:
-        linear-gradient(90deg, var(--dialogue-glow), transparent 62%), rgba(0, 0, 0, 0.76);
+    content: "";
+    position: absolute;
 }
 
-.dialogue-panel.friendly::after {
-    background:
-        linear-gradient(270deg, var(--dialogue-glow), transparent 62%),
-        rgba(0, 0, 0, 0.76);
+.dialogue-panel::before {
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
 }
 
-/* =========================
-   Active / Inactive States
-========================= */
-
-.dialogue-panel.active {
-    z-index: 2;
-
-    opacity: var(--dialogue-active-opacity);
-    filter: saturate(1.2);
-    transform: translateY(0) scale(var(--dialogue-active-scale));
-
-    box-shadow: 0 0 30px 0.625rem var(--dialogue-shadow);
+.dialogue-panel::after {
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0.4),
+        rgba(255, 255, 255, 0.3),
+        rgba(255, 255, 255, 0.1)
+    );
 }
-
-.dialogue-panel.inactive {
-    z-index: 1;
-
-    opacity: var(--dialogue-inactive-opacity);
-    filter: grayscale(0.25) saturate(0.75);
-    transform: translateY(var(--dialogue-offset)) scale(var(--dialogue-inactive-scale));
-
-    pointer-events: none;
-}
-
-/* =========================
-   Character Image
-========================= */
 
 .dialogue-panel img {
     flex: 0 0 100px;
@@ -136,8 +153,15 @@
 
     object-fit: cover;
     object-position: center top;
+    transform: translateY(5px);
 
     filter: drop-shadow(0 0 10px var(--dialogue-character-glow));
+}
+
+.dialogue-panel img.hostile {
+    filter: drop-shadow(0 0 1px rgba(158, 163, 255, 0.5))
+        drop-shadow(0 0 2px rgb(0, 0, 0)) drop-shadow(0 0 3px rgb(0, 0, 0))
+        drop-shadow(0 0 1px rgba(255, 255, 255, 0.5));
 }
 
 /* =========================
@@ -145,13 +169,13 @@
 ========================= */
 
 .dialogue-message {
-    max-width: 80%;
+    max-width: 85%;
     min-width: 0;
 
     font-size: 1rem;
     color: white;
     text-shadow:
-        0 0 2px rgba(255, 255, 255, .8),
+        0 0 2px rgba(255, 255, 255, 0.8),
         0 0 5px var(--dialogue-text-glow);
 }
 
@@ -160,18 +184,14 @@
     margin-left: auto;
 }
 
-/* Typing cursor */
 .dialogue-message::after {
     content: "";
     display: inline-block;
-
     width: 0.5em;
     height: 1em;
     margin-left: 0.25em;
-
     background-color: rgba(var(--friendly-light), 0.5);
     vertical-align: -0.1em;
-
     animation: blink-cursor 1.5s ease infinite;
 }
 
@@ -190,20 +210,8 @@
    Continue Prompt
 ========================= */
 
-.continue-prompt {
-    position: absolute;
-    right: 15px;
-    bottom: 15px;
-
-    font-size: 1rem;
-    color: gray;
-
-    animation: blink 1.5s ease infinite;
-}
-
-.dialogue-panel.hostile .continue-prompt {
-    right: auto;
-    left: 15px;
+.dialogue-panel.hostile #continue-prompt {
+    left: 2.5rem;
 }
 
 @keyframes blink {
@@ -217,4 +225,254 @@
     65% {
         opacity: 1;
     }
+}
+
+/* Dialogue BG Effects */
+
+.dialogue-bg-effect {
+    --monitor-rgb: 255, 44, 64;
+    --monitor-line: rgba(var(--monitor-rgb), 0.22);
+    --monitor-soft: rgba(var(--monitor-rgb), 0.1);
+    --monitor-bright: rgba(var(--monitor-rgb), 0.42);
+
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    contain: paint;
+
+    background:
+        radial-gradient(
+            circle at 18% 50%,
+            rgba(var(--monitor-rgb), 0.18),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 82% 45%,
+            rgba(var(--monitor-rgb), 0.12),
+            transparent 28%
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.62),
+            transparent 32%,
+            transparent 68%,
+            rgba(0, 0, 0, 0.56)
+        ),
+        repeating-linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0.035) 0,
+            rgba(255, 255, 255, 0.035) 1px,
+            transparent 1px,
+            transparent 4px
+        );
+}
+
+.dialogue-bg-effect.friendly {
+    --monitor-rgb: 255, 44, 64;
+}
+
+.dialogue-bg-effect.hostile {
+    --monitor-rgb: 125, 125, 220;
+}
+
+.dialogue-panel > *:not(.dialogue-bg-effect) {
+    position: relative;
+    z-index: 1;
+}
+
+.dialogue-bg-effect::before,
+.dialogue-bg-effect::after,
+.dialogue-monitor-grid,
+.dialogue-monitor-sweep,
+.dialogue-monitor-hud,
+.dialogue-monitor-signal {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.dialogue-bg-effect::before,
+.dialogue-bg-effect::after {
+    content: "";
+}
+
+.dialogue-bg-effect::before {
+    background:
+        linear-gradient(90deg, transparent, var(--monitor-bright), transparent),
+        linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    width: 34%;
+    opacity: 0.34;
+    transform: translate3d(-130%, 0, 0) skewX(-18deg);
+    will-change: transform;
+    animation: dialogue-monitor-scan-x 4.8s linear infinite;
+}
+
+.dialogue-bg-effect::after {
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(var(--monitor-rgb), 0.7),
+        transparent
+    );
+    opacity: 0.54;
+    transform: translate3d(0, -16px, 0);
+    will-change: transform;
+    animation: dialogue-monitor-scan-y 2.7s linear infinite;
+}
+
+.dialogue-monitor-grid {
+    inset: -18px;
+    opacity: 0.46;
+    background-image:
+        linear-gradient(var(--monitor-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--monitor-line) 1px, transparent 1px),
+        linear-gradient(
+            90deg,
+            transparent 0 38%,
+            var(--monitor-soft) 38% 39%,
+            transparent 39% 62%,
+            var(--monitor-soft) 62% 63%,
+            transparent 63%
+        );
+    background-size:
+        28px 28px,
+        28px 28px,
+        100% 100%;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    animation: dialogue-monitor-grid-shift 8s linear infinite;
+}
+
+.dialogue-monitor-sweep {
+    opacity: 0.32;
+    background:
+        radial-gradient(
+            ellipse at 50% 50%,
+            transparent 0 35%,
+            var(--monitor-line) 36%,
+            transparent 37%
+        ),
+        conic-gradient(
+            from 230deg at 50% 50%,
+            transparent 0 78%,
+            rgba(var(--monitor-rgb), 0.26) 86%,
+            transparent 92%
+        );
+    transform: translate3d(0, 0, 0) scale(1.35);
+    will-change: transform;
+    animation: dialogue-monitor-radar 7s linear infinite;
+}
+
+.dialogue-monitor-hud {
+    margin: 1.1rem;
+    border: 1px solid rgba(var(--monitor-rgb), 0.2);
+    opacity: 0.6;
+    background:
+        linear-gradient(var(--monitor-bright), var(--monitor-bright)) top left / 34px 2px
+            no-repeat,
+        linear-gradient(var(--monitor-bright), var(--monitor-bright)) top left / 2px 20px
+            no-repeat,
+        linear-gradient(var(--monitor-bright), var(--monitor-bright)) top right / 34px 2px
+            no-repeat,
+        linear-gradient(var(--monitor-bright), var(--monitor-bright)) top right / 2px 20px
+            no-repeat,
+        linear-gradient(var(--monitor-bright), var(--monitor-bright)) bottom left / 34px
+            2px no-repeat,
+        linear-gradient(var(--monitor-bright), var(--monitor-bright)) bottom left / 2px
+            20px no-repeat,
+        linear-gradient(var(--monitor-bright), var(--monitor-bright)) bottom right / 34px
+            2px no-repeat,
+        linear-gradient(var(--monitor-bright), var(--monitor-bright)) bottom right / 2px
+            20px no-repeat;
+}
+
+.dialogue-monitor-signal {
+    inset: auto 4rem 1.2rem auto;
+    width: 96px;
+    height: 24px;
+    opacity: 0.5;
+    background: linear-gradient(
+        90deg,
+        var(--monitor-bright) 0 12%,
+        transparent 12% 18%,
+        var(--monitor-bright) 18% 34%,
+        transparent 34% 42%,
+        var(--monitor-bright) 42% 58%,
+        transparent 58% 70%,
+        var(--monitor-bright) 70% 100%
+    );
+    clip-path: polygon(
+        0 75%,
+        10% 75%,
+        10% 48%,
+        22% 48%,
+        22% 65%,
+        38% 65%,
+        38% 28%,
+        54% 28%,
+        54% 58%,
+        72% 58%,
+        72% 18%,
+        100% 18%,
+        100% 100%,
+        0 100%
+    );
+}
+
+.hostile .dialogue-monitor-signal {
+    inset: auto auto 1.2rem 4rem;
+}
+
+.dialogue-panel.inactive .dialogue-bg-effect::before,
+.dialogue-panel.inactive .dialogue-bg-effect::after,
+.dialogue-panel.inactive .dialogue-monitor-grid,
+.dialogue-panel.inactive .dialogue-monitor-sweep {
+    animation-play-state: paused;
+}
+
+@keyframes dialogue-monitor-scan-x {
+    to {
+        transform: translate3d(390%, 0, 0) skewX(-18deg);
+    }
+}
+
+@keyframes dialogue-monitor-scan-y {
+    to {
+        transform: translate3d(0, 150px, 0);
+    }
+}
+
+@keyframes dialogue-monitor-grid-shift {
+    to {
+        transform: translate3d(-28px, 28px, 0);
+    }
+}
+
+@keyframes dialogue-monitor-radar {
+    to {
+        transform: translate3d(0, 0, 0) scale(1.35) rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dialogue-bg-effect::before,
+    .dialogue-bg-effect::after,
+    .dialogue-monitor-grid,
+    .dialogue-monitor-sweep {
+        animation: none;
+    }
+}
+
+#continue-prompt {
+    position: absolute;
+    right: 2.5rem;
+    top: 1.5rem;
+
+    font-size: 1rem;
+    color: rgb(255, 255, 255);
+
+    animation: blink 1.5s ease infinite;
 }

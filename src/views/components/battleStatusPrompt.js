@@ -14,7 +14,6 @@ export function createBattleStatusPrompt({ text, type, isBlinking = false }) {
     let removalTimerId = null;
 
     function setPromptVisible(isVisible) {
-        clearTimeout(removalTimerId);
         battleStatusPrompt.classList.remove("closing");
 
         if (isVisible) {
@@ -38,8 +37,9 @@ export function createBattleStatusPrompt({ text, type, isBlinking = false }) {
     }
 
     function remove() {
+        clearTimeout(removalTimerId);
+
         setPromptVisible(false);
-        battleStatusPrompt.classList.add("closing");
 
         removalTimerId = setTimeout(() => {
             battleStatusPrompt.remove();

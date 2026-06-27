@@ -5,6 +5,7 @@ import { createRulesDialogScreen, createRulesBtn } from "./screens/rulesDialogSc
 import { createBattleScreen } from "./screens/battleScreen.js";
 import { renderAttackMarker } from "./helpers/attackMarkerRenderer.js";
 import { renderPlacedShip } from "./helpers/shipRenderer.js";
+import { swapMusic } from "../controllers/AudioController.js";
 
 const root = document.querySelector("#root");
 
@@ -50,6 +51,7 @@ export function renderPlaceFleetScreen(currentGame, onContinue) {
 }
 
 export function renderBattleScreen(currentGame, handlers) {
+    swapMusic();
     app.replaceChildren();
 
     const battleScreenView = createBattleScreen(currentGame, handlers);

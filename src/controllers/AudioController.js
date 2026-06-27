@@ -1,4 +1,5 @@
-import bgMusic from "../assets/music_for_videos-pirates-163389.mp3";
+import bgMusicWaves from "../assets/waves.wav";
+import bgMusicBattle from "../assets/music_for_videos-pirates-163389.mp3";
 import missedSound from "../assets/missed.mp3";
 import canonFireSound from "../assets/canon-fire.mp3";
 import explosionSound from "../assets/explosion.mp3";
@@ -11,8 +12,8 @@ import shipPlacedSound from "../assets/ship-placed.wav";
 const normalVolume = 0.3;
 const fadeDuration = 7000;
 
-const bgAudioA = new Audio(bgMusic);
-const bgAudioB = new Audio(bgMusic);
+const bgAudioA = new Audio(bgMusicWaves);
+const bgAudioB = new Audio(bgMusicWaves);
 
 bgAudioA.volume = normalVolume;
 bgAudioB.volume = 0;
@@ -41,6 +42,36 @@ export function enableBackgroundMusic() {
         },
         { once: true },
     );
+}
+
+export async function swapMusic() {
+    const shouldResume = hasStarted && !isMuted;
+
+    bgAudioA.pause();
+    bgAudioB.pause();
+
+    bgAudioA.src = bgMusicBattle;
+    bgAudioB.src = bgMusicBattle;
+
+    bgAudioA.currentTime = 0;
+    bgAudioB.currentTime = 0;
+
+    bgAudioA.volume = normalVolume;
+    bgAudioB.volume = 0;
+
+    currentAudio = bgAudioA;
+    nextAudio = bgAudioB;
+
+    isCrossfading = false;
+
+    if (shouldResume) {
+        try {
+            await currentAudio.play();
+            setupCrossfadeLoop();
+        } catch (err) {
+            console.log("Audio could not play:", err);
+        }
+    }
 }
 
 export function enableButtonClickSound() {

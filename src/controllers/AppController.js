@@ -19,18 +19,19 @@ export function initialise() {
     // renderStartScreen(handleGameStart);
 
     const currentGame = new Game("everett");
-    // showFleetSetup(currentGame);
-    Game.fleet.forEach((ship, i) => {
-        currentGame.humanPlayer.gameboard.placeShip(
-            ship.name,
-            ship.length,
-            i + 1,
-            i,
-            "horizontal",
-        );
-    });
-    currentGame.placeComputerFleet();
-    startBattle(currentGame);
+    // showRules(currentGame);
+    showFleetSetup(currentGame);
+    // Game.fleet.forEach((ship, i) => {
+    //     currentGame.humanPlayer.gameboard.placeShip(
+    //         ship.name,
+    //         ship.length,
+    //         i + 1,
+    //         i,
+    //         "horizontal",
+    //     );
+    // });
+    // currentGame.placeComputerFleet();
+    // startBattle(currentGame);
 }
 
 function handleGameStart(playerName) {

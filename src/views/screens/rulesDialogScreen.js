@@ -1,19 +1,33 @@
 export function createRulesDialogScreen(currentGame, onContinue) {
     const rulesDialog = document.createElement("dialog");
     rulesDialog.id = "rules-modal";
+    rulesDialog.classList.add("friendly", "panel");
 
-    const header = document.createElement("h1");
-    header.innerText = "Mission guide";
+    const header = document.createElement("div");
+    header.classList.add("header");
+
+    const missionObjective = document.createElement("h1");
+    missionObjective.innerText = "Mission Objective";
+
+    const objective = document.createElement("p");
+    objective.classList.add("objective");
+    objective.innerText = "Be the first to sink all 5 of your opponent's ships.";
+
+    header.append(missionObjective, objective);
+
+    const rulesContainer = document.createElement("div");
+    rulesContainer.classList.add("rules-container");
+
+    const rules = document.createElement("h1");
+    rules.innerText = "Rules";
+    rules.classList.add("header", "rules");
 
     const instructions = [
-        "Position all ships on the combat grid before the battle begins",
-        "Place each vessel carefully. Ships cannot overlap or extend beyond the battlefield.",
-        "On your turn, select a coordinate on the enemy grid to launch an attack.",
-        "A successful hit will damage an enemy ship. A miss means the shot landed in open water.",
-        "Use hit and miss markers to plan your next strike.",
-        "The enemy will return fire after your turn. Stay alert.",
-        "Destroy every enemy ship before your own fleet is eliminated.",
-        "Victory is achieved when all enemy vessels have been sunk",
+        "Each player is given a fleet of 5 ships, each with a different length.",
+        "Place each vessel carefully within your 10x10 grid.",
+        "Each player takes turns firing at the opponent's grid.",
+        "A successful strike on a coordinate containing a ship will damage that ship.",
+        "A ship will be sunk once every part of it has been hit.",
     ];
 
     const instructionsList = document.createElement("ol");
@@ -23,6 +37,8 @@ export function createRulesDialogScreen(currentGame, onContinue) {
         instruction.innerText = item;
         instructionsList.append(instruction);
     });
+
+    rulesContainer.append(rules, instructionsList);
 
     const beginButton = document.createElement("button");
     beginButton.type = "button";
@@ -35,7 +51,7 @@ export function createRulesDialogScreen(currentGame, onContinue) {
         onContinue();
     });
 
-    rulesDialog.append(header, instructionsList, beginButton);
+    rulesDialog.append(header, rulesContainer, beginButton);
 
     return rulesDialog;
 }

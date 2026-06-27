@@ -2,16 +2,18 @@ import hostileAdmiralNeutral from "../../assets/hostile-admiral-neutral.png";
 import hostileAdmiralBoisterous from "../../assets/hostile-admiral-lol.png";
 import hostileAdmiralAnnoyed from "../../assets/hostile-admiral-annoyed.png";
 import hostileAdmiralArrogant from "../../assets/hostile-admiral-arrogant.png";
-import hostileAdmiralDismissive from "../../assets/hostile-admiral-dismissive.png";
+import hostileAdmiralDismissive from "../../assets/hostile-admiral-bored.png";
 import hostileAdmiralFrustrated from "../../assets/hostile-admiral-frustrated.png";
-import hostileAdmiralBored from "../../assets/hostile-admiral-bored.png";
+import hostileAdmiralBored from "../../assets/hostile-admiral-dismissive.png";
+import hostileAdmiralDisinterested from "../../assets/hostile-admiral-digging-ear.png";
 import friendlySoldierNeutral from "../../assets/friendly-soldier-neutral.png";
 import friendlySoldierEmbarrassed from "../../assets/friendly-soldier-embarrassed.png";
-import friendlySoldierSalute from "../../assets/friendly-soldier-salute-cropped.png";
+import friendlySoldierSalute from "../../assets/friendly-soldier-salute.png";
 import friendlySoldierRegretful from "../../assets/friendly-soldier-regretful.png";
 import friendlySoldierEnthusiastic from "../../assets/friendly-soldier-enthusiastic.png";
 import friendlySoldierEncouraging from "../../assets/friendly-soldier-encouraging.png";
 import friendlySoldierDetermined from "../../assets/friendly-soldier-determined.png";
+import friendlySoldierAngry from "../../assets/friendly-soldier-angry.png";
 
 const characterAssets = {
     friendly: {
@@ -22,6 +24,7 @@ const characterAssets = {
         embarrassed: friendlySoldierEmbarrassed,
         regretful: friendlySoldierRegretful,
         determined: friendlySoldierDetermined,
+        angry: friendlySoldierAngry,
     },
     hostile: {
         neutral: hostileAdmiralNeutral,
@@ -31,6 +34,7 @@ const characterAssets = {
         frustrated: hostileAdmiralFrustrated,
         annoyed: hostileAdmiralAnnoyed,
         dismissive: hostileAdmiralDismissive,
+        disinterested: hostileAdmiralDisinterested,
     },
 };
 
@@ -43,6 +47,8 @@ export function createDialogue({
     const dialoguePanel = document.createElement("div");
     dialoguePanel.classList.add("dialogue-panel", "panel", side);
 
+    const dialogueBgEffect = createDialogueBgEffects(side);
+
     const characterImg = document.createElement("img");
     characterImg.classList.add("character", side);
     characterImg.src = characterAssets[side][expression];
@@ -51,7 +57,7 @@ export function createDialogue({
     dialogueMessage.classList.add("dialogue-message", side);
 
     const continuePrompt = document.createElement("p");
-    continuePrompt.classList.add("continue-prompt");
+    continuePrompt.id = "continue-prompt";
     continuePrompt.textContent = "Press Enter to continue";
     continuePrompt.hidden = true;
 
@@ -103,7 +109,7 @@ export function createDialogue({
         continuePrompt.textContent = text;
     }
 
-    dialoguePanel.append(characterImg, dialogueMessage, continuePrompt);
+    dialoguePanel.append(characterImg, dialogueMessage, continuePrompt, dialogueBgEffect);
     setActive(isActive);
     typeMessage(message);
 
@@ -246,11 +252,13 @@ function generateDialogueLines(playerName) {
                 ],
                 bored: [
                     `This is tooooooooo easy, ${playerName}.`,
-                    "Is that all you got? Ptff.",
-                    "Yawn. Try not to make this too easy.",
                     "I suppose I should pretend that required effort.",
+                    "Yawn. Try not to make this too easy.",
+                ],
+                disinterested: [
                     "Please do try to add some suspense.",
                     "Try to make this interesting.",
+                    "Is that all you got? Ptff.",
                 ],
             },
             miss: {
@@ -293,4 +301,25 @@ function getDialogueByTurn(turn, friendlyDialogue, hostileDialogue) {
     }
 
     throw new Error(`Invalid turn: ${turn}`);
+}
+
+function createDialogueBgEffects(side) {
+    const dialogueBgEffect = document.createElement("div");
+    dialogueBgEffect.classList.add("dialogue-bg-effect", side);
+
+    const monitorGrid = document.createElement("div");
+    monitorGrid.classList.add("dialogue-monitor-grid");
+
+    const monitorSweep = document.createElement("div");
+    monitorSweep.classList.add("dialogue-monitor-sweep");
+
+    const monitorHud = document.createElement("div");
+    monitorHud.classList.add("dialogue-monitor-hud");
+
+    const monitorSignal = document.createElement("div");
+    monitorSignal.classList.add("dialogue-monitor-signal");
+
+    dialogueBgEffect.append(monitorGrid, monitorSweep, monitorHud, monitorSignal);
+
+    return dialogueBgEffect;
 }

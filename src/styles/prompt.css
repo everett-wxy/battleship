@@ -54,7 +54,7 @@
 }
 
 .prompt.friendly {
-    --prompt-rgb: 240, 43, 43;
+    --prompt-rgb: 240, 23, 23;
 }
 
 .prompt::before,
@@ -143,8 +143,8 @@
     display: inline-block;
     opacity: 0;
     text-shadow:
-        0 0 4px rgba(255, 255, 255, 0.75),
-        0 0 10px rgba(var(--prompt-rgb), 0.85);
+        0 0 3px rgba(255, 255, 255, .5);
+        /* 0 0 10px rgba(var(--prompt-rgb), 0.85) */
 }
 
 .prompt.visible .prompt-text {
@@ -158,7 +158,7 @@
 .prompt.blink.visible .prompt-text {
     animation:
         hud-prompt-text-in 240ms 240ms steps(2, end) forwards,
-        hud-prompt-attention 1.5s 700ms ease-in-out infinite;
+        hud-prompt-attention 1.5s 700ms ease infinite;
 }
 
 @keyframes hud-prompt-close {
@@ -171,13 +171,13 @@
     45% {
         opacity: 1;
         filter: brightness(2);
-        transform: translate(-50%, -50%) scaleX(1) scaleY(0.12);
+        transform: translate(-50%, -50%) scaleX(1) scaleY(0.05);
     }
 
     100% {
         opacity: 0;
-        filter: brightness(2.8);
-        transform: translate(-50%, -50%) scaleX(0.02) scaleY(0.12);
+        filter: brightness(3);
+        transform: translate(-50%, -50%) scaleX(0) scaleY(0.05);
     }
 }
 
@@ -217,7 +217,7 @@
     }
 
     50% {
-        opacity: 0.35;
+        opacity: 0.5;
     }
 }
 

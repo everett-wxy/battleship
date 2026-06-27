@@ -1,9 +1,10 @@
 #fleet-placement-screen {
-    max-width: 700px;
+    /* max-width: 700px; */
     width: max-content;
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    user-select: none;
 }
 
 #grid-fleet-container {
@@ -13,6 +14,26 @@
     /* border: green 2px solid; */
     border-radius: 0.5rem;
     background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 0px 5px rgba(255, 0, 0, 0.4),
+        0 0px 5px rgba(255, 0, 0, 0.4),
+        0 0px 5px rgba(255, 0, 0, 0.4),
+        0 0px 20px rgba(118, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 0 51px rgba(239, 68, 68, 0.2);
+
+    box-shadow:
+        0 0px 3px rgba(255, 0, 0, 0.5),
+        /* 0 0px 5px rgba(255, 0, 0, 0.4), */ /* 2px 2px 10px rgba(255, 0, 0, 0.4), */ 0
+            0px 10px rgba(0, 0, 0, 0.8),
+        /* 0 0px 12px rgba(0, 0, 0, .5), */ inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 0 51px rgba(239, 68, 68, 0.2);
+
     display: flex;
     align-items: stretch;
     flex-wrap: wrap;
@@ -28,7 +49,7 @@
     flex: 1;
     min-width: 0;
     /* border: yellow 3px solid; */
-    padding: 1.5rem 1.5rem 1.5rem .5rem;
+    padding: 1.5rem 1.5rem 1.5rem 0.5rem;
     /* min-width: 0; */
 
     display: flex;
@@ -61,6 +82,24 @@
     --border: 3px solid rgba(110, 101, 101, 0.7);
 }
 
+.fleet-container > :first-child{
+    animation: ship-attention 1s linear infinite;
+}
+
+.fleet-container > :first-child.placed-ship{
+    animation: none;
+}
+
+@keyframes ship-attention {
+    0%,
+    100% {
+        transform: scale(0.98);
+    }
+    50% {
+        transform: scale(1.08);
+    }
+}
+
 .ship-card::before {
     content: "";
     position: absolute;
@@ -69,7 +108,12 @@
     width: 200%;
     height: 200%;
 
-    background: linear-gradient(0deg, transparent, transparent 30%, rgba(255, 255, 255, 0.7));
+    background: linear-gradient(
+        0deg,
+        transparent,
+        transparent 30%,
+        rgba(255, 255, 255, 0.7)
+    );
 
     transform: rotate(-45deg);
     opacity: 0;
@@ -135,7 +179,7 @@
     flex: 1;
     height: 100%;
     width: 100%;
-    padding: 1rem; 
+    padding: 1rem;
     /* min-height: 0; */
     /* border: rgba(255, 255, 0, 0.5) dashed 2px; */
 
@@ -150,7 +194,7 @@
     height: 100%;
     width: 100%;
     object-fit: contain;
-    filter: invert(100%) drop-shadow(0px 0px 3px rgba(255, 0, 0, 1));;
+    filter: invert(100%) drop-shadow(0px 0px 3px rgba(255, 0, 0, 1));
 }
 
 #battleship {
@@ -188,12 +232,12 @@
     pointer-events: none;
 }
 
-.placed-ship::before{
+.placed-ship::before {
     pointer-events: none;
 }
 
-.placed-ship img.ship-icon{
-    filter: drop-shadow(0px 0px 5px rgba(255, 0, 0, .8));;
+.placed-ship img.ship-icon {
+    filter: drop-shadow(0px 0px 5px rgba(255, 0, 0, 0.8));
 }
 
 .button-panel {
@@ -207,9 +251,8 @@
 .button-panel button {
     border-radius: 0.2em;
     padding-block: 0.5em;
-    padding-inline: .7em;
-    background-color: rgba(0, 0, 0, 0.3);
-    color: white;
+    padding-inline: 0.7em;
+    background-color: transparent;
     position: relative;
     /* overflow: hidden; */
     transition:
@@ -226,7 +269,12 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(-65deg, transparent 40%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+    background: linear-gradient(
+        -65deg,
+        transparent 40%,
+        rgba(255, 255, 255, 0.45) 50%,
+        transparent 70%
+    );
     background-size: 200% 100%;
     background-repeat: no-repeat;
     animation: shine 3s ease infinite;

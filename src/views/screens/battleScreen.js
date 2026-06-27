@@ -59,6 +59,8 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
         () => {
             enableHumanFire(hostileZone.boardComponent.gridMap, onHumanFire);
             blinkingBattleStatusPrompt.setPromptVisible(true);
+            hostileZone.zoneContainer.classList.toggle("active");
+            hostileZone.toggleGridVisual();
         },
     );
 
@@ -118,7 +120,7 @@ function createZone({
     onHumanFire = null,
 }) {
     const zoneContainer = document.createElement("div");
-    zoneContainer.classList.add("zone-container", "active", type);
+    zoneContainer.classList.add("zone-container", type);
 
     const title = document.createElement("p");
     title.classList.add("zone-title", type);
@@ -134,10 +136,10 @@ function createZone({
         enableHumanFire(boardComponent.gridMap, onHumanFire);
     }
 
-    if (type === "friendly") {
-        boardComponent.markerOverlay.classList.toggle("visible"); // remove visible
-        zoneContainer.classList.toggle("active");
-    }
+    // if (type === "friendly") {
+    //     boardComponent.markerOverlay.classList.toggle("visible"); // remove visible
+    //     zoneContainer.classList.toggle("active");
+    // }
 
     zoneContainer.append(title, boardComponent.gameBoardContainer);
     return {
@@ -173,37 +175,41 @@ function enableHumanFire(enemyGridMap, onHumanFire) {
 async function runBattleIntroDialogueSequence(battleDialogues, playerName) {
     const { friendlyDialogue, hostileDialogue } = battleDialogues;
 
-    // await showMessageAndWait(
-    //     friendlyDialogue,
-    //     `Commander ${playerName}! Enemy vessels have appeared on radar and are closing in on our territory!`,
-    // );
+    await showMessageAndWait(
+        friendlyDialogue,
+        `Commander ${playerName}! Enemy vessels have appeared on radar and are closing in on our territory!`,
+    );
 
-    // battleDialogues.setActiveDialogue("computer");
+    battleDialogues.setActiveDialogue("computer");
 
-    // await showMessageAndWait(
-    //     hostileDialogue,
-    //     "Who dares stand before my path to global domination?",
-    // );
+    await showMessageAndWait(
+        hostileDialogue,
+        "Who dares stand before my path to global domination?",
+    );
 
-    // await showMessageAndWait(
-    //     hostileDialogue,
-    //     `Admiral ${playerName}? How amusing. I have never heard that name in any respectable waters.`,
-    // );
+    await showMessageAndWait(
+        hostileDialogue,
+        `Admiral ${playerName}? How amusing. I have never heard that name in any respectable waters.`,
+        "disinterested",
+    );
 
-    // await showMessageAndWait(
-    //     hostileDialogue,
-    //     "Go on, then. Take the first shot. I'd hate for you to lose before feeling involved.",
-    // );
+    await showMessageAndWait(
+        hostileDialogue,
+        "Go on, then. Take the first shot. I'd hate for you to lose before feeling involved.",
+        "dismissive",
+    );
 
-    // battleDialogues.setActiveDialogue("human");
+    battleDialogues.setActiveDialogue("human");
 
-    // await showMessageAndWait(
-    //     friendlyDialogue,
-    //     `How dare that old fool look down on you, Commander ${playerName}!`,
-    // );
+    await showMessageAndWait(
+        friendlyDialogue,
+        `How dare that old fool look down on you, Commander ${playerName}!`,
+        "angry",
+    );
 
     await friendlyDialogue.setMessage(
         "All launch systems are online. Give the order, and we'll make him regret every word.",
+        "angry",
     );
 }
 
@@ -226,7 +232,8 @@ function waitForEnter() {
     });
 }
 
-async function showMessageAndWait(dialogue, message) {
+async function showMessageAndWait(dialogue, message, expression) {
+    if (expression) dialogue.setCharacterImg(expression);
     await dialogue.setMessage(message);
 
     await wait(250);

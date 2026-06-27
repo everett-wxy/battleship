@@ -1,21 +1,51 @@
-#rules-modal[open]{
+#rules-modal[open] {
     margin: auto;
-    padding: 2em; 
+    padding: 2em;
+    /* 
     border-radius: 1rem;
-    border: none;
     background-color: rgba(0, 0, 0, 0.75);
-    box-shadow: 0 0 30px 0.625rem rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 30px 0.625rem rgba(0, 0, 0, 0.3); */
+    border: none;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap:.5em;
-    color: white; 
+    gap: 1.5rem;
+    color: white;
 }
 
-#rules-modal li{
-    list-style-position: inside;
+.header {
+    width: 100%;
 }
 
-li {
-    margin-bottom: .5rem;
+#rules-modal h1 {
+    font-size: 1.6rem;
+    color: rgb(var(--friendly-light));
+}
+
+.objective {
+    margin-top: 0.25em;
+}
+
+#rules-modal ol {
+    list-style: none;
+    counter-reset: rules;
+    margin-top: 0.25em;
+    padding: 0;
+
+}
+
+#rules-modal li {
+    counter-increment: rules;
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    margin-bottom: 0.5rem;
+}
+
+#rules-modal li::before {
+    content: counter(rules) ".";
+    justify-self: start;
+}
+
+#rules-modal button {
+    margin: 0 auto;
 }

@@ -18,6 +18,7 @@ export function createFleetPlacementScreen(currentGame, onContinue) {
     gridFleetContainer.id = "grid-fleet-container";
     
     const boardComponent = createBoardComponent(currentGame.humanPlayer.gameboard.board);
+    boardComponent.markerOverlay.classList.toggle("visible", true);
     
     const fleetContainer = createFleetContainer(boardComponent.gridMap);
     
