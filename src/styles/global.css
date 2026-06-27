@@ -146,6 +146,14 @@ body {
     height: 2rem;
 }
 
+#rule-btn:focus {
+    outline: none;
+}
+
+#rule-btn:focus-visible {
+    outline: 2px solid rgba(var(--friendly-med), 1);
+}
+
 button.modal-btn {
     border-radius: 0.2em;
     padding-block: 0.3em;

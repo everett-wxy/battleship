@@ -16,10 +16,10 @@ import { delay } from "../views/helpers/delay.js";
 
 export function initialise() {
     createAppShell();
-    // renderStartScreen(handleGameStart);
+    renderStartScreen(handleGameStart);
 
-    const currentGame = new Game("everett");
-    showRules(currentGame);
+    // const currentGame = new Game("everett");
+    // showRules(currentGame);
     // showFleetSetup(currentGame);
     // Game.fleet.forEach((ship, i) => {
     //     currentGame.humanPlayer.gameboard.placeShip(

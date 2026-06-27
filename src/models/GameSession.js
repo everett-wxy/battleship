@@ -41,7 +41,6 @@ export class Game {
     }
 
     placeComputerFleet() {
-        console.log("placed");
         Game.fleet.forEach((shipType) => {
             let placed = false;
             let attempts = 0;
