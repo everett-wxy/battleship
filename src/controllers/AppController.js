@@ -19,8 +19,8 @@ export function initialise() {
     // renderStartScreen(handleGameStart);
 
     const currentGame = new Game("everett");
-    // showRules(currentGame);
-    showFleetSetup(currentGame);
+    showRules(currentGame);
+    // showFleetSetup(currentGame);
     // Game.fleet.forEach((ship, i) => {
     //     currentGame.humanPlayer.gameboard.placeShip(
     //         ship.name,

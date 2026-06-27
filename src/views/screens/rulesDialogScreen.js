@@ -1,27 +1,30 @@
+
 export function createRulesDialogScreen(currentGame, onContinue) {
+    let onContinueCalled = false;
+    
     const rulesDialog = document.createElement("dialog");
     rulesDialog.id = "rules-modal";
     rulesDialog.classList.add("friendly", "panel");
-
+    
     const header = document.createElement("div");
     header.classList.add("header");
-
+    
     const missionObjective = document.createElement("h1");
     missionObjective.innerText = "Mission Objective";
-
+    
     const objective = document.createElement("p");
     objective.classList.add("objective");
     objective.innerText = "Be the first to sink all 5 of your opponent's ships.";
-
+    
     header.append(missionObjective, objective);
-
+    
     const rulesContainer = document.createElement("div");
     rulesContainer.classList.add("rules-container");
-
+    
     const rules = document.createElement("h1");
     rules.innerText = "Rules";
     rules.classList.add("header", "rules");
-
+    
     const instructions = [
         "Each player is given a fleet of 5 ships, each with a different length.",
         "Place each vessel carefully within your 10x10 grid.",
@@ -29,8 +32,9 @@ export function createRulesDialogScreen(currentGame, onContinue) {
         "A successful strike on a coordinate containing a ship will damage that ship.",
         "A ship will be sunk once every part of it has been hit.",
     ];
-
+    
     const instructionsList = document.createElement("ol");
+    
 
     instructions.forEach((item) => {
         const instruction = document.createElement("li");
@@ -46,9 +50,13 @@ export function createRulesDialogScreen(currentGame, onContinue) {
     beginButton.innerText = "Begin fleet placement";
 
     beginButton.addEventListener("click", () => {
-        console.log("begin button clicked");
         rulesDialog.close();
-        onContinue();
+
+        if (!onContinueCalled) {
+            onContinueCalled = true;
+            beginButton.innerText = "Close"
+            onContinue();
+        }
     });
 
     rulesDialog.append(header, rulesContainer, beginButton);
