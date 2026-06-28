@@ -3,6 +3,7 @@
 A browser-based Battleship game built with vanilla JavaScript, HTML, CSS, and Webpack. The project uses no frontend framework and focuses on modular game logic, DOM-driven UI rendering, drag-and-drop fleet placement, turn-based battle flow, audio feedback, and unit-tested core models.
 
 Repository: [everett-wxy/battleship](https://github.com/everett-wxy/battleship)
+
 Live Demo: [View deplayed app](https://comeplaybattleship.netlify.app/)
 
 ## Features
