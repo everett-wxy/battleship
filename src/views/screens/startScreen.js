@@ -6,7 +6,7 @@ export function createStartScreen(handleGameStart) {
     startScreen.classList.add("screen");
 
     const titleFormWrapper = document.createElement("div");
-    titleFormWrapper.classList.add("title-form-wrapper")
+    titleFormWrapper.classList.add("title-form-wrapper");
 
     const gameTitle = createTitle();
 

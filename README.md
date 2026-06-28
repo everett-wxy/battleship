@@ -1,6 +1,6 @@
 # Battleship
 
-A browser-based Battleship game built with vanilla JavaScript, HTML, CSS, and Webpack. The project combines classic Battleship rules with a stylized naval command interface: animated boards, character dialogue, sound effects, background music, fleet placement, and a battle results overlay.
+A browser-based Battleship game built with vanilla JavaScript, HTML, CSS, and Webpack. The project uses no frontend framework and focuses on modular game logic, DOM-driven UI rendering, drag-and-drop fleet placement, turn-based battle flow, audio feedback, and unit-tested core models.
 
 Repository: [everett-wxy/battleship](https://github.com/everett-wxy/battleship)
 
@@ -121,8 +121,14 @@ For example, `battleScreen.js` exposes methods such as `renderGameOver()`, `rend
 
 This separation keeps the code easier to test, debug, and extend.
 
+## Testing
+
+The project uses Jest to test the core game models, including ship behaviour, board placement rules, attack handling, repeated attacks, computer attack selection logic, sunk-ship detection, and game-over conditions.
+
 ## Attributions
 
+- Character designs generated with ChatGPT.
+- Character references from Magnific.
 - Battleship silhouette vectors by Vecteezy.
 - Background image from StockCake.
 - Music and sound effects from Pixabay.

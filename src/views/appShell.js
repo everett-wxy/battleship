@@ -84,7 +84,6 @@ function createRulesDialog() {
     rulesDialog.append(header, rulesContainer, beginButton);
 
     function show({ buttonText = "Close", onClose = null } = {}) {
-        console.log('show');
         beginButton.innerText = buttonText;
         currentOnClose = onClose;
         rulesDialog.showModal();
@@ -121,16 +120,14 @@ function createAudioBtn() {
     const audioBtn = document.createElement("button");
 
     audioBtn.id = "audio-btn";
-    audioBtn.classList.add("modal-btn")
+    audioBtn.classList.add("modal-btn");
     audioBtn.type = "button";
-    audioBtn.innerText = "Music On"
+    audioBtn.innerText = "Music on";
 
     audioBtn.addEventListener("click", async () => {
         const isMuted = await toggleBackgroundMusic();
 
-        audioBtn.innerHTML = isMuted
-            ? "Music off"
-            : `Music on`;
+        audioBtn.innerText = isMuted ? "Music off" : "Music on";
     });
 
     return audioBtn;

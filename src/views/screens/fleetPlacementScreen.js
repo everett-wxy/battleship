@@ -104,7 +104,7 @@ function createFleetContainer(gridMap) {
         shipCard.addEventListener("dragstart", function (event) {
             draggedShip = ship;
             draggedShipCard = shipCard;
-             shipCard.classList.add("dragging");
+            shipCard.classList.add("dragging");
 
             event.dataTransfer.setData("text/plain", shipName);
         });
@@ -251,11 +251,11 @@ function createFleetPlacementBtns(
     const changeOrientationBtn = document.createElement("button");
     changeOrientationBtn.type = "button";
     changeOrientationBtn.classList.add("change-orientation-btn", "modal-btn");
-    changeOrientationBtn.innerText = `Change Orientation: ${shipOrientation[0].toUpperCase(1) + shipOrientation.slice(1)}`;
+    changeOrientationBtn.innerText = getOrientationButtonText();
 
     changeOrientationBtn.addEventListener("click", () => {
         shipOrientation = shipOrientation === "horizontal" ? "vertical" : "horizontal";
-        changeOrientationBtn.innerText = `Change Orientation: ${shipOrientation[0].toUpperCase(1) + shipOrientation.slice(1)}`;
+        changeOrientationBtn.innerText = getOrientationButtonText();
     });
 
     const resetBtn = document.createElement("button");
@@ -272,12 +272,7 @@ function createFleetPlacementBtns(
     confirmBtn.addEventListener("click", () => {
         const placedShips = fleetContainer.querySelectorAll(".ship-card.placed-ship");
 
-        console.log(
-            `Game.fleet.lenght: ${Game.fleet.length}, placedShips.length: ${placedShips.length}`,
-        );
-
         if (placedShips.length !== Game.fleet.length) {
-            console.log("Place all ships before starting the battle.");
             return;
         }
 
@@ -298,7 +293,7 @@ function createFleetPlacementBtns(
         draggedShip = null;
         draggedShipCard = null;
         shipOrientation = "horizontal";
-        changeOrientationBtn.innerText = `Change Orientation: ${shipOrientation[0].toUpperCase(1) + shipOrientation.slice(1)}`;
+        changeOrientationBtn.innerText = getOrientationButtonText();
         placedShips.clear();
         confirmBtn.disabled = true;
 
@@ -306,6 +301,10 @@ function createFleetPlacementBtns(
     });
 
     return { changeOrientationBtn, resetBtn, confirmBtn };
+}
+
+function getOrientationButtonText() {
+    return `Change Orientation: ${shipOrientation[0].toUpperCase() + shipOrientation.slice(1)}`;
 }
 
 function getCellsForShip(gridMap, startRow, startCol, shipLength, orientation) {
