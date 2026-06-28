@@ -237,7 +237,7 @@ function generateDialogueLines(playerName) {
         hostile: {
             hit: {
                 boisterous: [
-                    `HAHAHA! Did you hear that, ${playerName}? That was the sound of competence!`,
+                    `HAHAHA! Did you hear that? That was the sound of competence!`,
                     "Your fleet trembles! My moustache would be proud if I had one!",
                     "To tell you the truth, I didn't even aim for that one!",
                     "Your fleet is not sinking. It is simply kneeling before experience!",
@@ -245,9 +245,9 @@ function generateDialogueLines(playerName) {
                     "You call that a formation? I have spilled soup with more strategy!",
                 ],
                 arrogant: [
-                    `I've sunk better captains before breakfast, ${playerName}.`,
-                    `Your tactics are bold, ${playerName}. Boldly terrible, but bold.`,
-                    `Go back to your toy boats, ${playerName}. These waters are no place for pretend admirals.`,
+                    `I've sunk better captains before breakfast.`,
+                    `Your tactics are bold. Boldly terrible, but bold.`,
+                    `Go back to your toy boats, ${playerName}.`,
                     "I do hope your crew brought towels.",
                 ],
                 bored: [
@@ -263,16 +263,15 @@ function generateDialogueLines(playerName) {
             },
             miss: {
                 frustrated: [
-                    "WHAT?! Impossible! That shot was personally approved by my ego!",
-                    "The sea moved. I saw it. Cowardly ocean!",
-                    "The waves have betrayed me! I shall remember this insult!",
+                    "Impossible! That shot was personally approved by my ego!",
+                    "Stop moving!",
+                    "The waves have betrayed me!",
                     `Hold still, you floating inconvenience, ${playerName}!`,
                     "That shell had one job. One!",
                 ],
                 annoyed: [
-                    `Your survival is becoming theatrically annoying, ${playerName}.`,
-                    `Fine. Enjoy your accidental survival, ${playerName}!`,
-                    "Missed?! No, no, no — the target simply failed to be where genius expected it.",
+                    `Your survival is becoming theatrically annoying.`,
+                    `Enjoy your accidental survival, ${playerName}!`,
                 ],
                 dismissive: [
                     `A rare miscalculation, ${playerName}. Do not mistake it for mercy.`,
