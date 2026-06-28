@@ -1,7 +1,6 @@
 import { createAppShell } from "./appShell.js";
 import { createStartScreen } from "./screens/startScreen.js";
 import { createFleetPlacementScreen } from "./screens/fleetPlacementScreen.js";
-// import { createRulesDialogScreen, createRulesBtn } from "./screens/rulesDialogScreen.js";
 import { createBattleScreen } from "./screens/battleScreen.js";
 import { renderAttackMarker } from "./helpers/attackMarkerRenderer.js";
 import { renderPlacedShip } from "./helpers/shipRenderer.js";
@@ -9,7 +8,7 @@ import { swapMusic } from "../controllers/AudioController.js";
 
 const root = document.querySelector("#root");
 
-let app; // main screen wrapper
+let app;
 
 export function mountAppShell() {
     app = document.createElement("div");
@@ -31,17 +30,6 @@ export function renderStartScreen(handleGameStart) {
 
     app.append(startScreen);
 }
-
-// export function createRulesDialog(onContinue) {
-
-//     const rulesDialogScreen = createRulesDialogScreen(onContinue);
-//     root.append(rulesDialogScreen);
-//     rulesDialogScreen.showModal();
-
-//     const ruleBtn = createRulesBtn(rulesDialogScreen);
-//     iconPanel.append(ruleBtn);
-//     renderLucideIcons();
-// }
 
 export function renderPlaceFleetScreen(currentGame, onContinue) {
     app.replaceChildren();
@@ -103,4 +91,8 @@ export function renderBattleScreen(currentGame, handlers) {
             battleScreenView.renderGameOver(winner, handlers.onRestart);
         },
     };
+}
+
+export function renderGameOverDialog(){
+    
 }

@@ -18,28 +18,37 @@ import { delay } from "../views/helpers/delay.js";
 export function initialise() {
     const appShell = mountAppShell();
 
+    renderStart();
+
+    function renderStart() {
+        renderStartScreen(onGameStart);
+    }
+
     function onGameStart(playerName) {
         const currentGame = new Game(playerName);
 
         appShell.showRulesDialog({
             buttonText: "Begin fleet placement",
             onClose() {
-                showFleetSetup(currentGame);
+                showFleetSetup(currentGame, restartGame);
             },
         });
     }
 
-    renderStartScreen(onGameStart);
+    function restartGame() {
+        renderStart();
+    }
 }
 
-function showFleetSetup(currentGame) {
+function showFleetSetup(currentGame, restartGame) {
     renderPlaceFleetScreen(currentGame, () => {
-        startBattle(currentGame);
+        startBattle(currentGame, restartGame);
     });
+
     currentGame.placeComputerFleet();
 }
 
-function startBattle(currentGame) {
+function startBattle(currentGame, restartGame) {
     let isWaitingForComputer = false;
 
     const battleView = renderBattleScreen(currentGame, {
@@ -86,10 +95,6 @@ function startBattle(currentGame) {
             isWaitingForComputer = false;
         }
     }
-}
-
-function restartGame() {
-    renderStartScreen(onGameStart);
 }
 
 function getShipPlacement(gameboard, ship) {
@@ -150,3 +155,29 @@ async function handleTurnFeedback(turnRes, battleView, markerTarget, comGameboar
 // });
 // currentGame.placeComputerFleet();
 // startBattle(currentGame);
+
+
+// function debugGameOver() {
+//     const currentGame = new Game("Everett");
+
+//     Game.fleet.forEach((ship, i) => {
+//         currentGame.humanPlayer.gameboard.placeShip(
+//             ship.name,
+//             ship.length,
+//             i,
+//             0,
+//             "horizontal",
+//         );
+//     });
+
+//     currentGame.placeComputerFleet();
+
+//     const battleView = renderBattleScreen(currentGame, {
+//         onHumanFire: () => {},
+//         onRestart: () => {
+//             initialise();
+//         },
+//     });
+
+//     battleView.renderGameOver(currentGame.humanPlayer);
+// }

@@ -11,7 +11,7 @@ export class Game {
 
     constructor(humanPlayerName) {
         this.humanPlayer = new HumanPlayer(humanPlayerName);
-        this.computerPlayer = new ComputerPlayer("Captain Vicious");
+        this.computerPlayer = new ComputerPlayer("Enemy Admiral");
         this.currentPlayer = this.humanPlayer;
         this.opponent = this.computerPlayer;
         this.winner = null;

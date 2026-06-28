@@ -251,18 +251,15 @@ function renderGameOver(battleScreen, winner, onRestart) {
     overlay.classList.add("game-over-overlay");
 
     const dialog = document.createElement("div");
-    dialog.classList.add("game-over-dialog");
+    dialog.classList.add("game-over-dialog", "panel");
 
     const heading = document.createElement("h2");
-    heading.innerText = "Battle Complete";
+    heading.innerText = "GAME OVER";
 
-    const winnerLabel = document.createElement("p");
-    winnerLabel.classList.add("winner-label");
-    winnerLabel.innerText = "Winner";
+    const gameOverMessage = document.createElement("h1");
+    gameOverMessage.classList.add("game-over-message")
 
-    const winnerName = document.createElement("p");
-    winnerName.classList.add("winner-name");
-    winnerName.innerText = winner.name;
+    winner.type === "human" ? (gameOverMessage.innerText = "YOU WIN") : "YOU LOSE";
 
     const restartBtn = document.createElement("button");
     restartBtn.type = "button";
@@ -271,7 +268,7 @@ function renderGameOver(battleScreen, winner, onRestart) {
 
     restartBtn.addEventListener("click", onRestart);
 
-    dialog.append(heading, winnerLabel, winnerName, restartBtn);
+    dialog.append(heading, gameOverMessage, restartBtn);
     overlay.append(dialog);
     battleScreen.append(overlay);
 }

@@ -247,17 +247,30 @@
 
 .game-over-dialog {
     width: min(90vw, 380px);
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    padding-block: 2rem;
+    padding-inline: 2rem;
     border-radius: 0.5rem;
-    padding: 2rem;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.88);
+    background-color: rgba(0, 0, 0, 0.3);
     box-shadow: 0 0 30px 0.625rem rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    text-align: center;
+
+    box-shadow:
+        0 0px 3px rgba(255, 0, 0, 0.5),
+        0 0px 10px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 0 51px rgba(239, 68, 68, 0.2);
 }
 
 .game-over-dialog h2 {
     margin-bottom: 1rem;
     font-size: 1.5rem;
+}
+
+.game-over-message {
+    margin-bottom: 1.5rem;
 }
 
 .winner-label {
@@ -271,6 +284,3 @@
     font-size: 2rem;
 }
 
-.restart-btn {
-    cursor: pointer;
-}
