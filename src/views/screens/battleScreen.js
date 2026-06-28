@@ -257,9 +257,11 @@ function renderGameOver(battleScreen, winner, onRestart) {
     heading.innerText = "GAME OVER";
 
     const gameOverMessage = document.createElement("h1");
-    gameOverMessage.classList.add("game-over-message")
+    gameOverMessage.classList.add("game-over-message");
 
-    winner.type === "human" ? (gameOverMessage.innerText = "YOU WIN") : "YOU LOSE";
+    winner.type === "human"
+        ? (gameOverMessage.innerText = "YOU WIN")
+        : (gameOverMessage.innerText = "YOU LOSE");
 
     const restartBtn = document.createElement("button");
     restartBtn.type = "button";

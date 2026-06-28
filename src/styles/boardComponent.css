@@ -225,8 +225,8 @@
     position: relative;
     pointer-events: none;
     overflow: visible;
-    border: 2px dashed transparent;
-    animation: targeted 250ms ease 0ms 3;
+    /* border: 2px dashed transparent;
+    animation: targeted 250ms ease 0ms 3; */
 }
 
 @keyframes targeted {
@@ -239,6 +239,30 @@
     }
     100% {
         border-color: rgb(255, 255, 255);
+    }
+}
+
+.aim-flash {
+    position: absolute;
+    inset: 0;
+
+    background-image: url("../assets/aim.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    opacity: 0;
+    animation: targeted-bg 170ms linear 0ms 3;
+}
+
+@keyframes targeted-bg {
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
     }
 }
 
