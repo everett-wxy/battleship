@@ -1,65 +1,130 @@
-### Code Organisation
-- src/
-    - controllers/
-        - AppController.js
-            - Owns application-level flow
-            - Coordinates user events, GameSession actions, and UI updates
-    - models/ 
-        - GameSession.js
-            - Represent one Battleship match
-            - Owns match-level state and game flow
-            - Exposes match-level actions (setup, turn execution, winner checking and reset)
-        - Player.js 
-            - Represent a player
-            - Owns player-level state
-            - Exposes player-level actions (firing at an opponent's board)
-        - Gameboard.js
-            - Represent a player's gameboard
-            - Owns board-level state 
-            - Exposes gameboard actions (placing ships, receiving attacks and checking if all ships are sunk)
-    - views/ 
-        - components/ 
-            - Reusable UI components
-        - helpers/
-            - Shared UI utility functions
-        - screens/
-            - Screen-level UI modules
-        - appShell.js
-            - Persistent app layout/shell
-        - screenRenderer.js
-            - Mounts screens and exposes view update methods
-    - styles/
-        - Contains screen-level stylesheet
-    - assets/
-        - Contains application assets 
-    - index.js 
-        - Application entry point
+# Battleship
 
-### Architectural Decisions 
-This project uses a modular, MVC-inspired structure with clear responsibility boundaries between game logic, application flow, and UI rendering. 
+A browser-based Battleship game built with vanilla JavaScript, HTML, CSS, and Webpack. The project combines classic Battleship rules with a stylized naval command interface: animated boards, character dialogue, sound effects, background music, fleet placement, and a battle results overlay.
 
-The `AppController` owns application-level flow. It decides what should happen in response to user actions, such as starting the game, moving between screens, handling attacks, triggering the computer turn, and restarting the game. 
+Repository: [everett-wxy/battleship](https://github.com/everett-wxy/battleship)
 
-The view layer owns DOM creation and UI updates. Instead of letting `AppController` directly manipulate internal DOM elements, screen modules expose a small public interace for UI updates. 
+## Features
 
-For example, the `battleScreen.js` exposes methods such as `renderBattleLog()` and `renderGameOver()`, allowing `AppController` to request UI changes without knowing how the battle screen is structured internally. 
+- Player name entry with validation.
+- Rules dialog available from the persistent top-right control panel.
+- Drag-and-drop fleet placement on a 10x10 board.
+- Horizontal/vertical ship orientation controls.
+- Reset and confirm controls for fleet setup.
+- Computer fleet placement.
+- Turn-based battle flow against a computer opponent.
+- Hit, miss, sunk ship, and game-over feedback.
+- Animated attack markers, prompts, dialogue panels, and HUD-style buttons.
+- Background music, sound effects, mute control, and automatic music pause when the browser tab is hidden.
+- Restart flow after the battle is complete.
+- Unit tests for the core game models.
 
-This keep the code loosely coupled: 
+## How To Play
 
-`AppController`
-- decides what should happen
+1. Enter your admiral name.
+2. Read the mission rules and begin fleet placement.
+3. Drag every ship onto your grid.
+4. Use the orientation button to switch between horizontal and vertical placement.
+5. Confirm your fleet when all ships are placed.
+6. Fire on the enemy grid and alternate turns with the computer.
+7. Sink all enemy ships before your fleet is destroyed.
 
-View modules
-- decide how the UI should be updated
+## Controls
 
-Model modules
-- enforce game rules and manage game state.
+- `Music on/off`: toggles background music.
+- `Rules`: opens the rules dialog.
+- `Github`: opens the project repository.
+- `Change Orientation`: switches ship placement direction.
+- `Reset`: clears your fleet placement.
+- `Confirm`: starts the battle after all ships are placed.
+- `Restart`: returns to the start screen after game over.
 
-This separation makes the code easier to reason about, test, and modify as the project grows.
+## Getting Started
 
-### Attributions
-- Battleship Silhouette Vectors by Vecteezy.com
-- Villain character svg from magnific.com
-- Background image from StockCake.com
-- music and sound effects from Pixabay.comn
-- Sound Effect: Button Hover Click Download from https://tunetank.com
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm start
+```
+
+Build the project:
+
+```bash
+npm run build
+```
+
+Run tests:
+
+```bash
+npm test
+```
+
+Run linting:
+
+```bash
+npm run lint
+```
+
+## Tech Stack
+
+- JavaScript modules
+- HTML and CSS
+- Webpack
+- Jest
+- ESLint
+
+## Code Organisation
+
+```text
+src/
+  controllers/
+    AppController.js
+    AudioController.js
+  models/
+    GameSession.js
+    Gameboard.js
+    Player.js
+    Ship.js
+  views/
+    appShell.js
+    screenRenderer.js
+    components/
+    helpers/
+    screens/
+  styles/
+  assets/
+  index.js
+```
+
+## Architecture
+
+This project uses a modular, MVC-inspired structure with clear responsibility boundaries between game logic, application flow, and UI rendering.
+
+`AppController` owns the application flow. It starts the game, opens the rules dialog, moves into fleet placement, starts battle mode, handles player attacks, runs computer turns, updates feedback, and restarts the game.
+
+The model layer owns the game rules:
+
+- `GameSession.js` represents one match and coordinates turns, players, fleet placement, and winner checks.
+- `Gameboard.js` owns board state, ship placement validation, attacks, and sunk-fleet checks.
+- `Player.js` represents human and computer players.
+- `Ship.js` tracks ship health and sunk status.
+
+The view layer owns DOM creation and UI updates. Screen modules expose a small public interface so the controller can request updates without knowing each screen's internal DOM structure.
+
+For example, `battleScreen.js` exposes methods such as `renderGameOver()`, `renderEnemyMarker()`, and `setPrompt()`. `AppController` decides what should happen, while the battle screen decides how that change appears.
+
+This separation keeps the code easier to test, debug, and extend.
+
+## Attributions
+
+- Battleship silhouette vectors by Vecteezy.
+- Background image from StockCake.
+- Music and sound effects from Pixabay.
+- Button hover/click sound from Tunetank.
+- Character and UI assets are stored in `src/assets/`.

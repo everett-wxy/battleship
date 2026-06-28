@@ -1,6 +1,7 @@
 import {
     enableBackgroundMusic,
     enableButtonClickSound,
+    enablePauseWhenTabHidden,
     toggleBackgroundMusic,
 } from "../controllers/AudioController.js";
 
@@ -106,7 +107,8 @@ function createIconPanel(showRules) {
     iconPanel.id = "icon-panel";
     const audioBtn = createAudioBtn();
     const rulesBtn = createRulesBtn(showRules);
-    iconPanel.append(audioBtn, rulesBtn);
+    const githubLink = createGithubLink();
+    iconPanel.append(audioBtn, rulesBtn, githubLink);
 
     return iconPanel;
 }
@@ -114,20 +116,21 @@ function createIconPanel(showRules) {
 function createAudioBtn() {
     enableBackgroundMusic();
     enableButtonClickSound();
+    enablePauseWhenTabHidden();
 
     const audioBtn = document.createElement("button");
 
     audioBtn.id = "audio-btn";
     audioBtn.classList.add("modal-btn")
     audioBtn.type = "button";
-    audioBtn.innerText = "Music Off"
+    audioBtn.innerText = "Music On"
 
     audioBtn.addEventListener("click", async () => {
         const isMuted = await toggleBackgroundMusic();
 
         audioBtn.innerHTML = isMuted
-            ? "Music On"
-            : `Music Off`;
+            ? "Music off"
+            : `Music on`;
     });
 
     return audioBtn;
@@ -144,4 +147,15 @@ function createRulesBtn(showRules) {
     });
 
     return ruleBtn;
+}
+
+function createGithubLink() {
+    const githubLink = document.createElement("a");
+    githubLink.classList.add("modal-btn");
+    githubLink.href = "https://github.com/everett-wxy/battleship";
+    githubLink.target = "_blank";
+    githubLink.rel = "noopener noreferrer";
+    githubLink.innerText = "Github";
+
+    return githubLink;
 }

@@ -31,6 +31,8 @@ let isMuted = false;
 let hasStarted = false;
 let crossfadeIntervalId = null;
 let crossfadeTimeoutId = null;
+let wasPlayingBeforeTabHidden = false;
+let isTabVisibilityHandlerEnabled = false;
 const fadeIntervalIds = new Set();
 
 export function enableBackgroundMusic() {
@@ -111,6 +113,39 @@ export async function toggleBackgroundMusic() {
     }
 
     return isMuted;
+}
+
+export function enablePauseWhenTabHidden() {
+    if (isTabVisibilityHandlerEnabled) return;
+
+    isTabVisibilityHandlerEnabled = true;
+
+    document.addEventListener("visibilitychange", async () => {
+        if (document.hidden) {
+            wasPlayingBeforeTabHidden =
+                hasStarted && !isMuted && (!bgAudioA.paused || !bgAudioB.paused);
+
+            if (wasPlayingBeforeTabHidden) {
+                resetCrossfadeState();
+            }
+
+            return;
+        }
+
+        if (!wasPlayingBeforeTabHidden || isMuted) return;
+
+        currentAudio.volume = normalVolume;
+        nextAudio.volume = 0;
+
+        try {
+            await currentAudio.play();
+            setupCrossfadeLoop();
+        } catch (err) {
+            console.log("Audio could not resume after tab became visible:", err);
+        } finally {
+            wasPlayingBeforeTabHidden = false;
+        }
+    });
 }
 
 function setupCrossfadeLoop() {

@@ -124,7 +124,7 @@ body {
     gap: 1rem;
 }
 
-button.modal-btn {
+.modal-btn {
     --border-width: clamp(1px, 0.0625em, 4px);
 
     position: relative;
@@ -145,6 +145,7 @@ button.modal-btn {
         rgba(255, 255, 255, 0.04)
     );
     color: white;
+    text-decoration: none;
 
     box-shadow:
         inset 0 0.125em 0.125em rgba(0, 0, 0, 0.12),
@@ -163,7 +164,7 @@ button.modal-btn {
         backdrop-filter var(--modal-btn-hover-time) var(--modal-btn-hover-ease);
 }
 
-button.modal-btn::before {
+.modal-btn::before {
     content: "";
     position: absolute;
     z-index: -1;
@@ -199,7 +200,7 @@ button.modal-btn::before {
     box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.35);
 }
 
-button.modal-btn::after {
+.modal-btn::after {
     content: "";
     position: absolute;
     z-index: 1;
@@ -223,11 +224,11 @@ button.modal-btn::after {
             var(--modal-btn-hover-ease);
 }
 
-button.modal-btn:focus {
+.modal-btn:focus {
     outline: none;
 }
 
-button.modal-btn:focus-visible {
+.modal-btn:focus-visible {
     box-shadow:
         inset 0 0.125em 0.125em rgba(0, 0, 0, 0.12),
         inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.18),
@@ -237,7 +238,7 @@ button.modal-btn:focus-visible {
         0 0 1em rgba(var(--friendly-med), 0.65);
 }
 
-button.modal-btn:hover {
+.modal-btn:hover {
     transform: translateY(-2px) scale(0.98);
     box-shadow:
         inset 0 0.125em 0.125em rgba(0, 0, 0, 0.12),
@@ -249,15 +250,15 @@ button.modal-btn:hover {
     -webkit-backdrop-filter: blur(0.01em);
 }
 
-button.modal-btn:hover::before {
+.modal-btn:hover::before {
     --modal-btn-border-angle: -125deg;
 }
 
-button.modal-btn:hover::after {
+.modal-btn:hover::after {
     background-position: 35% 50%;
 }
 
-button.modal-btn:active {
+.modal-btn:active {
     transform: translateY(0) scale(0.96);
     box-shadow:
         inset 0 0.25em 0.05em rgba(0, 0, 0, 0.22),
@@ -266,11 +267,11 @@ button.modal-btn:active {
         0 0 0.1em 0.2em inset rgba(255, 255, 255, 0.08);
 }
 
-button.modal-btn:active::before {
+.modal-btn:active::before {
     --modal-btn-border-angle: -75deg;
 }
 
-button.modal-btn:active::after {
+.modal-btn:active::after {
     --modal-btn-shine-angle: -15deg;
 
     background-position: 50% 15%;
