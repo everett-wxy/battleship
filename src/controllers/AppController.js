@@ -89,7 +89,7 @@ function startBattle(currentGame) {
 }
 
 function restartGame() {
-    renderStartScreen(handleGameStart);
+    renderStartScreen(onGameStart);
 }
 
 function getShipPlacement(gameboard, ship) {

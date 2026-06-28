@@ -250,7 +250,7 @@ function createFleetPlacementBtns(
 ) {
     const changeOrientationBtn = document.createElement("button");
     changeOrientationBtn.type = "button";
-    changeOrientationBtn.classList.add("change-orientation-btn");
+    changeOrientationBtn.classList.add("change-orientation-btn", "modal-btn");
     changeOrientationBtn.innerText = `Change Orientation: ${shipOrientation[0].toUpperCase(1) + shipOrientation.slice(1)}`;
 
     changeOrientationBtn.addEventListener("click", () => {
@@ -260,13 +260,13 @@ function createFleetPlacementBtns(
 
     const resetBtn = document.createElement("button");
     resetBtn.type = "button";
-    resetBtn.classList.add("reset-btn");
+    resetBtn.classList.add("reset-btn", "modal-btn");
     resetBtn.innerText = "Reset";
 
     const confirmBtn = document.createElement("button");
     confirmBtn.type = "button";
     confirmBtn.disabled = true;
-    confirmBtn.classList.add("confirm-btn");
+    confirmBtn.classList.add("confirm-btn", "modal-btn");
     confirmBtn.innerText = "Confirm Placement";
 
     confirmBtn.addEventListener("click", () => {

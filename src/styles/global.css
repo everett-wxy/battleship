@@ -8,6 +8,20 @@
     --friendly-dark: 120, 0, 0;
     --hostile-light: 65, 71, 112;
     --hostile-dark: 55, 34, 72;
+    --modal-btn-hover-time: 400ms;
+    --modal-btn-hover-ease: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@property --modal-btn-border-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: -75deg;
+}
+
+@property --modal-btn-shine-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: -45deg;
 }
 
 * {
@@ -41,7 +55,6 @@ body {
     background-size: cover;
     background-position: 30%;
     background-repeat: no-repeat;
-    /* text-shadow: (0px 0px 10px rgba(255, 0, 0, 1));     */
 }
 
 .rain {
@@ -51,10 +64,10 @@ body {
     height: 100vh;
     overflow: hidden;
     pointer-events: none;
-    z-index: -1; 
+    z-index: -1;
 }
 
-/* .rain::before {
+.rain::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -65,7 +78,7 @@ body {
         transparent 4px
     );
     animation: rain 10s linear infinite;
-} */
+}
 
 @keyframes rain {
     0% {
@@ -93,14 +106,9 @@ body {
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
 
-    /* border: 1px solid rgba(252, 165, 165, 0.5); */
-
     box-shadow:
-        0 0px 3px rgba(255, 0, 0, .5),
-        /* 0 0px 5px rgba(255, 0, 0, 0.4), */
-        /* 2px 2px 10px rgba(255, 0, 0, 0.4), */
-        0 0px 10px rgba(0, 0, 0, .8),
-        /* 0 0px 12px rgba(0, 0, 0, .5), */
+        0 0px 3px rgba(255, 0, 0, 0.5),
+        0 0px 10px rgba(0, 0, 0, 0.8),
         inset 0 1px 0 rgba(255, 255, 255, 0.2),
         inset 0 -1px 0 rgba(255, 255, 255, 0.2),
         inset 0 0 51px rgba(239, 68, 68, 0.2);
@@ -116,87 +124,154 @@ body {
     gap: 1rem;
 }
 
-#audio-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#audio-btn svg {
-    stroke: rgb(255, 255, 255);
-    width: 2rem;
-    height: 2rem;
-}
-
-#rule-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#rule-btn svg {
-    stroke: rgb(255, 255, 255);
-    width: 2rem;
-    height: 2rem;
-}
-
-#rule-btn:focus {
-    outline: none;
-}
-
-#rule-btn:focus-visible {
-    outline: 2px solid rgba(var(--friendly-med), 1);
-}
-
 button.modal-btn {
-    border-radius: 0.2em;
-    padding-block: 0.3em;
-    padding-inline: 2em;
-    background-color: transparent;
-    color: white;
+    --border-width: clamp(1px, 0.0625em, 4px);
+
     position: relative;
-    /* overflow: hidden; */
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 99vw;
+    padding-block: 0.45em;
+    padding-inline: 1.5em;
+    overflow: visible;
+
+    background: linear-gradient(
+        -75deg,
+        rgba(255, 255, 255, 0.04),
+        rgba(var(--friendly-light), 0.18),
+        rgba(255, 255, 255, 0.04)
+    );
+    color: white;
+
+    box-shadow:
+        inset 0 0.125em 0.125em rgba(0, 0, 0, 0.12),
+        inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.18),
+        inset 0 0 0.1em 0.2em rgba(255, 255, 255, 0.08),
+        0 0.25em 0.125em -0.125em rgba(0, 0, 0, 0.4),
+        0 0 0.75em rgba(var(--friendly-dark), 0.25);
+
+    backdrop-filter: blur(clamp(1px, 0.125em, 4px));
+    -webkit-backdrop-filter: blur(clamp(1px, 0.125em, 4px));
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
     transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+        transform var(--modal-btn-hover-time) var(--modal-btn-hover-ease),
+        box-shadow var(--modal-btn-hover-time) var(--modal-btn-hover-ease),
+        backdrop-filter var(--modal-btn-hover-time) var(--modal-btn-hover-ease);
 }
 
 button.modal-btn::before {
     content: "";
     position: absolute;
-    inset: 0;
+    z-index: -1;
+    inset: calc(var(--border-width) * -1);
+    padding: var(--border-width);
+    border-radius: inherit;
+    background:
+        conic-gradient(
+            from var(--modal-btn-border-angle) at 50% 50%,
+            rgba(var(--friendly-light), 0.5),
+            transparent 5% 40%,
+            rgba(255, 255, 255, 0.8) 50%,
+            transparent 60% 95%,
+            rgba(var(--friendly-light), 0.5)
+        ),
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.45),
+            rgba(var(--friendly-dark), 0.6)
+        );
+    mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+    transition:
+        --modal-btn-border-angle 500ms ease,
+        box-shadow var(--modal-btn-hover-time) var(--modal-btn-hover-ease);
+    box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.35);
+}
+
+button.modal-btn::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    inset: var(--border-width);
+    border-radius: inherit;
     background: linear-gradient(
-        -65deg,
-        transparent 40%,
-        rgba(255, 255, 255, 0.45) 50%,
-        transparent 70%
+        var(--modal-btn-shine-angle),
+        transparent 0%,
+        rgba(255, 255, 255, 0.45) 40% 50%,
+        transparent 55%
     );
     background-size: 200% 100%;
+    background-position: 0% 50%;
     background-repeat: no-repeat;
-    animation: shine 3s ease infinite;
+    mix-blend-mode: screen;
     pointer-events: none;
+    transition:
+        background-position calc(var(--modal-btn-hover-time) * 1.25)
+            var(--modal-btn-hover-ease),
+        --modal-btn-shine-angle calc(var(--modal-btn-hover-time) * 1.25)
+            var(--modal-btn-hover-ease);
 }
 
-@keyframes shine {
-    0% {
-        background-position: 130%;
-        opacity: 1;
-    }
-
-    100% {
-        background-position: -166%;
-        opacity: 0;
-    }
+button.modal-btn:focus {
+    outline: none;
 }
 
-button.modal-button:hover {
-    cursor: pointer;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px #0004;
+button.modal-btn:focus-visible {
+    box-shadow:
+        inset 0 0.125em 0.125em rgba(0, 0, 0, 0.12),
+        inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.18),
+        0 0.25em 0.125em -0.125em rgba(0, 0, 0, 0.4),
+        0 0 0.1em 0.2em inset rgba(255, 255, 255, 0.08),
+        0 0 0 0.15em rgba(var(--friendly-light), 0.45),
+        0 0 1em rgba(var(--friendly-med), 0.65);
+}
+
+button.modal-btn:hover {
+    transform: translateY(-2px) scale(0.98);
+    box-shadow:
+        inset 0 0.125em 0.125em rgba(0, 0, 0, 0.12),
+        inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.22),
+        0 0.15em 0.05em -0.1em rgba(0, 0, 0, 0.5),
+        0 0 0.05em 0.1em inset rgba(255, 255, 255, 0.24),
+        0 0 1em rgba(var(--friendly-med), 0.4);
+    backdrop-filter: blur(0.01em);
+    -webkit-backdrop-filter: blur(0.01em);
+}
+
+button.modal-btn:hover::before {
+    --modal-btn-border-angle: -125deg;
+}
+
+button.modal-btn:hover::after {
+    background-position: 35% 50%;
+}
+
+button.modal-btn:active {
+    transform: translateY(0) scale(0.96);
+    box-shadow:
+        inset 0 0.25em 0.05em rgba(0, 0, 0, 0.22),
+        inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.12),
+        0 0.125em 0.125em -0.125em rgba(0, 0, 0, 0.45),
+        0 0 0.1em 0.2em inset rgba(255, 255, 255, 0.08);
+}
+
+button.modal-btn:active::before {
+    --modal-btn-border-angle: -75deg;
+}
+
+button.modal-btn:active::after {
+    --modal-btn-shine-angle: -15deg;
+
+    background-position: 50% 15%;
 }

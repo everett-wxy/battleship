@@ -1,11 +1,26 @@
-import { createIcons, Volume2, VolumeX, FileText } from "lucide";
 import {
     enableBackgroundMusic,
     enableButtonClickSound,
     toggleBackgroundMusic,
 } from "../controllers/AudioController.js";
 
-export function createRulesDialog() {
+export function createAppShell() {
+    const rulesDialog = createRulesDialog();
+    const bgEffects = createBgEffects();
+    const iconPanel = createIconPanel(rulesDialog.show);
+
+    const appShell = document.createElement("div");
+    appShell.append(rulesDialog.element, bgEffects, iconPanel);
+
+    return {
+        element: appShell,
+        showRulesDialog(options) {
+            rulesDialog.show(options);
+        },
+    };
+}
+
+function createRulesDialog() {
     const rulesDialog = document.createElement("dialog");
     rulesDialog.id = "rules-modal";
     rulesDialog.classList.add("friendly", "panel");
@@ -68,6 +83,7 @@ export function createRulesDialog() {
     rulesDialog.append(header, rulesContainer, beginButton);
 
     function show({ buttonText = "Close", onClose = null } = {}) {
+        console.log('show');
         beginButton.innerText = buttonText;
         currentOnClose = onClose;
         rulesDialog.showModal();
@@ -79,13 +95,13 @@ export function createRulesDialog() {
     };
 }
 
-export function createBgEffects() {
+function createBgEffects() {
     const bgEffects = document.createElement("div");
     bgEffects.classList.add("rain");
     return bgEffects;
 }
 
-export function createIconPanel(showRules) {
+function createIconPanel(showRules) {
     const iconPanel = document.createElement("div");
     iconPanel.id = "icon-panel";
     const audioBtn = createAudioBtn();
@@ -95,10 +111,6 @@ export function createIconPanel(showRules) {
     return iconPanel;
 }
 
-export function renderLucideIcons() {
-    createIcons({ icons: { Volume2, VolumeX, FileText } });
-}
-
 function createAudioBtn() {
     enableBackgroundMusic();
     enableButtonClickSound();
@@ -106,17 +118,16 @@ function createAudioBtn() {
     const audioBtn = document.createElement("button");
 
     audioBtn.id = "audio-btn";
+    audioBtn.classList.add("modal-btn")
     audioBtn.type = "button";
-    audioBtn.innerHTML = `<i data-lucide="volume-2"></i>`;
+    audioBtn.innerText = "Music Off"
 
     audioBtn.addEventListener("click", async () => {
         const isMuted = await toggleBackgroundMusic();
 
         audioBtn.innerHTML = isMuted
-            ? `<i data-lucide="volume-x"></i>`
-            : `<i data-lucide="volume-2"></i>`;
-
-        renderLucideIcons();
+            ? "Music On"
+            : `Music Off`;
     });
 
     return audioBtn;
@@ -124,7 +135,7 @@ function createAudioBtn() {
 
 function createRulesBtn(showRules) {
     const ruleBtn = document.createElement("button");
-    ruleBtn.classList.add("rules");
+    ruleBtn.classList.add("modal-btn");
     ruleBtn.type = "button";
     ruleBtn.innerText = "Rules";
 

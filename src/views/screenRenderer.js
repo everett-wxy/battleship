@@ -1,9 +1,4 @@
-import {
-    createBgEffects,
-    renderLucideIcons,
-    createIconPanel,
-    createRulesDialog,
-} from "./appShell.js";
+import { createAppShell } from "./appShell.js";
 import { createStartScreen } from "./screens/startScreen.js";
 import { createFleetPlacementScreen } from "./screens/fleetPlacementScreen.js";
 // import { createRulesDialogScreen, createRulesBtn } from "./screens/rulesDialogScreen.js";
@@ -20,18 +15,12 @@ export function mountAppShell() {
     app = document.createElement("div");
     app.id = "app";
 
-    const rulesDialog = createRulesDialog();
+    const appShell = createAppShell();
 
-    const bgEffects = createBgEffects();
-
-    const iconPanel = createIconPanel(rulesDialog.show);
-
-    root.append(app, bgEffects, iconPanel, rulesDialog.element);
-
-    renderLucideIcons();
+    root.append(appShell.element, app);
 
     return {
-        showRulesDialog: rulesDialog.show,
+        showRulesDialog: appShell.showRulesDialog,
     };
 }
 
