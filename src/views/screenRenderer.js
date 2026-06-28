@@ -92,7 +92,3 @@ export function renderBattleScreen(currentGame, handlers) {
         },
     };
 }
-
-export function renderGameOverDialog(){
-    
-}
