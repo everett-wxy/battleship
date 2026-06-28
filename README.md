@@ -4,7 +4,7 @@ A browser-based Battleship game built with vanilla JavaScript, HTML, CSS, and We
 
 Repository: [everett-wxy/battleship](https://github.com/everett-wxy/battleship)
 
-Live Demo: [View deplayed app](https://comeplaybattleship.netlify.app/)
+Live Demo: [View deployed app](https://comeplaybattleship.netlify.app/)
 
 ## Features
 
