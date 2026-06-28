@@ -1,48 +1,35 @@
 import {
-    createAppShell,
+    mountAppShell,
     renderStartScreen,
     renderBattleScreen,
-    renderRulesDialogScreen,
     renderPlaceFleetScreen,
 } from "../views/screenRenderer.js";
 
 import { Game } from "../models/GameSession.js";
+
 import {
     playCannonFireSound,
     playExplosionSound,
     playMissedSound,
 } from "./AudioController.js";
+
 import { delay } from "../views/helpers/delay.js";
 
 export function initialise() {
-    createAppShell();
-    renderStartScreen(handleGameStart);
+    const appShell = mountAppShell();
 
-    // const currentGame = new Game("everett");
-    // showRules(currentGame);
-    // showFleetSetup(currentGame);
-    // Game.fleet.forEach((ship, i) => {
-    //     currentGame.humanPlayer.gameboard.placeShip(
-    //         ship.name,
-    //         ship.length,
-    //         i + 1,
-    //         i,
-    //         "horizontal",
-    //     );
-    // });
-    // currentGame.placeComputerFleet();
-    // startBattle(currentGame);
-}
+    function onGameStart(playerName) {
+        const currentGame = new Game(playerName);
 
-function handleGameStart(playerName) {
-    const currentGame = new Game(playerName);
-    showRules(currentGame);
-}
+        appShell.showRulesDialog({
+            buttonText: "Begin fleet placement",
+            onClose() {
+                showFleetSetup(currentGame);
+            },
+        });
+    }
 
-function showRules(currentGame) {
-    renderRulesDialogScreen(currentGame, () => {
-        showFleetSetup(currentGame);
-    });
+    renderStartScreen(onGameStart);
 }
 
 function showFleetSetup(currentGame) {
@@ -148,3 +135,18 @@ async function handleTurnFeedback(turnRes, battleView, markerTarget, comGameboar
         }
     }
 }
+
+// const currentGame = new Game("everett");
+// showRules(currentGame);
+// showFleetSetup(currentGame);
+// Game.fleet.forEach((ship, i) => {
+//     currentGame.humanPlayer.gameboard.placeShip(
+//         ship.name,
+//         ship.length,
+//         i + 1,
+//         i,
+//         "horizontal",
+//     );
+// });
+// currentGame.placeComputerFleet();
+// startBattle(currentGame);

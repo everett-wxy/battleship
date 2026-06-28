@@ -18,6 +18,9 @@ const bgAudioB = new Audio(bgMusicWaves);
 bgAudioA.volume = normalVolume;
 bgAudioB.volume = 0;
 
+bgAudioA.preload = "auto";
+bgAudioB.preload = "auto";
+
 bgAudioA.loop = false;
 bgAudioB.loop = false;
 
@@ -27,11 +30,15 @@ let isCrossfading = false;
 let isMuted = false;
 let hasStarted = false;
 let crossfadeIntervalId = null;
+let crossfadeTimeoutId = null;
+const fadeIntervalIds = new Set();
 
 export function enableBackgroundMusic() {
     document.addEventListener(
         "click",
         async () => {
+            if (isMuted) return;
+
             try {
                 await currentAudio.play();
                 hasStarted = true;
@@ -47,8 +54,7 @@ export function enableBackgroundMusic() {
 export async function swapMusic() {
     const shouldResume = hasStarted && !isMuted;
 
-    bgAudioA.pause();
-    bgAudioB.pause();
+    resetCrossfadeState();
 
     bgAudioA.src = bgMusicBattle;
     bgAudioB.src = bgMusicBattle;
@@ -61,8 +67,6 @@ export async function swapMusic() {
 
     currentAudio = bgAudioA;
     nextAudio = bgAudioB;
-
-    isCrossfading = false;
 
     if (shouldResume) {
         try {
@@ -92,9 +96,11 @@ export async function toggleBackgroundMusic() {
     isMuted = !isMuted;
 
     if (isMuted) {
-        bgAudioA.pause();
-        bgAudioB.pause();
+        resetCrossfadeState();
     } else {
+        currentAudio.volume = normalVolume;
+        nextAudio.volume = 0;
+
         if (!hasStarted) {
             await currentAudio.play();
             hasStarted = true;
@@ -123,19 +129,43 @@ function setupCrossfadeLoop() {
     }, 500); // run every .5 second
 }
 
-function startCrossfade() {
+function resetCrossfadeState() {
+    if (crossfadeTimeoutId) {
+        clearTimeout(crossfadeTimeoutId);
+        crossfadeTimeoutId = null;
+    }
+
+    fadeIntervalIds.forEach((intervalId) => {
+        clearInterval(intervalId);
+    });
+    fadeIntervalIds.clear();
+
+    bgAudioA.pause();
+    bgAudioB.pause();
+
+    isCrossfading = false;
+}
+
+async function startCrossfade() {
     if (isMuted) return;
 
     isCrossfading = true;
 
     nextAudio.currentTime = 0;
     nextAudio.volume = 0;
-    nextAudio.play();
+
+    try {
+        await nextAudio.play();
+    } catch (err) {
+        isCrossfading = false;
+        console.log("Audio could not crossfade:", err);
+        return;
+    }
 
     fadeAudio(currentAudio, 0, fadeDuration);
     fadeAudio(nextAudio, normalVolume, fadeDuration);
 
-    setTimeout(() => {
+    crossfadeTimeoutId = setTimeout(() => {
         currentAudio.pause();
         currentAudio.currentTime = 0;
         currentAudio.volume = 0;
@@ -145,6 +175,7 @@ function startCrossfade() {
         nextAudio = oldAudio;
 
         isCrossfading = false;
+        crossfadeTimeoutId = null;
     }, fadeDuration);
 }
 
@@ -154,16 +185,19 @@ function fadeAudio(audio, targetVolume, duration = 1000) {
     const steps = 30;
     let currentStep = 0;
 
-    const interval = setInterval(() => {
+    const intervalId = setInterval(() => {
         currentStep++;
 
         audio.volume = startVolume + volumeDifference * (currentStep / steps);
 
         if (currentStep >= steps) {
             audio.volume = targetVolume;
-            clearInterval(interval);
+            clearInterval(intervalId);
+            fadeIntervalIds.delete(intervalId);
         }
     }, duration / steps);
+
+    fadeIntervalIds.add(intervalId);
 }
 
 export function playCannonFireSound() {

@@ -59,9 +59,9 @@ export function createFleetPlacementScreen(currentGame, onContinue) {
 
     setTimeout(() => {
         dialogue.setMessage(
-            "Plan our formation by dragging and dropping ships on the map.",
+            "Plan our formation by dragging and dropping ships on the grid.",
         );
-    }, 3000);
+    }, 2000);
 
     fleetPlacementScreen.append(gridFleetContainer, dialogue.element);
 
