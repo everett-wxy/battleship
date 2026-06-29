@@ -83,7 +83,7 @@
 }
 
 .ship-overlay {
-    z-index: -1;
+    z-index: 2;
     pointer-events: none;
 }
 
@@ -143,7 +143,10 @@
     opacity: 1;
     pointer-events: none;
     box-shadow: 0 0 12px rgba(255, 51, 0, 0.4);
-    /* box-shadow: 0 0 12px rgba(255, 255, 255, .2); */
+}
+
+.hostile .grid-cell::after {
+    box-shadow: 0 0 12px rgba(0, 98, 255, 0.4);
 }
 
 .grid-cell:hover {
@@ -168,6 +171,15 @@
     padding: var(--ship-padding);
 }
 
+.hostile .grid-ship-container {
+    background: radial-gradient(
+        circle at center,
+        rgba(133, 210, 255, 0.05) 0%,
+        rgba(51, 28, 255, 0.1) 70%,
+        rgba(17, 26, 209, 0.1) 90%
+    );
+}
+
 .grid-ship {
     display: block;
     width: 100%;
@@ -179,14 +191,26 @@
     min-height: 0;
     pointer-events: none;
     user-select: none;
-    opacity: 0.3;
-    filter: brightness(0) saturate(100%) invert(100%) sepia(10%) saturate(2100%)
-        hue-rotate(343deg) brightness(100%) contrast(96%);
+    opacity: 1;
+    filter: brightness(0) invert(25%) sepia(100%) saturate(4200%) hue-rotate(360deg)
+        brightness(80%) contrast(90%);
+    animation: bleep 3.5s ease infinite;
+}
+
+@keyframes bleep {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.4;
+    }
 }
 
 .hostile .grid-ship {
-    filter: brightness(0) invert(15%) drop-shadow(0 0 2px rgb(0, 0, 0))
-        drop-shadow(0 0 1px rgb(0, 0, 0));
+    filter: brightness(0) invert(25%);
+    filter: brightness(0) invert(25%) sepia(50%) saturate(4200%) hue-rotate(200deg)
+        brightness(60%) contrast(90%) drop-shadow(0 0 5px rgba(0, 0, 0, .5));
 
     opacity: 1;
 }
@@ -203,43 +227,10 @@
     transform-origin: center;
 }
 
-/* .atk-marker {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    pointer-events: none;
-} */
-
-/* .atk-marker-symbol {
-    position: relative;
-    z-index: 2;
-    display: block;
-    line-height: 1;
-    opacity: 0;
-    animation: marker-pop 250ms 350ms ease-out forwards;
-} */
-
 .atk-marker {
     position: relative;
     pointer-events: none;
     overflow: visible;
-    /* border: 2px dashed transparent;
-    animation: targeted 250ms ease 0ms 3; */
-}
-
-@keyframes targeted {
-    0% {
-        border-color: rgb(255, 255, 255);
-    }
-
-    50% {
-        border-color: rgba(255, 255, 255, 0);
-    }
-    100% {
-        border-color: rgb(255, 255, 255);
-    }
 }
 
 .aim-flash {
@@ -293,8 +284,19 @@
     color: red;
 }
 
+/* .friendly .hit-marker {
+    color: blue; 
+} */
+
 .hit-marker::before {
     animation: shot 350ms 175ms forwards;
+}
+
+.friendly .hit-marker::before {
+    box-shadow: 
+        0 0 3px 0 rgba(255, 255, 255, .3),
+        0 0 10px 0 rgba(255, 255, 255, 0.5);
+    animation: hostile-shot 350ms 175ms forwards;
 }
 
 .hit-marker::after {
@@ -326,6 +328,21 @@
         width: 30%;
         background-color: rgba(255, 0, 0, 0.85);
         border-color: rgba(255, 0, 0, 0.5);
+        transform: translate(-50%, -50%) rotate(-315deg);
+    }
+}
+
+@keyframes hostile-shot {
+    50% {
+        width: 5rem;
+        background-color: #fefefe;
+        border-color: #fefefe;
+    }
+
+    100% {
+        width: 30%;
+        background-color: #080d66d9;
+        border-color: rgba(0, 13, 255, 0.5);
         transform: translate(-50%, -50%) rotate(-315deg);
     }
 }
