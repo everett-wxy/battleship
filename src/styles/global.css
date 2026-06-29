@@ -48,6 +48,7 @@ select {
 
 body {
     min-height: 100vh;
+    background-color: #020617;
     background-image:
         linear-gradient(rgba(20, 30, 40, 0.1), rgba(20, 30, 40, 0.7)),
         url("../assets/background.webp");
