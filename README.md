@@ -129,6 +129,7 @@ The project uses Jest to test the core game models, including ship behaviour, bo
 
 ## Attributions
 
+- Inspiration: [https://github.com/lovrozagar](https://github.com/lovrozagar/BattleShip)
 - Character designs generated with ChatGPT.
 - Character references from Magnific.
 - Battleship silhouette vectors by Vecteezy.
