@@ -210,7 +210,7 @@
 .hostile .grid-ship {
     filter: brightness(0) invert(25%);
     filter: brightness(0) invert(25%) sepia(50%) saturate(4200%) hue-rotate(200deg)
-        brightness(60%) contrast(90%) drop-shadow(0 0 5px rgba(0, 0, 0, .5));
+        brightness(60%) contrast(90%) drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
 
     opacity: 1;
 }
@@ -284,17 +284,13 @@
     color: red;
 }
 
-/* .friendly .hit-marker {
-    color: blue; 
-} */
-
 .hit-marker::before {
     animation: shot 350ms 175ms forwards;
 }
 
 .friendly .hit-marker::before {
-    box-shadow: 
-        0 0 3px 0 rgba(255, 255, 255, .3),
+    box-shadow:
+        0 0 3px 0 rgba(255, 255, 255, 0.3),
         0 0 10px 0 rgba(255, 255, 255, 0.5);
     animation: hostile-shot 350ms 175ms forwards;
 }

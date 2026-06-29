@@ -54,7 +54,7 @@
 }
 
 .prompt.friendly {
-    --prompt-rgb: 240, 23, 23;
+    --prompt-rgb: 255, 60, 60;
 }
 
 .prompt::before,
@@ -142,9 +142,8 @@
     z-index: 1;
     display: inline-block;
     opacity: 0;
-    text-shadow:
-        0 0 3px rgba(255, 255, 255, .5);
-        /* 0 0 10px rgba(var(--prompt-rgb), 0.85) */
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+    /* 0 0 10px rgba(var(--prompt-rgb), 0.85) */
 }
 
 .prompt.visible .prompt-text {

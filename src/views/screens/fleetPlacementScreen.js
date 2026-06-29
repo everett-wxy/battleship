@@ -3,6 +3,7 @@ import {
     playShipPlacedSound,
 } from "../../controllers/AudioController.js";
 import { Game } from "../../models/GameSession.js";
+import { createBattleStatusPrompt } from "../components/battleStatusPrompt.js";
 import { createBoardComponent } from "../components/boardComponent.js";
 import { createDialogue } from "../components/dialogue.js";
 import { renderPlacedShip, shipIcons } from "../helpers/shipRenderer.js";
@@ -13,9 +14,31 @@ let shipOrientation = "horizontal";
 let placedShips = new Set();
 
 export function createFleetPlacementScreen(currentGame, onContinue) {
+    const fleetPlacementScreenwrapper = document.createElement("div");
+    fleetPlacementScreenwrapper.id = "fleet-placement-screen-wrapper";
+
     const fleetPlacementScreen = document.createElement("div");
     fleetPlacementScreen.id = "fleet-placement-screen";
     fleetPlacementScreen.classList.add("screen");
+
+    const promptZoneLeft = document.createElement("div");
+    promptZoneLeft.classList.add("prompt-zone-left");
+
+    const promptZoneRight = document.createElement("div");
+    promptZoneRight.classList.add("prompt-zone-right");
+
+    const exceedGridPrompt1 = createBattleStatusPrompt({
+        text: "Warning: ship placement violates boundary or overlap rules.",
+        type: "friendly",
+    });
+
+    const exceedGridPrompt2 = createBattleStatusPrompt({
+        text: "Warning: ship placement violates boundary or overlap rules.",
+        type: "friendly",
+    });
+
+    promptZoneLeft.append(exceedGridPrompt1.element);
+    promptZoneRight.append(exceedGridPrompt2.element);
 
     const gridFleetContainer = document.createElement("div");
     gridFleetContainer.id = "grid-fleet-container";
@@ -41,6 +64,8 @@ export function createFleetPlacementScreen(currentGame, onContinue) {
         boardComponent.shipOverlay,
         currentGame,
         confirmBtn,
+        exceedGridPrompt1,
+        exceedGridPrompt2,
     );
 
     buttonPanel.append(changeOrientationBtn, resetBtn, confirmBtn);
@@ -65,7 +90,13 @@ export function createFleetPlacementScreen(currentGame, onContinue) {
 
     fleetPlacementScreen.append(gridFleetContainer, dialogue.element);
 
-    return fleetPlacementScreen;
+    fleetPlacementScreenwrapper.append(
+        promptZoneLeft,
+        fleetPlacementScreen,
+        promptZoneRight,
+    );
+
+    return fleetPlacementScreenwrapper;
 }
 
 function createFleetContainer(gridMap) {
@@ -129,7 +160,16 @@ function createFleetContainer(gridMap) {
     return fleetSetUp;
 }
 
-function enableFleetPlacementDrag(gridMap, shipOverlay, game, confirmBtn) {
+function enableFleetPlacementDrag(
+    gridMap,
+    shipOverlay,
+    game,
+    confirmBtn,
+    exceedGridPrompt1,
+    exceedGridPrompt2,
+) {
+    let exceedGridPromptTimeoutId = null;
+
     gridMap.addEventListener("dragover", (event) => {
         event.preventDefault();
 
@@ -210,12 +250,22 @@ function enableFleetPlacementDrag(gridMap, shipOverlay, game, confirmBtn) {
             draggedShip.length,
             shipOrientation,
         );
-
         if (!isValidPlacement) {
             clearHighlightedCells(gridMap);
+
+            exceedGridPrompt1.setPromptVisible(true);
+            exceedGridPrompt2.setPromptVisible(true);
+
+            clearTimeout(exceedGridPromptTimeoutId);
+
+            exceedGridPromptTimeoutId = setTimeout(() => {
+                exceedGridPrompt1.setPromptVisible(false);
+                exceedGridPrompt2.setPromptVisible(false);
+                exceedGridPromptTimeoutId = null;
+            }, 4000);
+
             return;
         }
-
         try {
             const shipPlacement = placeDroppedShip(
                 draggedShipCard,
@@ -316,11 +366,9 @@ function getCellsForShip(gridMap, startRow, startCol, shipLength, orientation) {
 
         const cell = gridMap.querySelector(`[data-row="${row}"][data-col="${col}"]`);
 
-        if (!cell) {
-            return null;
+        if (cell) {
+            cells.push(cell);
         }
-
-        cells.push(cell);
     }
 
     return cells;
