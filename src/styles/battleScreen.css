@@ -20,6 +20,7 @@
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
+    will-change: transform;
 
     transition:
         background-color 1s ease-in,
@@ -97,82 +98,43 @@
     border-radius: inherit;
     pointer-events: none;
     opacity: 0.1;
+    will-change: opacity;
     transition: opacity 2s ease;
 }
 
 .zone-container.active::before {
-    opacity: 0.5;
+    animation: zone-glow-pulse 1.5s ease infinite;
 }
 
 .zone-container.hostile::before {
     box-shadow:
-        0 0 4px rgba(255, 255, 255, 0.25),
-        0 0 8px rgba(255, 0, 0, 0.55),
-        0 0 18px rgba(255, 0, 0, 0.35),
-        0 0 36px rgba(120, 0, 0, 0.25),
-        inset 0 0 10px rgba(255, 0, 0, 0.2);
-
-    animation: red-pulse-glow 1.5s ease infinite;
-}
-
-@keyframes red-pulse-glow {
-    0%,
-    100% {
-        box-shadow:
-            0 0 4px rgba(255, 255, 255, 0.25),
-            0 0 8px rgba(255, 0, 0, 0.55),
-            0 0 18px rgba(255, 0, 0, 0.35),
-            0 0 36px rgba(120, 0, 0, 0.25),
-            inset 0 0 10px rgba(255, 0, 0, 0.2);
-    }
-
-    50% {
-        box-shadow:
-            0 0 8px rgba(255, 255, 255, 0.45),
-            0 0 16px rgba(255, 0, 0, 0.9),
-            0 0 36px rgba(255, 0, 0, 0.65),
-            0 0 64px rgba(160, 0, 0, 0.45),
-            inset 0 0 18px rgba(255, 0, 0, 0.35);
-    }
+        0 0 8px rgba(255, 255, 255, 0.45),
+        0 0 16px rgba(255, 0, 0, 0.9),
+        0 0 36px rgba(255, 0, 0, 0.65),
+        0 0 64px rgba(160, 0, 0, 0.45),
+        inset 0 0 18px rgba(255, 0, 0, 0.35);
 }
 
 .zone-container.friendly::before {
     box-shadow:
         0 0 2px rgba(255, 255, 255, 0.3),
         0 0 5px rgba(255, 255, 255, 0.3),
-        0 0 10px rgba(255, 255, 255, 0.3),
-        0 0 12px rgba(158, 163, 255, 0.3),
-        0 0 15px rgba(109, 114, 206, 0.3),
-        0 0 20px rgba(66, 70, 152, 0.3),
-        0 0 40px rgba(0, 0, 0, 0.2),
-        0 0 50px rgba(27, 30, 70, 0.1);
-    animation: dark-pulse-glow 1.5s ease infinite;
+        0 0 10px rgba(255, 255, 255, 1),
+        0 0 12px rgba(158, 163, 255, 1),
+        0 0 15px rgba(109, 114, 206, 1),
+        0 0 20px rgba(66, 70, 152, 1),
+        0 0 40px rgba(0, 0, 0, 1),
+        0 0 50px rgba(27, 30, 70, 1);
 }
 
-@keyframes dark-pulse-glow {
+@keyframes zone-glow-pulse {
     0%,
     100% {
-        box-shadow:
-            0 0 2px rgba(255, 255, 255, 0.3),
-            0 0 5px rgba(255, 255, 255, 0.3),
-            0 0 10px rgba(255, 255, 255, 0.3),
-            0 0 12px rgba(158, 163, 255, 0.3),
-            0 0 15px rgba(109, 114, 206, 0.3),
-            0 0 20px rgba(66, 70, 152, 0.3),
-            0 0 40px rgba(0, 0, 0, 0.2),
-            0 0 50px rgba(27, 30, 70, 0.1);
+        opacity: 0.36;
     }
 
     50% {
-        box-shadow:
-            0 0 2px rgba(255, 255, 255, 1),
-            0 0 5px rgba(255, 255, 255, 1),
-            0 0 10px rgba(255, 255, 255, 1),
-            0 0 12px rgba(158, 163, 255, 1),
-            0 0 15px rgba(109, 114, 206, 1),
-            0 0 20px rgba(66, 70, 152, 1),
-            0 0 40px rgba(0, 0, 0, 1),
-            0 0 50px rgba(27, 30, 70, 1);
+        opacity: 0.75;
     }
 }
 
@@ -283,4 +245,3 @@
     font-family: "Audiowide", sans-serif;
     font-size: 2rem;
 }
-
