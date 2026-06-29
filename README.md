@@ -1,3 +1,5 @@
+![Battleship game preview](public/preview.png)
+
 # Battleship
 
 A browser-based Battleship game built with vanilla JavaScript, HTML, CSS, and Webpack. The project uses no frontend framework and focuses on modular game logic, DOM-driven UI rendering, drag-and-drop fleet placement, turn-based battle flow, audio feedback, and unit-tested core models.
