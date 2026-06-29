@@ -41,7 +41,10 @@ export function renderBattleScreen(currentGame, handlers) {
     swapMusic();
     app.replaceChildren();
 
-    const battleScreenView = createBattleScreen(currentGame, handlers);
+    const battleScreenView = createBattleScreen(currentGame, {
+        onHumanFire: handlers.onHumanFire,
+        skipIntro: handlers.skipIntro,
+    });
 
     app.append(battleScreenView.element);
 

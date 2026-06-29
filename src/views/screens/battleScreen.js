@@ -3,7 +3,7 @@ import { renderPlacedShip } from "../helpers/shipRenderer.js";
 import { createBattleDialogues } from "../components/dialogue.js";
 import { createBattleStatusPrompt } from "../components/battleStatusPrompt.js";
 
-export function createBattleScreen(currentGame, { onHumanFire }) {
+export function createBattleScreen(currentGame, { onHumanFire, skipIntro = false }) {
     const battleScreen = document.createElement("div");
     battleScreen.classList.add("battle-screen", "screen");
 
@@ -55,14 +55,26 @@ export function createBattleScreen(currentGame, { onHumanFire }) {
 
     const { friendlyDialogue, hostileDialogue } = battleDialogues;
 
-    runBattleIntroDialogueSequence(battleDialogues, currentGame.humanPlayer.name).then(
-        () => {
-            enableHumanFire(hostileZone.boardComponent.gridMap, onHumanFire);
-            blinkingBattleStatusPrompt.setPromptVisible(true);
-            hostileZone.zoneContainer.classList.toggle("active");
-            hostileZone.toggleGridVisual();
-        },
-    );
+    function startFiringSequence() {
+        enableHumanFire(hostileZone.boardComponent.gridMap, onHumanFire);
+        blinkingBattleStatusPrompt.setPromptVisible(true);
+        hostileZone.zoneContainer.classList.add("active");
+        hostileZone.toggleGridVisual();
+        battleDialogues.setActiveDialogue("human");
+    }
+
+    if (skipIntro) {
+        friendlyDialogue.setMessage(
+            "Debug battle ready. Select a hostile grid cell to fire.",
+            "angry",
+        );
+        startFiringSequence();
+    } else {
+        runBattleIntroDialogueSequence(
+            battleDialogues,
+            currentGame.humanPlayer.name,
+        ).then(startFiringSequence);
+    }
 
     dialoguesWrapper.append(friendlyDialogue.element, hostileDialogue.element);
 

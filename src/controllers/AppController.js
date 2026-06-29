@@ -15,8 +15,16 @@ import {
 
 import { delay } from "../views/helpers/delay.js";
 
+const DEBUG_START_IN_FIRING_SEQUENCE = true;
+
 export function initialise() {
     const appShell = mountAppShell();
+
+    if (DEBUG_START_IN_FIRING_SEQUENCE) {
+        const debugGame = createDebugBattleGame();
+        startBattle(debugGame, restartGame, { skipIntro: true });
+        return;
+    }
 
     renderStart();
 
@@ -40,6 +48,44 @@ export function initialise() {
     }
 }
 
+function createDebugBattleGame() {
+    const debugGame = new Game("Everett");
+
+    const humanFleet = [
+        { y: 0, x: 0, orientation: "horizontal" },
+        { y: 2, x: 0, orientation: "horizontal" },
+        { y: 4, x: 0, orientation: "horizontal" },
+        { y: 6, x: 0, orientation: "horizontal" },
+        { y: 8, x: 0, orientation: "horizontal" },
+    ];
+
+    const computerFleet = [
+        { y: 0, x: 5, orientation: "horizontal" },
+        { y: 2, x: 6, orientation: "horizontal" },
+        { y: 4, x: 7, orientation: "horizontal" },
+        { y: 6, x: 9, orientation: "vertical" },
+        { y: 9, x: 0, orientation: "horizontal" },
+    ];
+
+    humanFleet.forEach((placement) => {
+        debugGame.placeNextHumanPlayerShip(
+            placement.y,
+            placement.x,
+            placement.orientation,
+        );
+    });
+
+    computerFleet.forEach((placement, index) => {
+        debugGame.placeFleetShip(
+            debugGame.computerPlayer,
+            Game.fleet[index],
+            placement,
+        );
+    });
+
+    return debugGame;
+}
+
 function showFleetSetup(currentGame, restartGame) {
     renderPlaceFleetScreen(currentGame, () => {
         startBattle(currentGame, restartGame);
@@ -48,12 +94,13 @@ function showFleetSetup(currentGame, restartGame) {
     currentGame.placeComputerFleet();
 }
 
-function startBattle(currentGame, restartGame) {
+function startBattle(currentGame, restartGame, options = {}) {
     let isWaitingForComputer = false;
 
     const battleView = renderBattleScreen(currentGame, {
         onHumanFire: handleHumanFire,
         onRestart: restartGame,
+        ...options,
     });
 
     async function handleHumanFire(row, col) {
@@ -78,7 +125,7 @@ function startBattle(currentGame, restartGame) {
                 return;
             }
 
-            await delay(1500);
+            await delay(500);
 
             const computerTurnRes = currentGame.runTurn();
 
@@ -110,7 +157,7 @@ async function handleTurnFeedback(turnRes, battleView, markerTarget, comGameboar
         ? battleView.renderEnemyMarker(turnRes.atkRes)
         : battleView.renderFriendlyMarker(turnRes.atkRes);
 
-    await delay(500);
+    await delay(1400);
 
     turnRes.atkRes.isHit ? playExplosionSound() : playMissedSound();
 

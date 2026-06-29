@@ -1,7 +1,7 @@
 import bgMusicWaves from "../assets/waves.mp3";
 import bgMusicBattle from "../assets/bg-music-small.mp3";
 import missedSound from "../assets/missed.mp3";
-import canonFireSound from "../assets/canon-fire.mp3";
+import canonFireSound from "../assets/cannon-fire.mp3";
 import explosionSound from "../assets/explosion.mp3";
 import gridCellHoverSound from "../assets/hover-1.mp3";
 import shipCardHoverSound from "../assets/hover-5.wav";
@@ -236,13 +236,13 @@ function fadeAudio(audio, targetVolume, duration = 1000) {
 
 export function playCannonFireSound() {
     const canonFire = new Audio(canonFireSound);
-    canonFire.volume = 0.5;
+    canonFire.volume = .7;
     canonFire.play();
 }
 
 export function playMissedSound() {
     const waterSplash = new Audio(missedSound);
-    waterSplash.volume = 0.5;
+    waterSplash.volume = 1;
     waterSplash.play();
 }
 

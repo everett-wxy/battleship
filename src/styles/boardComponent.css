@@ -243,7 +243,7 @@
     background-size: contain;
 
     opacity: 0;
-    animation: targeted-bg 170ms linear 0ms 3;
+    animation: targeted-bg 300ms linear 0ms 4;
 }
 
 @keyframes targeted-bg {
@@ -285,19 +285,19 @@
 }
 
 .hit-marker::before {
-    animation: shot 350ms 175ms forwards;
+    animation: shot 350ms 1000ms ease forwards;
 }
 
 .friendly .hit-marker::before {
     box-shadow:
         0 0 3px 0 rgba(255, 255, 255, 0.3),
         0 0 10px 0 rgba(255, 255, 255, 0.5);
-    animation: hostile-shot 350ms 175ms forwards;
+    animation: hostile-shot 350ms 1000ms ease forwards;
 }
 
 .hit-marker::after {
     background: rgba(255, 0, 0, 0.45);
-    animation: ripple 750ms 350ms ease-out forwards;
+    animation: ripple 750ms 1350ms ease-out forwards;
 }
 
 .miss-marker {
@@ -305,12 +305,12 @@
 }
 
 .miss-marker::before {
-    animation: miss 350ms 175ms forwards;
+    animation: miss 350ms 1000ms ease forwards;
 }
 
 .miss-marker::after {
     background: rgba(255, 255, 255, 0.45);
-    animation: ripple 750ms 350ms ease-out forwards;
+    animation: ripple 750ms 1350ms ease-out forwards;
 }
 
 @keyframes shot {
