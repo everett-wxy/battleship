@@ -15,7 +15,7 @@ import {
 
 import { delay } from "../views/helpers/delay.js";
 
-const DEBUG_START_IN_FIRING_SEQUENCE = true;
+const DEBUG_START_IN_FIRING_SEQUENCE = false;
 
 export function initialise() {
     const appShell = mountAppShell();
@@ -157,7 +157,7 @@ async function handleTurnFeedback(turnRes, battleView, markerTarget, comGameboar
         ? battleView.renderEnemyMarker(turnRes.atkRes)
         : battleView.renderFriendlyMarker(turnRes.atkRes);
 
-    await delay(1400);
+    await delay(1000);
 
     turnRes.atkRes.isHit ? playExplosionSound() : playMissedSound();
 

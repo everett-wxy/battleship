@@ -60,7 +60,6 @@ export function createBattleScreen(currentGame, { onHumanFire, skipIntro = false
         blinkingBattleStatusPrompt.setPromptVisible(true);
         hostileZone.zoneContainer.classList.add("active");
         hostileZone.toggleGridVisual();
-        battleDialogues.setActiveDialogue("human");
     }
 
     if (skipIntro) {
@@ -147,11 +146,6 @@ function createZone({
     if (onHumanFire) {
         enableHumanFire(boardComponent.gridMap, onHumanFire);
     }
-
-    // if (type === "friendly") {
-    //     boardComponent.markerOverlay.classList.toggle("visible"); // remove visible
-    //     zoneContainer.classList.toggle("active");
-    // }
 
     zoneContainer.append(title, boardComponent.gameBoardContainer);
     return {
