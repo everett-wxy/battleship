@@ -1,9 +1,8 @@
-import bgMusicWaves from "../assets/waves.wav";
-import bgMusicBattle from "../assets/music_for_videos-pirates-163389.mp3";
+import bgMusicWaves from "../assets/waves.mp3";
+import bgMusicBattle from "../assets/bg-music-small.mp3";
 import missedSound from "../assets/missed.mp3";
 import canonFireSound from "../assets/canon-fire.mp3";
 import explosionSound from "../assets/explosion.mp3";
-// import gridCellHoverSound from "../assets/click-1.wav";
 import gridCellHoverSound from "../assets/hover-1.mp3";
 import shipCardHoverSound from "../assets/hover-5.wav";
 import buttonClickSound from "../assets/click-2.wav";

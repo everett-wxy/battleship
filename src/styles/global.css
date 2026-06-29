@@ -50,7 +50,7 @@ body {
     min-height: 100vh;
     background-image:
         linear-gradient(rgba(20, 30, 40, 0.1), rgba(20, 30, 40, 0.7)),
-        url("../assets/23604548_sl_112119_25250_20.svg");
+        url("../assets/background.webp");
     background-size: 150% auto;
     background-size: cover;
     background-position: 30%;
