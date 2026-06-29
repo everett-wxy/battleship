@@ -1,5 +1,19 @@
 import path from "node:path";
+import fs from "node:fs";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+
+class CopyPublicAssetsPlugin {
+    apply(compiler) {
+        compiler.hooks.afterEmit.tap("CopyPublicAssetsPlugin", () => {
+            const publicDir = path.resolve(import.meta.dirname, "public");
+            const outputDir = compiler.options.output.path;
+
+            if (!fs.existsSync(publicDir)) return;
+
+            fs.cpSync(publicDir, outputDir, { recursive: true });
+        });
+    }
+}
 
 export default {
     mode: "development",
@@ -17,6 +31,7 @@ export default {
         new HtmlWebpackPlugin({
             template: "./src/template.html",
         }),
+        new CopyPublicAssetsPlugin(),
     ],
     module: {
         rules: [
